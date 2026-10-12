@@ -92,10 +92,17 @@ export function ScenarioSwitcher({ scenarios, activeId, onSelect, onReset }: Sce
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center rounded-full border border-white/20 bg-grey-400/90 px-[11px] py-1.5 text-white shadow-elevation-1 backdrop-blur hover:bg-grey-400"
+        className={`flex items-center rounded-full border border-white/20 bg-grey-400/90 px-[11px] py-1.5 text-white shadow-elevation-1 backdrop-blur hover:bg-grey-400 ${
+          intro ? 'switcher-breathe' : ''
+        }`}
       >
         <span aria-hidden="true" className="relative flex size-2 shrink-0">
-          {intro && <span className="absolute inset-0 animate-ping rounded-full bg-magenta-300 opacity-75" />}
+          {intro && (
+            <>
+              <span className="switcher-ring absolute inset-0 rounded-full bg-magenta-300" />
+              <span className="switcher-ring absolute inset-0 rounded-full bg-magenta-300 [animation-delay:0.8s]" />
+            </>
+          )}
           <span className="relative size-2 rounded-full bg-magenta-300" />
         </span>
         {/* Stays in the accessible name when visually collapsed */}
