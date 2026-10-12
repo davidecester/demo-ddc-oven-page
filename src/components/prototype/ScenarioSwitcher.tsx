@@ -1,4 +1,4 @@
-import { useId, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import type { Scenario } from '../../types/oven'
 
 interface ScenarioSwitcherProps {
@@ -8,18 +8,49 @@ interface ScenarioSwitcherProps {
   onReset: () => void
 }
 
+/** How long the full pill (dot + label) stays visible, pulsing, after the page loads. */
+const INTRO_MS = 4000
+
 /**
  * Prototype-only control (not part of the design): picks the mock scenario and
  * restarts the live simulation. Deliberately styled apart from the DDC UI.
+ * After a short pulsing intro it shrinks to just the dot, so it covers less of the page;
+ * hover, keyboard focus or an open panel grow it back to dot + label.
  */
 export function ScenarioSwitcher({ scenarios, activeId, onSelect, onReset }: ScenarioSwitcherProps) {
   const [open, setOpen] = useState(false)
+  const [intro, setIntro] = useState(true)
+  const [hovered, setHovered] = useState(false)
+  const [focused, setFocused] = useState(false)
+  const rootRef = useRef<HTMLElement>(null)
   const panelId = useId()
   const selectId = useId()
+  const expanded = intro || hovered || focused || open
+
+  useEffect(() => {
+    const id = window.setTimeout(() => setIntro(false), INTRO_MS)
+    return () => window.clearTimeout(id)
+  }, [])
+
+  // A tap or click outside closes the panel (touch has no hover-out to shrink it back)
+  useEffect(() => {
+    if (!open) return
+    const close = (e: PointerEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('pointerdown', close)
+    return () => document.removeEventListener('pointerdown', close)
+  }, [open])
 
   return (
     <aside
+      ref={rootRef}
       aria-label="Strumento prototipo"
+      // Hover only for mouse/pen, so a tap doesn't leave the pill stuck open on touch screens
+      onPointerEnter={(e) => e.pointerType !== 'touch' && setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+      onFocus={(e) => setFocused(e.target.matches(':focus-visible'))}
+      onBlur={(e) => !e.currentTarget.contains(e.relatedTarget as Node) && setFocused(false)}
       className="fixed bottom-[calc(var(--spacing-bottom-nav)+12px+env(safe-area-inset-bottom))] left-3 z-30 font-mono text-[12px] lg:bottom-4 lg:left-[calc(var(--spacing-sidebar)+16px)]"
     >
       {open && (
@@ -61,10 +92,20 @@ export function ScenarioSwitcher({ scenarios, activeId, onSelect, onReset }: Sce
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 rounded-full border border-white/20 bg-grey-400/90 px-3 py-1.5 text-white shadow-elevation-1 backdrop-blur hover:bg-grey-400"
+        className="flex items-center rounded-full border border-white/20 bg-grey-400/90 px-[11px] py-1.5 text-white shadow-elevation-1 backdrop-blur hover:bg-grey-400"
       >
-        <span aria-hidden="true" className="size-2 rounded-full bg-magenta-300" />
-        Prototipo · {activeId}
+        <span aria-hidden="true" className="relative flex size-2 shrink-0">
+          {intro && <span className="absolute inset-0 animate-ping rounded-full bg-magenta-300 opacity-75" />}
+          <span className="relative size-2 rounded-full bg-magenta-300" />
+        </span>
+        {/* Stays in the accessible name when visually collapsed */}
+        <span
+          className={`overflow-hidden whitespace-nowrap transition-[max-width,opacity,margin] duration-300 ease-out ${
+            expanded ? 'ml-2 max-w-[240px] opacity-100' : 'ml-0 max-w-0 opacity-0'
+          }`}
+        >
+          Prototipo · {activeId}
+        </span>
       </button>
     </aside>
   )
