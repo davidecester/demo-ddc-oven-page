@@ -147,9 +147,11 @@ function ActivityContent({ activity, onStartWashing }: { activity: LiveActivity;
                 </Button>
               )}
               {activity.hint && (
-                <p className="flex items-start gap-2">
+                // Figma "Info-Row": 4 px between icon and text. The text shifts 2 px down (without growing the row)
+                // so its first line is centred on the 20 px icon, whether it wraps or not
+                <p className="flex items-start gap-1">
                   <Icon name="info-grey" size={20} />
-                  <span className="type-paragraph-sm text-content-quaternary">{activity.hint}</span>
+                  <span className="-mb-0.5 pt-0.5 type-paragraph-sm text-content-quaternary">{activity.hint}</span>
                 </p>
               )}
             </div>
