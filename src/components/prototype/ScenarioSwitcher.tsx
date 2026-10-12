@@ -9,7 +9,7 @@ interface ScenarioSwitcherProps {
 }
 
 /** How long the full pill (dot + label) stays visible, pulsing, after the page loads. */
-const INTRO_MS = 4000
+const INTRO_MS = 6000
 
 /**
  * Prototype-only control (not part of the design): picks the mock scenario and
