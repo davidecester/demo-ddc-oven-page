@@ -18,7 +18,7 @@ const TAG_STYLES: Record<StatusTagType, TagStyle> = {
   filterExhausted: { icon: 'tag-water-exhausted', label: 'Sostituire filtro', surface: 'bg-red-100', text: 'text-content-secondary' },
   offline: { icon: 'tag-wifi-off', label: 'Forno offline', surface: 'bg-red-100', text: 'text-content-secondary' },
   maintenance: { icon: 'tag-error-outline', label: 'Manutenzione richiesta', surface: 'bg-red-100', text: 'text-content-secondary' },
-  critical: { icon: 'tag-error', label: 'Critico', surface: 'bg-alarm-strong', text: 'text-white' },
+  critical: { icon: 'tag-error', label: 'Critico', surface: 'bg-alarm', text: 'text-white' },
   warning: { icon: 'tag-warning', label: 'Attenzione', surface: 'bg-yellow-400', text: 'text-black' },
 }
 

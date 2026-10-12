@@ -20,7 +20,7 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
   - **SENSE.Klean chart scrubbing (Revolut-style):** hovering or tapping a bar updates the header's %, level label, colour, icon and time ("Oggi/Ieri alle HH:MM"). Leaving the chart or tapping outside resets it to the current reading. The levels are:
     - Pulito: primary black text, no icon.
     - Sporco: `text-yellow-500` with the warning icon.
-    - Molto Sporco: `text-alarm` (#ff0033) with the red "!" error icon (`dirt-error-32/20.svg`).
+    - Molto Sporco: `text-alarm` with the red "!" error icon (`dirt-error-32/20.svg`).
     - Thresholds: ≤50 clean, ≤75 dirty, otherwise veryDirty (`senseKlean.ts`).
 - **Scenario 2 (idle, `?scenario=idle`)** is done in `src/data/scenarios/idle.ts`. It reuses Scenario 1 and overrides the activity (idle, 78% · Molto Sporco), the critical alert "Camera Molto Sporca" (WF54) and the SENSE.Klean reading (78% at 13:00).
   - Critical alerts use `bg-alarm-16` (`--color-alarm-16`), the `sheet-error` icon and a red dot (`dot-red`) on the "+N altri avvisi" row.
@@ -32,7 +32,7 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 - Vite 8, React 19, TypeScript, Tailwind 4 and Recharts 3. Node 22. Lint is oxlint. No component library.
 - Run `npm ci` first in a fresh container. Without it, build and lint fail.
 - Scripts: `npm run dev`, `npm run build` (tsc + vite build), `npm run lint`, `npm run preview`.
-- **Tokens** are in `src/styles/tokens.css`, for example `--color-alarm`, `--color-accent #0073e1`, `--color-green-text #008a00` and `--color-yellow-500`.
+- **Tokens** are in `src/styles/tokens.css`, for example `--color-alarm`, `--color-accent #0073e1`, `--color-green-500 #008a00` and `--color-yellow-500`.
 - **Text styles** are `@utility type-*` in `src/styles/typography.css`. State-layer and mask-icon utilities are in `src/styles/states.css`.
 - **Assets** are in `/public/assets` (icons in `/public/assets/icons`).
 - **Fonts:** Roboto, plus Montserrat for ring percentages.
@@ -71,11 +71,12 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 
 ## Accessibility
 - **Fixed for AA:**
-  - Page background is `#ebebeb`.
-  - Green text is `#008a00`.
+  - Background-tertiary is `#ebebeb` instead of `#dfe0e1` everywhere (page background and info alert badge).
+  - Green-500 is `#008a00` instead of `#008f00` everywhere (token, temperature text, RO.Care ring, green SVG icons).
   - SENSE and "Altro" bars are `#8e8e8e`.
-  - "Critico" tag background is `--color-alarm-strong` `#e6002e` (white text 4.77:1).
-  - Critical alert surface is alarm at 10% instead of Figma's 16%, so grey text on it is 4.63:1.
+  - Alarm red is `#e6002e` instead of Figma's `#ff0033` **everywhere**: the `--color-alarm` token and every SVG icon that used `#FF0033`. White text on it and it as text on white are both 4.77:1.
+  - Critical alert surface (`--color-alarm-16`) is the alarm at 10% instead of 16%, so grey text on it is 4.6:1.
+  - **Rule:** when a colour changes for accessibility, change it everywhere it is used (tokens and SVG fills), then check every pairing.
 - **Intentionally NOT fixed (design system, the user's call):**
   - Active nav accent `#0073e1` on `#f9f8f8` (4.36:1). It's the only expected axe violation.
   - Search placeholder `#ccc`.
