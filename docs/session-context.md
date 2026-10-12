@@ -74,10 +74,12 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
   - Page background is `#ebebeb`.
   - Green text is `#008a00`.
   - SENSE and "Altro" bars are `#8e8e8e`.
+  - "Critico" tag background is `--color-alarm-strong` `#e6002e` (white text 4.77:1).
+  - Critical alert surface is alarm at 10% instead of Figma's 16%, so grey text on it is 4.63:1.
 - **Intentionally NOT fixed (design system, the user's call):**
   - Active nav accent `#0073e1` on `#f9f8f8` (4.36:1). It's the only expected axe violation.
   - Search placeholder `#ccc`.
-  - Critical alert colours from Figma (Scenario 2): white "Critico" on `#ff0033` (3.96:1) and grey description on alarm-16 (4.14:1). Raised with the user.
+
 
 ## Verification (before every push)
 1. Run `npm run build` and `npm run lint`.
