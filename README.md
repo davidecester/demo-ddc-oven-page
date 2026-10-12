@@ -54,7 +54,17 @@ Any section set to `null` renders that card's empty state.
 
 If the new Figma frame introduces a new visual state, add it to the matching config map (e.g. `DIRT_LEVEL` in `components/oven/senseKlean.ts`, `TAG_STYLES` in `components/ui/StatusTag.tsx`) rather than to the component markup.
 
-## Deploy (GitHub Pages)
+## Deploy (Cloudflare Pages)
 
-`.github/workflows/deploy.yml` builds and publishes on every push to `main`.
-The Vite `base` comes from the repository name automatically (`BASE_PATH=/<repo>/`), so renaming the repo needs no code change.
+Cloudflare Pages is connected to this GitHub repository and rebuilds on every push to `main`;
+other branches get their own preview URL.
+
+| Setting | Value |
+| --- | --- |
+| Framework preset | Vite |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| Node version | from `.node-version` (22) |
+
+The site is served from the domain root, so no base path is needed. To host under a sub-path instead
+(e.g. GitHub Pages), build with `BASE_PATH=/<repo>/ npm run build`.

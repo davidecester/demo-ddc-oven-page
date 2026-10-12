@@ -2,8 +2,8 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
-// GitHub Pages serves the site from /<repo-name>/. The deploy workflow sets
-// BASE_PATH from the repository name, so renaming the repo needs no code change.
+// Cloudflare Pages serves from the domain root. Set BASE_PATH (e.g. /<repo>/)
+// only when hosting under a sub-path such as GitHub Pages.
 const base = process.env.BASE_PATH ?? '/'
 
 export default defineConfig({
