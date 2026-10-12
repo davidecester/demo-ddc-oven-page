@@ -28,6 +28,7 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
   - The idle CTA has the washing icon and is full width when stacked. The idle icon slot is 100px stacked and 200px beside the details.
 - **Scenario 3 (maintenance, `?scenario=maintenance`)** is done in `src/data/scenarios/maintenance.ts`: idle at 0% · Pulito with a "Scegli una ricetta" CTA (link to the Ricette card, `#ricette`), a critical "Manutenzione richiesta" (MN02) and a warning "Consumabili detergenti" (CD04) alert, and the `maintenance` image tag.
   - The overview "Manutenzione richiesta" tag links to the Avvisi card (`#avvisi`). Anchor ids are in `anchors.ts`.
+  - The Avvisi card shows a banner for every alert that needs action (critical and warning, stacked 4px apart), then "+N altri avvisi" for the informational ones (Figma `35811:16206` desktop, `35811:16853` mobile).
   - Alert actions carry their own icon (`AlertAction.icon`); an alert can override its badge glyph (`badgeIcon`). Idle CTAs are `IdleActivity.cta` (`startWashing` or `chooseRecipe`).
   - "N richiede/richiedono azione" is pluralised.
   - "Pianifica manutenzione" and "Ordina consumabili" close the drawer and show a confirmation toast (`src/components/ui/Toast.tsx`, prototype-only). The overview counts alerts from the data: "Avvisi: 4" (Figma's "3" is a copy mistake, confirmed by the user).
