@@ -1,0 +1,90 @@
+/*
+ * Design tokens from the Figma file (light mode).
+ * Names follow the Figma variable collections; Tailwind v4 turns each
+ * --color-*, --radius-*, --shadow-* entry into utilities (bg-accent, rounded-lg, …).
+ */
+@theme {
+  --color-*: initial;
+
+  /* core */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --color-content-primary: #000000;
+  --color-content-secondary: #010101;
+  --color-content-tertiary: #1a2025;
+  --color-content-quaternary: #656a6e;
+
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f9f8f8;
+  --color-bg-tertiary: #dfe0e1;
+  --color-bg-page: #dfe0e1;
+
+  --color-accent: #0073e1;
+  --color-black-8: rgb(0 0 0 / 0.08);
+  --color-scrim: rgb(0 0 0 / 0.4);
+
+  /* palette */
+  --color-orange-100: #ffe1cc;
+  --color-orange-400: #ff6900;
+  --color-orange-500: #b34a00;
+  --color-yellow-400: #ffc107;
+  --color-yellow-500: #b38705;
+  --color-warning-16: rgb(255 193 7 / 0.16);
+  --color-green-100: #ccf5cc;
+  --color-green-500: #008f00;
+  --color-green-eco-400: #52ae32;
+  --color-blue-100: #ccebff;
+  --color-blue-200: #88cfff;
+  --color-blue-300: #44b4ff;
+  --color-blue-400: #0099ff;
+  --color-blue-500: #006bb3;
+  --color-blue-600: #003d66;
+  --color-red-100: #ffccd6;
+  --color-red-500: #b30024;
+  --color-alarm: #ff0033;
+  --color-grey-100: #f5f5f5;
+  --color-grey-300: #cccccc;
+  --color-grey-400: #333333;
+  --color-brown-500: #693200;
+  --color-purple-300: #9883d0;
+  --color-magenta-300: #ec44a0;
+  --color-new-features: #7356bf;
+  --color-new-features-8: rgb(115 86 191 / 0.08);
+  --color-ring-track: #f3f4f6;
+
+  /* typography */
+  --font-fixed: 'Roboto', system-ui, sans-serif;
+  --font-variant: 'Montserrat', 'Roboto', system-ui, sans-serif;
+
+  /* radius */
+  --radius-*: initial;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* elevation */
+  --shadow-*: initial;
+  --shadow-elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.28), 0 1px 4px 1px rgb(0 0 0 / 0.14);
+  --shadow-sheet: 0 -4px 24px 0 rgb(0 0 0 / 0.16);
+
+  /*
+   * Spacing: Tailwind's 4px base maps 1:1 onto the Figma scale
+   * (space-4 = 1, 8 = 2, 12 = 3, 16 = 4, 24 = 6, 32 = 8, 36 = 9, 48 = 12).
+   * Breakpoints from the Figma Grid page:
+   *   mobile < 768 · 4 cols, margin 16, gutter 8
+   *   tablet ≥ 768 · 8 cols, margin 24, gutter 16
+   *   desktop ≥ 1024 · 12 cols, margin 24, gutter 16
+   */
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1440px;
+
+  /* fixed chrome sizes */
+  --spacing-sidebar: 94px;
+  --spacing-bottom-nav: 56px;
+}
