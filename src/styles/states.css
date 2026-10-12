@@ -118,6 +118,19 @@
   animation: switcher-ripple 1.2s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
+/* Prototype switcher panel: fades and rises in at the same gentle pace as the pill */
+@utility switcher-panel-in {
+  transform-origin: bottom left;
+  transition:
+    opacity 450ms ease-in-out,
+    transform 450ms ease-in-out;
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+}
+
 /* Toast enter: fade and rise in */
 @utility toast-in {
   transition:
