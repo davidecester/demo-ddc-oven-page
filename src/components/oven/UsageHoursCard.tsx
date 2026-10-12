@@ -12,7 +12,7 @@ const CATEGORY: Record<UsageCategoryKey, { icon: string | null; bar: string }> =
   programs: { icon: 'programs', bar: 'bg-blue-300' },
   chefunox: { icon: 'chefunox', bar: 'bg-purple-300' },
   multiTime: { icon: 'multi-time', bar: 'bg-magenta-300' },
-  other: { icon: null, bar: 'bg-grey-300' },
+  other: { icon: null, bar: 'bg-grey-bar' },
 }
 
 /** "Ore di utilizzo totali": usage split by cooking mode. */

@@ -99,7 +99,7 @@ function ActivityContent({ activity, onStartWashing }: { activity: LiveActivity;
               value={
                 <>
                   <span
-                    className={`tabular-nums transition-colors duration-500 ${activity.targetReached ? 'text-green-500' : 'text-red-500'}`}
+                    className={`tabular-nums transition-colors duration-500 ${activity.targetReached ? 'text-green-text' : 'text-red-500'}`}
                   >
                     {formatTemperature(activity.chamberTempC)}
                   </span>{' '}

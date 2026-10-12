@@ -12,7 +12,7 @@ export function dirtLevelOf(value: number): DirtLevel {
  * `clean` and `veryDirty` are placeholders until scenario 3 frames arrive.
  */
 export const DIRT_LEVEL: Record<DirtLevel, { label: string; text: string; icon: string; icon20: string }> = {
-  clean: { label: 'Pulito', text: 'text-green-500', icon: 'check-circle', icon20: 'check-circle' },
+  clean: { label: 'Pulito', text: 'text-green-text', icon: 'check-circle', icon20: 'check-circle' },
   dirty: { label: 'Sporco', text: 'text-yellow-500', icon: 'dirt-warning-32', icon20: 'dirt-warning-20' },
   veryDirty: { label: 'Molto Sporco', text: 'text-red-500', icon: 'tag-error-outline', icon20: 'tag-error-outline' },
 }

@@ -145,7 +145,7 @@ function DirtChart({ data, wide }: { data: SenseKlean; wide: boolean }) {
               }
             >
               {data.hourly.map((h, i) => (
-                <Cell key={h.hour} fill={i === lastIndex ? 'var(--color-accent)' : 'var(--color-grey-300)'} />
+                <Cell key={h.hour} fill={i === lastIndex ? 'var(--color-accent)' : 'var(--color-grey-bar)'} />
               ))}
             </Bar>
           </BarChart>
