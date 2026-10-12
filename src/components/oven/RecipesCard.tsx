@@ -3,6 +3,7 @@ import type { RecipeCategoryIcon, RecipeTab, RecipeTabKey } from '../../types/ov
 import { cx } from '../../utils/cx'
 import { Card, CardTitle } from '../ui/Card'
 import { Icon } from '../ui/Icon'
+import { RECIPES_CARD_ID } from './anchors'
 
 interface RecipesCardProps {
   tabs: RecipeTab[] | null
@@ -41,7 +42,7 @@ export function RecipesCard({ tabs, className }: RecipesCardProps) {
   const current = tabs?.find((t) => t.key === active)
 
   return (
-    <Card labelledBy="recipes-title" className={`gap-9 ${className ?? ''}`}>
+    <Card id={RECIPES_CARD_ID} labelledBy="recipes-title" className={`anchor-target gap-9 ${className ?? ''}`}>
       <div className="flex flex-col gap-4">
         <CardTitle id="recipes-title">Ricette presenti nel forno</CardTitle>
         {tabs && (

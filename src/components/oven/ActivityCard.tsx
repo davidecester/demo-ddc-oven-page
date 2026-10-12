@@ -1,13 +1,13 @@
 import type { LiveActivity } from '../../hooks/useOvenSimulation'
 import type { StatusTagType } from '../../types/oven'
 import { formatClock, formatDuration, formatPercent, formatTemperature } from '../../utils/format'
-import { Button } from '../ui/Button'
+import { Button, ButtonLink } from '../ui/Button'
 import { Card, CardTitle } from '../ui/Card'
 import { Icon } from '../ui/Icon'
 import { LabelValue } from '../ui/LabelValue'
 import { ProgressRing } from '../ui/ProgressRing'
 import { StatusTag } from '../ui/StatusTag'
-import { ACTIVITY_CARD_ID } from './anchors'
+import { ACTIVITY_CARD_ID, RECIPES_CARD_ID } from './anchors'
 
 interface ActivityCardProps {
   activity: LiveActivity
@@ -129,14 +129,25 @@ function ActivityContent({ activity, onStartWashing }: { activity: LiveActivity;
         <>
           <ActivityName label="Attività" value={activity.label} />
           {activity.dirtLevel && <LabelValue label="Livello sporco camera" value={activity.dirtLevel} />}
-          {activity.suggestWashing && (
+          {activity.cta && (
             <div className="flex flex-col items-start gap-2">
               {/* Full width when stacked (Figma mobile), hugging its label beside the ring (desktop) */}
-              <Button icon="washing-white" onClick={onStartWashing} fullWidth className="@min-[520px]:w-auto">
-                Avvia lavaggio
-              </Button>
+              {activity.cta.type === 'chooseRecipe' ? (
+                <ButtonLink
+                  href={`#${RECIPES_CARD_ID}`}
+                  icon={activity.cta.icon}
+                  fullWidth
+                  className="@min-[520px]:w-auto"
+                >
+                  {activity.cta.label}
+                </ButtonLink>
+              ) : (
+                <Button icon={activity.cta.icon} onClick={onStartWashing} fullWidth className="@min-[520px]:w-auto">
+                  {activity.cta.label}
+                </Button>
+              )}
               {activity.hint && (
-                <p className="flex items-center gap-2">
+                <p className="flex items-start gap-2">
                   <Icon name="info-grey" size={20} />
                   <span className="type-paragraph-sm text-content-quaternary">{activity.hint}</span>
                 </p>

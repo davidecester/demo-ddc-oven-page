@@ -101,6 +101,18 @@
   }
 }
 
+/* Toast enter: fade and rise in */
+@utility toast-in {
+  transition:
+    opacity 200ms ease-out,
+    transform 200ms cubic-bezier(0.2, 0, 0, 1);
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
 @utility no-scrollbar {
   scrollbar-width: none;
 

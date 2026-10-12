@@ -8,13 +8,13 @@ import { cookingScenario } from './cooking'
 export const idleScenario: Scenario = {
   ...cookingScenario,
   id: 'idle',
-  label: '2 · In attesa',
+  label: 'Activity in Progress - Idle',
 
   activity: {
     status: 'idle',
     label: 'In attesa',
     dirtLevel: '78% · Molto Sporco',
-    suggestWashing: true,
+    cta: { type: 'startWashing', label: 'Avvia lavaggio', icon: 'washing-white' },
     hint: 'Consigliato lavaggio prima della prossima cottura.',
   },
 
@@ -26,7 +26,7 @@ export const idleScenario: Scenario = {
       description: 'Necessario lavaggio prima della prossima cottura.',
       code: 'WF54',
       timestamp: '09/10/2026 18:30',
-      action: { type: 'startWashing', label: 'Avvia lavaggio' },
+      action: { type: 'startWashing', label: 'Avvia lavaggio', icon: 'washing-white' },
     },
     ...cookingScenario.alerts.filter((a) => a.severity === 'info'),
   ],

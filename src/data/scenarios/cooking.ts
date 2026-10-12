@@ -5,7 +5,7 @@ import { sharedDownloads, sharedRecipes } from '../shared'
 /** Scenario 1 — oven online, cooking in progress (Figma: "Scenario Base"). */
 export const cookingScenario: Scenario = {
   id: 'cooking',
-  label: '1 · Cottura in corso',
+  label: 'Scenario Base',
   startsAt: '2026-10-12T12:26:00',
   washingCycle: { label: 'Lavaggio in corso', totalDurationSec: 75 * 60 },
 
@@ -43,7 +43,7 @@ export const cookingScenario: Scenario = {
       description: 'Consigliato lavaggio prima della prossima cottura.',
       code: 'WF53',
       timestamp: '09/10/2026 18:30',
-      action: { type: 'startWashing', label: 'Avvia lavaggio' },
+      action: { type: 'startWashing', label: 'Avvia lavaggio', icon: 'washing-white' },
     },
     {
       id: 'firmware',
