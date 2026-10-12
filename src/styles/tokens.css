@@ -23,7 +23,9 @@
      Used for the page background and the info alert badge. */
   --color-bg-tertiary: #ebebeb;
 
-  --color-accent: #0073e1;
+  /* Figma accent #0073e1 darkened for WCAG AA: 4.63:1 as text on background-secondary (active nav), 4.91:1 on white
+     and for white text on it. Same value in the accent SVG icons. */
+  --color-accent: #006fd9;
   --color-black-8: rgb(0 0 0 / 0.08);
   --color-scrim: rgb(0 0 0 / 0.4);
 
@@ -52,10 +54,10 @@
   /* Figma alarm16 at 10% instead of 16% so content-quaternary text on it reaches 4.6:1 (WCAG AA) */
   --color-alarm-16: rgb(230 0 46 / 0.1);
   --color-grey-100: #f5f5f5;
-  --color-grey-300: #cccccc;
+  /* Figma grey300 #cccccc darkened for WCAG AA: 4.67:1 for the search placeholder text on background-secondary.
+     Same value for the data bars (SENSE.Klean, "Altro"). */
+  --color-grey-300: #707070;
   --color-grey-400: #333333;
-  /* Data bars: grey-300 darkened for 3:1 non-text contrast on white (3.27) and on grey-100 tracks (3.0) */
-  --color-grey-bar: #8e8e8e;
   --color-brown-500: #693200;
   --color-purple-300: #9883d0;
   --color-magenta-300: #ec44a0;

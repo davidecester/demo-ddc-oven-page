@@ -32,7 +32,7 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 - Vite 8, React 19, TypeScript, Tailwind 4 and Recharts 3. Node 22. Lint is oxlint. No component library.
 - Run `npm ci` first in a fresh container. Without it, build and lint fail.
 - Scripts: `npm run dev`, `npm run build` (tsc + vite build), `npm run lint`, `npm run preview`.
-- **Tokens** are in `src/styles/tokens.css`, for example `--color-alarm`, `--color-accent #0073e1`, `--color-green-500 #008a00` and `--color-yellow-500`.
+- **Tokens** are in `src/styles/tokens.css`, for example `--color-alarm`, `--color-accent #006fd9`, `--color-green-500 #008a00` and `--color-yellow-500`.
 - **Text styles** are `@utility type-*` in `src/styles/typography.css`. State-layer and mask-icon utilities are in `src/styles/states.css`.
 - **Assets** are in `/public/assets` (icons in `/public/assets/icons`).
 - **Fonts:** Roboto, plus Montserrat for ring percentages.
@@ -73,13 +73,12 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 - **Fixed for AA:**
   - Background-tertiary is `#ebebeb` instead of `#dfe0e1` everywhere (page background and info alert badge).
   - Green-500 is `#008a00` instead of `#008f00` everywhere (token, temperature text, RO.Care ring, green SVG icons).
-  - SENSE and "Altro" bars are `#8e8e8e`.
+  - Accent is `#006fd9` instead of `#0073e1` everywhere (token, buttons, links, active nav, chart highlight, focus ring, accent SVG icons).
+  - Grey-300 is `#707070` instead of `#cccccc` everywhere (search placeholder, SENSE.Klean and "Altro" bars).
   - Alarm red is `#e6002e` instead of Figma's `#ff0033` **everywhere**: the `--color-alarm` token and every SVG icon that used `#FF0033`. White text on it and it as text on white are both 4.77:1.
   - Critical alert surface (`--color-alarm-16`) is the alarm at 10% instead of 16%, so grey text on it is 4.6:1.
   - **Rule:** when a colour changes for accessibility, change it everywhere it is used (tokens and SVG fills), then check every pairing.
-- **Intentionally NOT fixed (design system, the user's call):**
-  - Active nav accent `#0073e1` on `#f9f8f8` (4.36:1). It's the only expected axe violation.
-  - Search placeholder `#ccc`.
+- **Known axe finding left as is:** `label-content-name-mismatch` on the avatar button ("EG" with `aria-label="Profilo utente"`).
 
 
 ## Verification (before every push)
@@ -87,7 +86,7 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 2. Run `npx vite preview --port 4173`, then check with Playwright at 1440×900 and 390×844. Playwright is preinstalled (`/opt/node-tools/node_modules/playwright`, Chromium at `/opt/pw-browsers`). Check:
    - The interactions you changed.
    - No horizontal overflow (`scrollWidth <= innerWidth`).
-   - An axe-core audit. Install `axe-core` in the scratchpad and inject `axe.min.js`. Expect only the nav-accent contrast issue.
+   - An axe-core audit. Install `axe-core` in the scratchpad and inject `axe.min.js`. Expect only the avatar `label-content-name-mismatch`.
 3. Compare screenshots against Figma at both widths.
 4. Don't `pkill -f` with a pattern that appears in the same shell command line, because it kills the shell. Stop the preview server separately.
 5. Push to the feature branch only, then tell the user what changed. They merge to `main` when ready.

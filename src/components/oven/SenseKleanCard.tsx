@@ -177,7 +177,7 @@ function DirtChart({ data, wide, selected, onSelect }: DirtChartProps) {
               }
             >
               {data.hourly.map((h, i) => (
-                <Cell key={h.hour} fill={i === selected ? 'var(--color-accent)' : 'var(--color-grey-bar)'} />
+                <Cell key={h.hour} fill={i === selected ? 'var(--color-accent)' : 'var(--color-grey-300)'} />
               ))}
             </Bar>
           </BarChart>
