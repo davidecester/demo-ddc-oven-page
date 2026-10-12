@@ -3,6 +3,7 @@ import { Button } from '../ui/Button'
 import { Card, CardTitle } from '../ui/Card'
 import { Icon } from '../ui/Icon'
 import { StatusTag } from '../ui/StatusTag'
+import { ALERTS_CARD_ID } from './anchors'
 import { SEVERITY, sortBySeverity } from './alertConfig'
 
 interface AlertsCardProps {
@@ -19,7 +20,7 @@ export function AlertsCard({ alerts, onOpenAll, onAction, isActionRunning, class
   const [top, ...rest] = sortBySeverity(alerts)
 
   return (
-    <Card labelledBy="alerts-title" className={`gap-9 ${className ?? ''}`}>
+    <Card id={ALERTS_CARD_ID} labelledBy="alerts-title" className={`anchor-target gap-9 ${className ?? ''}`}>
       <CardTitle id="alerts-title">Avvisi</CardTitle>
 
       {top ? (
@@ -40,7 +41,7 @@ export function AlertsCard({ alerts, onOpenAll, onAction, isActionRunning, class
             </div>
             {top.action && (
               <Button
-                icon="washing-white"
+                icon={top.action.icon}
                 onClick={() => !isActionRunning(top.action!) && onAction(top.action!)}
                 aria-disabled={isActionRunning(top.action) || undefined}
                 className="w-full md:w-auto"

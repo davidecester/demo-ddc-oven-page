@@ -56,12 +56,20 @@ export interface WashingActivity extends ActivityBase {
   remainingSec: number
 }
 
+/** CTA of the idle activity: start a wash (dirty chamber) or go to the recipes (clean chamber). */
+export interface IdleCta {
+  type: 'startWashing' | 'chooseRecipe'
+  label: string
+  /** Icon file name (20px, white). */
+  icon: string
+}
+
 export interface IdleActivity extends ActivityBase {
   status: 'idle'
   label: string
   dirtLevel: string | null
-  /** Show the "Avvia lavaggio" CTA and hint (Figma Standby variant). */
-  suggestWashing: boolean
+  cta: IdleCta | null
+  /** Shown under the CTA. */
   hint: string | null
 }
 
@@ -70,8 +78,10 @@ export type Activity = CookingActivity | WashingActivity | IdleActivity
 export type AlertSeverity = 'critical' | 'warning' | 'info'
 
 export interface AlertAction {
-  type: 'startWashing'
+  type: 'startWashing' | 'scheduleMaintenance' | 'orderConsumables'
   label: string
+  /** Icon file name (20px, white). */
+  icon: string
 }
 
 export interface OvenAlert {
@@ -82,6 +92,8 @@ export interface OvenAlert {
   code?: string
   timestamp: string
   action?: AlertAction
+  /** Glyph in the severity badge instead of the severity's default (20px and 16px file names). */
+  badgeIcon?: { icon: string; icon16: string }
 }
 
 export interface ActivityTrendDay {

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import type { Activity, Scenario } from '../types/oven'
+import type { Activity, IdleCta, Scenario } from '../types/oven'
 
 const TICK_MS = 1000
 /** Chamber heats by 1 °C every 4 s until it reaches the target, then holds within +1 °C. */
@@ -28,7 +28,7 @@ export type LiveActivity =
       status: 'idle'
       label: string
       dirtLevel: string | null
-      suggestWashing: boolean
+      cta: IdleCta | null
       hint: string | null
     }
 
@@ -81,7 +81,7 @@ function deriveLive(state: SimulationState, scenarioStart: Date, sceneStartMs: n
         status: 'idle',
         label: activity.label,
         dirtLevel: activity.dirtLevel,
-        suggestWashing: activity.suggestWashing,
+        cta: activity.cta,
         hint: activity.hint,
       }
   }
