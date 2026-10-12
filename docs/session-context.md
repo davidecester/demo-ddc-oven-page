@@ -35,7 +35,7 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 - **Scenario 4 (new oven, `?scenario=new-oven`)** is done in `src/data/scenarios/newOven.ts`: "Nuovo Forno", 0 h, no alerts (no Avvisi card; overview shows "Avvisi: -"), idle at 0% with "Scegli una ricetta", full RO.Care filter (100%, 365 giorni, 4 unità).
   - Empty data uses `EmptyData` (`src/components/ui/EmptyData.tsx`): the card's normal layout faded (charts 30%, usage rows 20%), `aria-hidden`, with "Nessun dato ancora disponibile" on top. Trend: `activityTrend: null`. SENSE.Klean: `hourly: []`, `readAt: null`. Usage: `categories: []`.
   - Recipes: tabs with no categories show "Nessuna ricetta caricata" and "Crea un Gruppo" (toast).
-  - **Open:** axe flags the faded placeholder text (decorative and `aria-hidden`, but low contrast by design). Figma's breadcrumb says "Academy 5"; the code uses the oven name ("Nuovo Forno"). Figma mobile shows real hours/percentages in the faded rows; the code uses the desktop "- h" / "- min · 0%".
+  - **Decided:** the faded placeholder text stays as in Figma even though axe flags its contrast (decorative, `aria-hidden`; the only expected axe finding, Scenario 4 only). The breadcrumb uses the oven name ("Nuovo Forno"). The faded rows use "- h" / "- min · 0%" on both widths (the user fixed the Figma mobile frame to match).
 - **All four scenarios are done.**
 - **Decided:** no floating tooltip on the SENSE.Klean chart; 0% (wash) bars read "Pulito"; the 78% frame belongs to Scenario 2.
 
@@ -97,7 +97,7 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 2. Run `npx vite preview --port 4173`, then check with Playwright at 1440×900 and 390×844. Playwright is preinstalled (`/opt/node-tools/node_modules/playwright`, Chromium at `/opt/pw-browsers`). Check:
    - The interactions you changed.
    - No horizontal overflow (`scrollWidth <= innerWidth`).
-   - An axe-core audit. Install `axe-core` in the scratchpad and inject `axe.min.js`. Expect no violations.
+   - An axe-core audit. Install `axe-core` in the scratchpad and inject `axe.min.js`. Expect no violations, except `color-contrast` on the faded empty-state placeholders in Scenario 4 (kept by the user's choice).
 3. Compare screenshots against Figma at both widths.
 4. Don't `pkill -f` with a pattern that appears in the same shell command line, because it kills the shell. Stop the preview server separately.
 5. Push to the feature branch only, then tell the user what changed. They merge to `main` when ready.
