@@ -93,18 +93,14 @@ export function ScenarioSwitcher({ scenarios, activeId, onSelect, onReset }: Sce
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
         className={`flex items-center rounded-full border border-white/20 bg-grey-400/90 px-[11px] py-1.5 text-white shadow-elevation-1 backdrop-blur hover:bg-grey-400 ${
-          intro ? 'switcher-breathe' : ''
+          intro ? 'switcher-pulse' : ''
         }`}
       >
-        <span aria-hidden="true" className="relative flex size-2 shrink-0">
-          {intro && (
-            <>
-              <span className="switcher-ring absolute inset-0 rounded-full bg-magenta-300" />
-              <span className="switcher-ring absolute inset-0 rounded-full bg-magenta-300 [animation-delay:0.8s]" />
-            </>
-          )}
-          <span className="relative size-2 rounded-full bg-magenta-300" />
-        </span>
+        {/* Same 1.4 s beat as the pill, so dot and pill grow and shrink together */}
+        <span
+          aria-hidden="true"
+          className={`size-2 shrink-0 rounded-full bg-magenta-300 ${intro ? 'switcher-dot-pulse' : ''}`}
+        />
         {/* Stays in the accessible name when visually collapsed */}
         <span
           className={`overflow-hidden whitespace-nowrap transition-[max-width,opacity,margin] duration-300 ease-out ${

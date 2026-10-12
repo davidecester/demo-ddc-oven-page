@@ -101,37 +101,38 @@
   }
 }
 
-/* Prototype switcher intro: the whole pill breathes with a soft magenta glow… */
-@keyframes switcher-breathe {
+/*
+ * Prototype switcher intro: the pill and its dot pulse together on one beat.
+ * The pill grows 10% with a soft magenta glow; the dot grows 1.75x inside it.
+ */
+@keyframes switcher-pulse {
   0%,
   100% {
     transform: scale(1);
     box-shadow: 0 0 0 0 rgb(236 68 160 / 0);
   }
   50% {
-    transform: scale(1.06);
-    box-shadow: 0 0 0 6px rgb(236 68 160 / 0.25), 0 0 18px 4px rgb(236 68 160 / 0.45);
+    transform: scale(1.1);
+    box-shadow: 0 0 14px 3px rgb(236 68 160 / 0.45);
   }
 }
 
-@utility switcher-breathe {
-  animation: switcher-breathe 1.6s ease-in-out infinite;
-}
-
-/* …while the dot sends out wide, staggered rings */
-@keyframes switcher-ring {
-  0% {
-    transform: scale(1);
-    opacity: 0.9;
-  }
+@keyframes switcher-dot-pulse {
+  0%,
   100% {
-    transform: scale(4);
-    opacity: 0;
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.75);
   }
 }
 
-@utility switcher-ring {
-  animation: switcher-ring 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+@utility switcher-pulse {
+  animation: switcher-pulse 1.4s ease-in-out infinite;
+}
+
+@utility switcher-dot-pulse {
+  animation: switcher-dot-pulse 1.4s ease-in-out infinite;
 }
 
 /* Toast enter: fade and rise in */
