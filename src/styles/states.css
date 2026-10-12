@@ -102,8 +102,7 @@
 }
 
 /*
- * Prototype switcher intro: the pill and its dot pulse together on one beat.
- * The pill grows 10% with a soft magenta glow; the dot grows 1.75x inside it.
+ * Prototype switcher intro: the pill pulses, growing 10% with a soft magenta glow.
  */
 @keyframes switcher-pulse {
   0%,
@@ -117,22 +116,8 @@
   }
 }
 
-@keyframes switcher-dot-pulse {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.75);
-  }
-}
-
 @utility switcher-pulse {
   animation: switcher-pulse 1.4s ease-in-out infinite;
-}
-
-@utility switcher-dot-pulse {
-  animation: switcher-dot-pulse 1.4s ease-in-out infinite;
 }
 
 /* Toast enter: fade and rise in */

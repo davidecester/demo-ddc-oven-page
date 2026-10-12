@@ -96,11 +96,7 @@ export function ScenarioSwitcher({ scenarios, activeId, onSelect, onReset }: Sce
           intro ? 'switcher-pulse' : ''
         }`}
       >
-        {/* Same 1.4 s beat as the pill, so dot and pill grow and shrink together */}
-        <span
-          aria-hidden="true"
-          className={`size-2 shrink-0 rounded-full bg-magenta-300 ${intro ? 'switcher-dot-pulse' : ''}`}
-        />
+        <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-magenta-300" />
         {/* Stays in the accessible name when visually collapsed */}
         <span
           className={`overflow-hidden whitespace-nowrap transition-[max-width,opacity,margin] duration-300 ease-out ${
