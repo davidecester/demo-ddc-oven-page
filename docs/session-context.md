@@ -9,7 +9,7 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 - **Repo:** `github.com/davidecester/demo-ddc-oven-page`.
 - **Never push to `main`.** Cloudflare Workers Builds deploys every push to `main`, and **the user decides when to merge**.
 - Work on a `claude/...` feature branch and push only there. The user merges it via a PR.
-- The previous work branch is `claude/wonderful-turing-r4a56e` (PR #1). If PR #1 is still open, start from that branch so you have the Scenario 1 changes. If it's merged, start from `main`.
+- The previous work branch is `claude/wonderful-turing-r4a56e` (PR #1). Scenario 2 onwards is on `claude/hopeful-pascal-y3fr0j`, branched from it. If PR #1 is still open, start from that branch so you have the Scenario 1 changes. If it's merged, start from `main`.
 - **Commit identity:** Davide Cester <cesterdav@gmail.com>.
 - **Language:** UI copy in Italian. Code and commit messages in English. Nav labels stay in English.
 
@@ -20,19 +20,19 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
   - **SENSE.Klean chart scrubbing (Revolut-style):** hovering or tapping a bar updates the header's %, level label, colour, icon and time ("Oggi/Ieri alle HH:MM"). Leaving the chart or tapping outside resets it to the current reading. The levels are:
     - Pulito: primary black text, no icon.
     - Sporco: `text-yellow-500` with the warning icon.
-    - Molto Sporco: `text-alarm` (#ff0033) with the red "!" error icon (`dirt-error-32/20.svg`).
+    - Molto Sporco: `text-alarm` with the red "!" error icon (`dirt-error-32/20.svg`).
     - Thresholds: ≤50 clean, ≤75 dirty, otherwise veryDirty (`senseKlean.ts`).
-- **Next:** Scenarios 2–5. The user will share Figma links and explain each one. **Pending from Scenario 1:** the overview "maintenance" tag should link to the maintenance alert (do this together with the Manutenzione scenario).
-- **Open questions to raise when relevant:**
-  - Bring back a floating tooltip on the SENSE.Klean chart? It was removed when scrubbing was added.
-  - Should 0% (wash) bars read "Lavaggio" instead of "Pulito"?
-  - Scenario 1 data shows 62%, but one Figma frame shows 78%.
+- **Scenario 2 (idle, `?scenario=idle`)** is done in `src/data/scenarios/idle.ts`. It reuses Scenario 1 and overrides the activity (idle, 78% · Molto Sporco), the critical alert "Camera Molto Sporca" (WF54) and the SENSE.Klean reading (78% at 13:00).
+  - Critical alerts use `bg-alarm-16` (`--color-alarm-16`), the `sheet-error` icon and a red dot (`dot-red`) on the "+N altri avvisi" row.
+  - The idle CTA has the washing icon and is full width when stacked. The idle icon slot is 100px stacked and 200px beside the details.
+- **Next:** Scenarios 3 (Manutenzione Richiesta) and 4 (Forno Appena Registrato, no alert card or drawer). Treat each as an alternate version of Scenario 1. Do one at a time. The user will share Figma links and explain each one. **Pending from Scenario 1:** the overview "maintenance" tag should link to the maintenance alert (do this together with the Manutenzione scenario).
+- **Decided:** no floating tooltip on the SENSE.Klean chart; 0% (wash) bars read "Pulito"; the 78% frame belongs to Scenario 2.
 
 ## Stack
 - Vite 8, React 19, TypeScript, Tailwind 4 and Recharts 3. Node 22. Lint is oxlint. No component library.
 - Run `npm ci` first in a fresh container. Without it, build and lint fail.
 - Scripts: `npm run dev`, `npm run build` (tsc + vite build), `npm run lint`, `npm run preview`.
-- **Tokens** are in `src/styles/tokens.css`, for example `--color-alarm`, `--color-accent #0073e1`, `--color-green-text #008a00` and `--color-yellow-500`.
+- **Tokens** are in `src/styles/tokens.css`, for example `--color-alarm`, `--color-accent #006fd9`, `--color-green-500 #008a00` and `--color-yellow-500`.
 - **Text styles** are `@utility type-*` in `src/styles/typography.css`. State-layer and mask-icon utilities are in `src/styles/states.css`.
 - **Assets** are in `/public/assets` (icons in `/public/assets/icons`).
 - **Fonts:** Roboto, plus Montserrat for ring percentages.
@@ -71,19 +71,22 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 
 ## Accessibility
 - **Fixed for AA:**
-  - Page background is `#ebebeb`.
-  - Green text is `#008a00`.
-  - SENSE and "Altro" bars are `#8e8e8e`.
-- **Intentionally NOT fixed (design system, the user's call):**
-  - Active nav accent `#0073e1` on `#f9f8f8` (4.36:1). It's the only expected axe violation.
-  - Search placeholder `#ccc`.
+  - Background-tertiary is `#ebebeb` instead of `#dfe0e1` everywhere (page background and info alert badge).
+  - Green-500 is `#008a00` instead of `#008f00` everywhere (token, temperature text, RO.Care ring, green SVG icons).
+  - Accent is `#006fd9` instead of `#0073e1` everywhere (token, buttons, links, active nav, chart highlight, focus ring, accent SVG icons).
+  - Grey-300 is `#707070` instead of `#cccccc` everywhere (search placeholder, SENSE.Klean and "Altro" bars).
+  - Alarm red is `#e6002e` instead of Figma's `#ff0033` **everywhere**: the `--color-alarm` token and every SVG icon that used `#FF0033`. White text on it and it as text on white are both 4.77:1.
+  - Critical alert surface (`--color-alarm-16`) is the alarm at 10% instead of 16%, so grey text on it is 4.6:1.
+  - **Rule:** when a colour changes for accessibility, change it everywhere it is used (tokens and SVG fills), then check every pairing.
+- **Known axe finding left as is:** `label-content-name-mismatch` on the avatar button ("EG" with `aria-label="Profilo utente"`).
+
 
 ## Verification (before every push)
 1. Run `npm run build` and `npm run lint`.
 2. Run `npx vite preview --port 4173`, then check with Playwright at 1440×900 and 390×844. Playwright is preinstalled (`/opt/node-tools/node_modules/playwright`, Chromium at `/opt/pw-browsers`). Check:
    - The interactions you changed.
    - No horizontal overflow (`scrollWidth <= innerWidth`).
-   - An axe-core audit. Install `axe-core` in the scratchpad and inject `axe.min.js`. Expect only the nav-accent contrast issue.
+   - An axe-core audit. Install `axe-core` in the scratchpad and inject `axe.min.js`. Expect only the avatar `label-content-name-mismatch`.
 3. Compare screenshots against Figma at both widths.
 4. Don't `pkill -f` with a pattern that appears in the same shell command line, because it kills the shell. Stop the preview server separately.
 5. Push to the feature branch only, then tell the user what changed. They merge to `main` when ready.

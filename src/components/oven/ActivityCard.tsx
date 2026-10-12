@@ -70,7 +70,8 @@ function ActivityVisual({ activity }: { activity: LiveActivity }) {
       )
     case 'idle':
       return (
-        <div className="flex size-[200px] shrink-0 items-center justify-center">
+        // Figma idle ring slot: 100 px when stacked (mobile), 200 px beside the details (desktop)
+        <div className="flex size-[100px] shrink-0 items-center justify-center @min-[520px]:size-[200px]">
           <Icon name="standby-32" size={32} />
         </div>
       )
@@ -100,7 +101,7 @@ function ActivityContent({ activity, onStartWashing }: { activity: LiveActivity;
               value={
                 <>
                   <span
-                    className={`tabular-nums transition-colors duration-500 ${activity.targetReached ? 'text-green-text' : 'text-red-500'}`}
+                    className={`tabular-nums transition-colors duration-500 ${activity.targetReached ? 'text-green-500' : 'text-red-500'}`}
                   >
                     {formatTemperature(activity.chamberTempC)}
                   </span>{' '}
@@ -130,7 +131,10 @@ function ActivityContent({ activity, onStartWashing }: { activity: LiveActivity;
           {activity.dirtLevel && <LabelValue label="Livello sporco camera" value={activity.dirtLevel} />}
           {activity.suggestWashing && (
             <div className="flex flex-col items-start gap-2">
-              <Button onClick={onStartWashing}>Avvia lavaggio</Button>
+              {/* Full width when stacked (Figma mobile), hugging its label beside the ring (desktop) */}
+              <Button icon="washing-white" onClick={onStartWashing} fullWidth className="@min-[520px]:w-auto">
+                Avvia lavaggio
+              </Button>
               {activity.hint && (
                 <p className="flex items-center gap-2">
                   <Icon name="info-grey" size={20} />

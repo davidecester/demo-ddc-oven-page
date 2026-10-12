@@ -10,7 +10,7 @@
 
   body {
     margin: 0;
-    background-color: var(--color-bg-page);
+    background-color: var(--color-bg-tertiary);
     color: var(--color-content-primary);
     font-family: var(--font-fixed);
     -webkit-font-smoothing: antialiased;
