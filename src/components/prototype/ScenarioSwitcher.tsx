@@ -96,7 +96,11 @@ export function ScenarioSwitcher({ scenarios, activeId, onSelect, onReset }: Sce
           intro ? 'switcher-pulse' : ''
         }`}
       >
-        <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-magenta-300" />
+        {/* Reduced to the dot: a gentle pulsing glow keeps it findable without distracting */}
+        <span
+          aria-hidden="true"
+          className={`size-2 shrink-0 rounded-full bg-magenta-300 ${expanded ? '' : 'switcher-dot-glow'}`}
+        />
         {/* Stays in the accessible name when visually collapsed */}
         <span
           className={`overflow-hidden whitespace-nowrap transition-[max-width,opacity,margin] duration-300 ease-out ${

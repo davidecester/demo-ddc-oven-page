@@ -120,6 +120,21 @@
   animation: switcher-pulse 1.4s ease-in-out infinite;
 }
 
+/* Collapsed switcher: a soft glow behind the dot grows and brightens, then fades, on a slow loop */
+@keyframes switcher-dot-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 2px 0 rgb(236 68 160 / 0.2);
+  }
+  50% {
+    box-shadow: 0 0 8px 3px rgb(236 68 160 / 0.6);
+  }
+}
+
+@utility switcher-dot-glow {
+  animation: switcher-dot-glow 2.4s ease-in-out infinite;
+}
+
 /* Toast enter: fade and rise in */
 @utility toast-in {
   transition:

@@ -53,7 +53,7 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 ## Architecture
 - **Scenario model:** `src/types/oven.ts`. A `null` section renders that card's empty state, which is how the newly registered oven works.
 - **Scenario data:** `src/data/scenarios/*.ts`, one file per scenario, registered in `index.ts`. Only `cooking.ts` exists so far.
-- **Switching:** `?scenario=<id>` selects a scenario. A magenta "Prototipo" pill (ScenarioSwitcher, bottom left) switches between them. After load it shows dot + label for 6 s, the pill pulsing (1.1x scale with a magenta glow, every 1.4 s; the dot stays still), then shrinks to a 32px dot; hover (mouse), keyboard focus or an open panel expand it again; tapping outside closes the panel.
+- **Switching:** `?scenario=<id>` selects a scenario. A magenta "Prototipo" pill (ScenarioSwitcher, bottom left) switches between them. After load it shows dot + label for 6 s, the pill pulsing (1.1x scale with a magenta glow, every 1.4 s; the dot stays still), then shrinks to a 32px dot with a soft magenta glow behind it that grows/brightens and fades every 2.4 s (glow only, the dot keeps its size); hover (mouse), keyboard focus or an open panel expand it again; tapping outside closes the panel.
 - **`useOvenSimulation`** drives the live behaviour:
   - The countdown and progress ring run off the remaining time.
   - Chamber temperature heats from 185 to 190 °C (red `#b30024` while heating, green `#008a00` at target).
