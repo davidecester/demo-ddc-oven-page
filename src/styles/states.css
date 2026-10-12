@@ -101,38 +101,21 @@
   }
 }
 
-/*
- * Prototype switcher intro: the pill pulses, growing 10% with a soft magenta glow.
- */
-@keyframes switcher-pulse {
-  0%,
-  100% {
+/* Prototype switcher: a magenta ripple spreads from the dot and fades (stronger than Tailwind's animate-ping) */
+@keyframes switcher-ripple {
+  0% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgb(236 68 160 / 0);
+    opacity: 0.9;
   }
-  50% {
-    transform: scale(1.1);
-    box-shadow: 0 0 14px 3px rgb(236 68 160 / 0.45);
-  }
-}
-
-@utility switcher-pulse {
-  animation: switcher-pulse 1.4s ease-in-out infinite;
-}
-
-/* Collapsed switcher: a soft glow behind the dot grows and brightens, then fades, on a slow loop */
-@keyframes switcher-dot-glow {
-  0%,
+  80%,
   100% {
-    box-shadow: 0 0 2px 0 rgb(236 68 160 / 0.2);
-  }
-  50% {
-    box-shadow: 0 0 8px 3px rgb(236 68 160 / 0.6);
+    transform: scale(2.8);
+    opacity: 0;
   }
 }
 
-@utility switcher-dot-glow {
-  animation: switcher-dot-glow 2.4s ease-in-out infinite;
+@utility switcher-ripple {
+  animation: switcher-ripple 1.2s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
 /* Toast enter: fade and rise in */

@@ -92,15 +92,16 @@ export function ScenarioSwitcher({ scenarios, activeId, onSelect, onReset }: Sce
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
-        className={`flex items-center rounded-full border border-white/20 bg-grey-400/90 px-[11px] py-1.5 text-white shadow-elevation-1 backdrop-blur hover:bg-grey-400 ${
-          intro ? 'switcher-pulse' : ''
-        }`}
+        className="flex items-center rounded-full border border-white/20 bg-grey-400/90 px-[11px] py-1.5 text-white shadow-elevation-1 backdrop-blur hover:bg-grey-400"
       >
-        {/* Reduced to the dot: a gentle pulsing glow keeps it findable without distracting */}
-        <span
-          aria-hidden="true"
-          className={`size-2 shrink-0 rounded-full bg-magenta-300 ${expanded ? '' : 'switcher-dot-glow'}`}
-        />
+        {/* A ripple spreads from the dot during the intro and while shrunk to the dot, to keep it findable;
+            it stops while the user is hovering, focusing or using the panel */}
+        <span aria-hidden="true" className="relative flex size-2 shrink-0">
+          {!(hovered || focused || open) && (
+            <span className="switcher-ripple absolute inset-0 rounded-full bg-magenta-300" />
+          )}
+          <span className="relative size-2 rounded-full bg-magenta-300" />
+        </span>
         {/* Stays in the accessible name when visually collapsed */}
         <span
           className={`overflow-hidden whitespace-nowrap transition-[max-width,opacity,margin] duration-300 ease-out ${
