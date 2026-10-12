@@ -9,7 +9,8 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 - **Repo:** `github.com/davidecester/demo-ddc-oven-page`.
 - **Never push to `main`.** Cloudflare Workers Builds deploys every push to `main`, and **the user decides when to merge**.
 - Work on a `claude/...` feature branch and push only there. The user merges it via a PR.
-- The previous work branch is `claude/wonderful-turing-r4a56e` (PR #1). Scenario 2 onwards is on `claude/hopeful-pascal-y3fr0j`, branched from it. If PR #1 is still open, start from that branch so you have the Scenario 1 changes. If it's merged, start from `main`.
+- One PR per scenario, stacked: PR #1 `claude/wonderful-turing-r4a56e` (Scenario 1, merged), PR #2 `claude/hopeful-pascal-y3fr0j` (Scenario 2 + AA colours), `claude/scenario-3-maintenance` (Scenario 3, based on PR #2), `claude/scenario-4-new-oven` (Scenario 4, based on Scenario 3).
+- Scenario switcher labels are the user's scenario names: Scenario Base, Activity in Progress - Idle, Manutenzione Richiesta, Forno Appena Registrato. If PR #1 is still open, start from that branch so you have the Scenario 1 changes. If it's merged, start from `main`.
 - **Commit identity:** Davide Cester <cesterdav@gmail.com>.
 - **Language:** UI copy in Italian. Code and commit messages in English. Nav labels stay in English.
 
@@ -29,7 +30,7 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
   - The overview "Manutenzione richiesta" tag links to the Avvisi card (`#avvisi`). Anchor ids are in `anchors.ts`.
   - Alert actions carry their own icon (`AlertAction.icon`); an alert can override its badge glyph (`badgeIcon`). Idle CTAs are `IdleActivity.cta` (`startWashing` or `chooseRecipe`).
   - "N richiede/richiedono azione" is pluralised.
-  - **Open:** "Pianifica manutenzione" and "Ordina consumabili" do nothing yet. Figma's overview says "Avvisi: 3" but the drawer lists 4 alerts; the code counts 4.
+  - "Pianifica manutenzione" and "Ordina consumabili" close the drawer and show a confirmation toast (`src/components/ui/Toast.tsx`, prototype-only). The overview counts alerts from the data: "Avvisi: 4" (Figma's "3" is a copy mistake, confirmed by the user).
 - **Next:** Scenario 4 (Forno Appena Registrato, no alert card or drawer). Treat it as an alternate version of Scenario 1.
 - **Decided:** no floating tooltip on the SENSE.Klean chart; 0% (wash) bars read "Pulito"; the 78% frame belongs to Scenario 2.
 

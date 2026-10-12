@@ -8,7 +8,7 @@ import { cookingScenario } from './cooking'
 export const maintenanceScenario: Scenario = {
   ...cookingScenario,
   id: 'maintenance',
-  label: '3 · Manutenzione richiesta',
+  label: 'Manutenzione Richiesta',
 
   oven: { ...cookingScenario.oven, extraTags: ['maintenance'] },
 

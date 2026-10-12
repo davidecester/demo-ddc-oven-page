@@ -5,7 +5,7 @@ import { sharedDownloads, sharedRecipes } from '../shared'
 /** Scenario 1 — oven online, cooking in progress (Figma: "Scenario Base"). */
 export const cookingScenario: Scenario = {
   id: 'cooking',
-  label: '1 · Cottura in corso',
+  label: 'Scenario Base',
   startsAt: '2026-10-12T12:26:00',
   washingCycle: { label: 'Lavaggio in corso', totalDurationSec: 75 * 60 },
 

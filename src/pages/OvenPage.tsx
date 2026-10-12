@@ -9,6 +9,7 @@ import { RecipesCard } from '../components/oven/RecipesCard'
 import { RoCareCard } from '../components/oven/RoCareCard'
 import { SenseKleanCard } from '../components/oven/SenseKleanCard'
 import { UsageHoursCard } from '../components/oven/UsageHoursCard'
+import { Toast } from '../components/ui/Toast'
 import { useOvenSimulation } from '../hooks/useOvenSimulation'
 import type { AlertAction, Scenario } from '../types/oven'
 
@@ -16,10 +17,17 @@ import type { AlertAction, Scenario } from '../types/oven'
 const FULL = 'col-span-full'
 const HALF = 'col-span-4 md:col-span-8 lg:col-span-6'
 
+const TOAST_MESSAGE: Record<Exclude<AlertAction['type'], 'startWashing'>, string> = {
+  scheduleMaintenance: 'Richiesta di manutenzione inviata',
+  orderConsumables: 'Ordine consumabili inviato',
+}
+
 export function OvenPage({ scenario }: { scenario: Scenario }) {
   const { live, startWashing } = useOvenSimulation(scenario)
   const [alertsOpen, setAlertsOpen] = useState(false)
   const [announcement, setAnnouncement] = useState('')
+  const [toast, setToast] = useState<string | null>(null)
+  const dismissToast = useCallback(() => setToast(null), [])
 
   const handleStartWashing = useCallback(() => {
     startWashing()
@@ -29,7 +37,10 @@ export function OvenPage({ scenario }: { scenario: Scenario }) {
 
   const handleAlertAction = useCallback(
     (action: AlertAction) => {
-      if (action.type === 'startWashing') handleStartWashing()
+      if (action.type === 'startWashing') return handleStartWashing()
+      // No screen behind these yet: confirm with a toast (closing the sheet so it isn't covered)
+      setAlertsOpen(false)
+      setToast(TOAST_MESSAGE[action.type])
     },
     [handleStartWashing],
   )
@@ -75,6 +86,8 @@ export function OvenPage({ scenario }: { scenario: Scenario }) {
         onAction={handleAlertAction}
         isActionRunning={isActionRunning}
       />
+
+      <Toast message={toast} onDismiss={dismissToast} />
 
       <div aria-live="polite" className="sr-only">
         {announcement}

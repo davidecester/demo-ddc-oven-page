@@ -8,7 +8,7 @@ import { cookingScenario } from './cooking'
 export const idleScenario: Scenario = {
   ...cookingScenario,
   id: 'idle',
-  label: '2 · In attesa',
+  label: 'Activity in Progress - Idle',
 
   activity: {
     status: 'idle',
