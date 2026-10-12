@@ -1,7 +1,7 @@
 import type { ActivityStatus, OvenAlert, OvenInfo, StatusTagType } from '../../types/oven'
 import { Icon } from '../ui/Icon'
 import { StatusTag } from '../ui/StatusTag'
-import { ACTIVITY_CARD_ID, ALERTS_CARD_ID } from './anchors'
+import { ACTIVITY_CARD_ID } from './anchors'
 
 interface OvenOverviewCardProps {
   oven: OvenInfo
@@ -15,11 +15,6 @@ const ACTIVITY_TAG: Record<ActivityStatus, StatusTagType> = {
   cooking: 'cooking',
   washing: 'washing',
   idle: 'idle',
-}
-
-/** Image tags that link to the card explaining them. */
-const TAG_TARGET: Partial<Record<StatusTagType, { id: string; label: string }>> = {
-  maintenance: { id: ALERTS_CARD_ID, label: 'Avvisi' },
 }
 
 const CONNECTION = {
@@ -54,17 +49,9 @@ export function OvenOverviewCard({ oven, activityStatus, alerts, onOpenAlerts, c
                 <span className="sr-only">: vai ad Attività in corso</span>
               </a>
             )}
-            {tags.map((tag) => {
-              const target = TAG_TARGET[tag]
-              return target ? (
-                <a key={tag} href={`#${target.id}`} className="state-layer flex rounded-lg">
-                  <StatusTag type={tag} />
-                  <span className="sr-only">: vai ad {target.label}</span>
-                </a>
-              ) : (
-                <StatusTag key={tag} type={tag} />
-              )
-            })}
+            {tags.map((tag) => (
+              <StatusTag key={tag} type={tag} />
+            ))}
           </div>
         </div>
 
@@ -105,7 +92,7 @@ export function OvenOverviewCard({ oven, activityStatus, alerts, onOpenAlerts, c
               <span className="font-fixed font-bold">Avvisi:</span>{' '}
               <span className="font-fixed">{alerts.length}</span>
             </button>
-            <span className="type-paragraph-sm text-content-quaternary">· {actionCount} {actionCount === 1 ? 'richiede' : 'richiedono'} azione</span>
+            <span className="type-paragraph-sm text-content-quaternary">· {actionCount} richiede azione</span>
           </p>
 
           <dl className="grid grid-cols-2 gap-2">

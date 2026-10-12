@@ -1,4 +1,4 @@
-import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'react'
+import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import { cx } from '../../utils/cx'
 import { Icon } from './Icon'
 
@@ -19,16 +19,6 @@ const VARIANTS: Record<ButtonVariant, string> = {
   secondary: 'state-layer bg-bg-secondary text-content-quaternary type-button-sm',
 }
 
-function buttonClasses(variant: ButtonVariant, fullWidth: boolean, className?: string) {
-  return cx(
-    'inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-md px-4 py-2 whitespace-nowrap',
-    'aria-disabled:opacity-50',
-    VARIANTS[variant],
-    fullWidth && 'w-full',
-    className,
-  )
-}
-
 export function Button({
   variant = 'primary',
   icon,
@@ -41,30 +31,18 @@ export function Button({
   return (
     <button
       type={type}
-      className={buttonClasses(variant, fullWidth, className)}
+      className={cx(
+        'inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-md px-4 py-2 whitespace-nowrap',
+        'aria-disabled:opacity-50',
+        VARIANTS[variant],
+        fullWidth && 'w-full',
+        className,
+      )}
       {...rest}
     >
       {icon && <Icon name={icon} size={20} />}
       {children}
     </button>
-  )
-}
-
-interface ButtonLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
-  href: string
-  variant?: ButtonVariant
-  icon?: string
-  fullWidth?: boolean
-  children: ReactNode
-}
-
-/** A link that looks like `Button`, for CTAs that navigate (e.g. to an in-page anchor). */
-export function ButtonLink({ variant = 'primary', icon, fullWidth = false, className, children, ...rest }: ButtonLinkProps) {
-  return (
-    <a className={buttonClasses(variant, fullWidth, className)} {...rest}>
-      {icon && <Icon name={icon} size={20} />}
-      {children}
-    </a>
   )
 }
 

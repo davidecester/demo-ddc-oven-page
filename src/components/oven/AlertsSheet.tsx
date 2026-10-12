@@ -72,10 +72,10 @@ function AlertItem({ alert, onAction, isActionRunning }: AlertItemProps) {
           className={`flex size-8 shrink-0 items-center justify-center rounded-[20px] md:size-10 ${sev.badge}`}
         >
           <span className="md:hidden">
-            <Icon name={alert.badgeIcon?.icon16 ?? sev.icon16} size={16} />
+            <Icon name={sev.icon16} size={16} />
           </span>
           <span className="hidden md:block">
-            <Icon name={alert.badgeIcon?.icon ?? sev.icon} size={20} />
+            <Icon name={sev.icon} size={20} />
           </span>
           <span className="sr-only">{sev.srLabel}</span>
         </span>
@@ -92,7 +92,7 @@ function AlertItem({ alert, onAction, isActionRunning }: AlertItemProps) {
         <p className="hidden type-label-xs text-content-quaternary md:block">{alert.timestamp}</p>
         {alert.action && (
           <Button
-            icon={alert.action.icon}
+            icon="washing-white"
             fullWidth
             className="md:w-auto"
             onClick={() => !running && onAction(alert.action!)}

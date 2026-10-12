@@ -14,7 +14,7 @@ export const idleScenario: Scenario = {
     status: 'idle',
     label: 'In attesa',
     dirtLevel: '78% · Molto Sporco',
-    cta: { type: 'startWashing', label: 'Avvia lavaggio', icon: 'washing-white' },
+    suggestWashing: true,
     hint: 'Consigliato lavaggio prima della prossima cottura.',
   },
 
@@ -26,7 +26,7 @@ export const idleScenario: Scenario = {
       description: 'Necessario lavaggio prima della prossima cottura.',
       code: 'WF54',
       timestamp: '09/10/2026 18:30',
-      action: { type: 'startWashing', label: 'Avvia lavaggio', icon: 'washing-white' },
+      action: { type: 'startWashing', label: 'Avvia lavaggio' },
     },
     ...cookingScenario.alerts.filter((a) => a.severity === 'info'),
   ],
