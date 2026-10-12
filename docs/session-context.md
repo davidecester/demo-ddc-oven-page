@@ -9,8 +9,8 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 - **Repo:** `github.com/davidecester/demo-ddc-oven-page`.
 - **Never push to `main`.** Cloudflare Workers Builds deploys every push to `main`, and **the user decides when to merge**.
 - Work on a `claude/...` feature branch and push only there. The user merges it via a PR.
-- **Use one working branch for all further updates: `claude/hopeful-pascal-y3fr0j`.** Don't create new branches. Before starting, bring it up to date with `main` (fast-forward). Push there, open one PR into `main`, and merge only when the user asks. After a merge, keep reusing the same branch (the user's rule, so branches don't pile up).
-- History: PR #1 `claude/wonderful-turing-r4a56e` (Scenario 1), PR #2 `claude/hopeful-pascal-y3fr0j` (Scenario 2 + AA colours), PR #3 `claude/scenario-3-maintenance`, PR #4 `claude/scenario-4-new-oven`, PR #5 (hint spacing). All are merged into `main`.
+- **Use one working branch for all further updates: `claude/prototype-updates`.** Don't create new branches. Before starting, bring it up to date with `main` (fast-forward). Push there and open one PR into `main`; the user checks it and merges. After a merge, keep reusing the same branch.
+- History: PRs #1–#9 (Scenarios 1–4, accessibility, spacing, shadows, scenario switcher) are all merged into `main`. Their branches (`claude/wonderful-turing-r4a56e`, `claude/hopeful-pascal-y3fr0j`, `claude/scenario-3-maintenance`, `claude/scenario-4-new-oven`) are retired and can be deleted.
 - Scenario switcher labels are the user's scenario names: Scenario Base, Activity in Progress - Idle, Manutenzione Richiesta, Forno Appena Registrato. If PR #1 is still open, start from that branch so you have the Scenario 1 changes. If it's merged, start from `main`.
 - **Commit identity:** Davide Cester <cesterdav@gmail.com>.
 - **Language:** UI copy in Italian. Code and commit messages in English. Nav labels stay in English.
