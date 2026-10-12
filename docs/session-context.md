@@ -31,7 +31,11 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
   - Alert actions carry their own icon (`AlertAction.icon`); an alert can override its badge glyph (`badgeIcon`). Idle CTAs are `IdleActivity.cta` (`startWashing` or `chooseRecipe`).
   - "N richiede/richiedono azione" is pluralised.
   - "Pianifica manutenzione" and "Ordina consumabili" close the drawer and show a confirmation toast (`src/components/ui/Toast.tsx`, prototype-only). The overview counts alerts from the data: "Avvisi: 4" (Figma's "3" is a copy mistake, confirmed by the user).
-- **Next:** Scenario 4 (Forno Appena Registrato, no alert card or drawer). Treat it as an alternate version of Scenario 1.
+- **Scenario 4 (new oven, `?scenario=new-oven`)** is done in `src/data/scenarios/newOven.ts`: "Nuovo Forno", 0 h, no alerts (no Avvisi card; overview shows "Avvisi: -"), idle at 0% with "Scegli una ricetta", full RO.Care filter (100%, 365 giorni, 4 unità).
+  - Empty data uses `EmptyData` (`src/components/ui/EmptyData.tsx`): the card's normal layout faded (charts 30%, usage rows 20%), `aria-hidden`, with "Nessun dato ancora disponibile" on top. Trend: `activityTrend: null`. SENSE.Klean: `hourly: []`, `readAt: null`. Usage: `categories: []`.
+  - Recipes: tabs with no categories show "Nessuna ricetta caricata" and "Crea un Gruppo" (toast).
+  - **Open:** axe flags the faded placeholder text (decorative and `aria-hidden`, but low contrast by design). Figma's breadcrumb says "Academy 5"; the code uses the oven name ("Nuovo Forno"). Figma mobile shows real hours/percentages in the faded rows; the code uses the desktop "- h" / "- min · 0%".
+- **All four scenarios are done.**
 - **Decided:** no floating tooltip on the SENSE.Klean chart; 0% (wash) bars read "Pulito"; the 78% frame belongs to Scenario 2.
 
 ## Stack

@@ -63,19 +63,25 @@ export function OvenPage({ scenario }: { scenario: Scenario }) {
           alerts={scenario.alerts}
           onOpenAlerts={() => setAlertsOpen(true)}
         />
-        <AlertsCard
-          className={FULL}
-          alerts={scenario.alerts}
-          onOpenAll={() => setAlertsOpen(true)}
-          onAction={handleAlertAction}
-          isActionRunning={isActionRunning}
-        />
+        {scenario.alerts.length > 0 && (
+          <AlertsCard
+            className={FULL}
+            alerts={scenario.alerts}
+            onOpenAll={() => setAlertsOpen(true)}
+            onAction={handleAlertAction}
+            isActionRunning={isActionRunning}
+          />
+        )}
         <ActivityCard className={HALF} activity={live} onStartWashing={handleStartWashing} />
         <ActivityTrendCard className={HALF} trend={scenario.activityTrend} />
         <SenseKleanCard className={FULL} data={scenario.senseKlean} />
         <RoCareCard className={HALF} data={scenario.roCare} />
         <UsageHoursCard className={HALF} data={scenario.usage} />
-        <RecipesCard className={FULL} tabs={scenario.recipes} />
+        <RecipesCard
+          className={FULL}
+          tabs={scenario.recipes}
+          onCreateGroup={() => setToast('Nuovo gruppo di ricette creato')}
+        />
         <DownloadArea className={FULL} groups={scenario.downloads} />
       </main>
 

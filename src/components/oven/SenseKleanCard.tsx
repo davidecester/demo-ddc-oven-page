@@ -4,6 +4,7 @@ import { TABLET_UP, useMediaQuery } from '../../hooks/useMediaQuery'
 import type { SenseKlean } from '../../types/oven'
 import { axisTick, gridStroke, renderYTick } from '../charts/chartTheme'
 import { Card } from '../ui/Card'
+import { EmptyData } from '../ui/EmptyData'
 import { Icon } from '../ui/Icon'
 import { DIRT_LEGEND, DIRT_LEVEL, dirtLevelOf, readingTimeLabel } from './senseKlean'
 
@@ -46,8 +47,13 @@ export function SenseKleanCard({ data, className }: SenseKleanCardProps) {
         {shown && <CurrentValue value={shown.value} readAt={shown.readAt} />}
       </div>
 
-      {data ? (
+      {data && data.hourly.length > 0 ? (
         <DirtChart data={data} wide={wide} selected={selected ?? lastIndex} onSelect={setSelected} />
+      ) : data ? (
+        // New oven: legend and axes faded, no bars (Figma "Forno Appena Registrato")
+        <EmptyData>
+          <DirtChart data={{ ...data, hourly: EMPTY_DAY }} wide={wide} selected={-1} onSelect={() => {}} empty />
+        </EmptyData>
       ) : (
         <p className="type-paragraph-sm text-content-quaternary">Nessun dato disponibile</p>
       )}
@@ -55,7 +61,7 @@ export function SenseKleanCard({ data, className }: SenseKleanCardProps) {
   )
 }
 
-function CurrentValue({ value, readAt }: { value: number; readAt: string }) {
+function CurrentValue({ value, readAt }: { value: number; readAt: string | null }) {
   const level = DIRT_LEVEL[dirtLevelOf(value)]
   return (
     <div className="flex items-start gap-4 md:items-center">
@@ -73,7 +79,7 @@ function CurrentValue({ value, readAt }: { value: number; readAt: string }) {
         <span className={`type-heading-sm md:type-heading-xl tabular-nums ${level.text}`}>
           {value}% · {level.label}
         </span>
-        <span className="type-paragraph-sm text-content-quaternary">{readAt}</span>
+        {readAt && <span className="type-paragraph-sm text-content-quaternary">{readAt}</span>}
       </p>
     </div>
   )
@@ -86,9 +92,17 @@ interface DirtChartProps {
   selected: number
   /** `null` returns to the latest reading. */
   onSelect: (index: number | null) => void
+  /** Placeholder for the empty state: axes and legend only, no bars or caption. */
+  empty?: boolean
 }
 
-function DirtChart({ data, wide, selected, onSelect }: DirtChartProps) {
+/** Hour labels for the empty chart: the same 24 h window as a reading day (14:00 → 13:00). */
+const EMPTY_DAY: SenseKlean['hourly'] = Array.from({ length: 24 }, (_, i) => ({
+  hour: `${(14 + i) % 24 === 0 ? '00' : (14 + i) % 24}:00`,
+  value: 0,
+}))
+
+function DirtChart({ data, wide, selected, onSelect, empty = false }: DirtChartProps) {
   const plotRef = useRef<HTMLDivElement>(null)
   const ticks = labelledHours(
     data.hourly.map((h) => h.hour),
@@ -131,9 +145,9 @@ function DirtChart({ data, wide, selected, onSelect }: DirtChartProps) {
             margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
             style={{ overflow: 'visible' }}
             accessibilityLayer={false}
-            onMouseMove={pick}
-            onClick={pick}
-            onMouseLeave={() => onSelect(null)}
+            onMouseMove={empty ? undefined : pick}
+            onClick={empty ? undefined : pick}
+            onMouseLeave={empty ? undefined : () => onSelect(null)}
           >
             <CartesianGrid stroke={gridStroke} />
             <YAxis
@@ -155,11 +169,12 @@ function DirtChart({ data, wide, selected, onSelect }: DirtChartProps) {
               height={36}
             />
             {/* No floating tooltip: the header above shows the hovered reading */}
-            <Tooltip cursor={{ fill: 'var(--color-grey-100)' }} content={() => null} />
+            {!empty && <Tooltip cursor={{ fill: 'var(--color-grey-100)' }} content={() => null} />}
             <Bar
               dataKey="value"
               radius={[radius, radius, 0, 0]}
-              minPointSize={1}
+              // Empty state draws no bars (not even the 1 px wash marker)
+              minPointSize={empty ? 0 : 1}
               isAnimationActive={false}
               label={({ index, x, y, width }) =>
                 index === selected ? (
@@ -184,10 +199,12 @@ function DirtChart({ data, wide, selected, onSelect }: DirtChartProps) {
         </ResponsiveContainer>
       </div>
 
-      <figcaption className="sr-only">
-        Livello di sporco orario delle ultime 24 ore. Valore attuale {data.current}%. Letture:{' '}
-        {data.hourly.map((h) => `${h.hour} ${h.value === 0 ? 'lavaggio' : `${h.value}%`}`).join(', ')}.
-      </figcaption>
+      {!empty && (
+        <figcaption className="sr-only">
+          Livello di sporco orario delle ultime 24 ore. Valore attuale {data.current}%. Letture:{' '}
+          {data.hourly.map((h) => `${h.hour} ${h.value === 0 ? 'lavaggio' : `${h.value}%`}`).join(', ')}.
+        </figcaption>
+      )}
     </figure>
   )
 }

@@ -96,16 +96,28 @@ export function OvenOverviewCard({ oven, activityStatus, alerts, onOpenAlerts, c
 
           <p className="flex items-center gap-1">
             <Icon name="info-accent" size={20} />
-            <button
-              type="button"
-              onClick={onOpenAlerts}
-              aria-haspopup="dialog"
-              className="rounded-sm text-[14px] leading-4 text-accent hover:underline"
-            >
-              <span className="font-fixed font-bold">Avvisi:</span>{' '}
-              <span className="font-fixed">{alerts.length}</span>
-            </button>
-            <span className="type-paragraph-sm text-content-quaternary">· {actionCount} {actionCount === 1 ? 'richiede' : 'richiedono'} azione</span>
+            {alerts.length > 0 ? (
+              <>
+                <button
+                  type="button"
+                  onClick={onOpenAlerts}
+                  aria-haspopup="dialog"
+                  className="rounded-sm text-[14px] leading-4 text-accent hover:underline"
+                >
+                  <span className="font-fixed font-bold">Avvisi:</span>{' '}
+                  <span className="font-fixed">{alerts.length}</span>
+                </button>
+                <span className="type-paragraph-sm text-content-quaternary">
+                  · {actionCount} {actionCount === 1 ? 'richiede' : 'richiedono'} azione
+                </span>
+              </>
+            ) : (
+              // No alerts yet (new oven): nothing to open
+              <span className="text-[14px] leading-4 text-accent">
+                <span className="font-fixed font-bold">Avvisi:</span> <span className="font-fixed">-</span>
+                <span className="sr-only">nessun avviso</span>
+              </span>
+            )}
           </p>
 
           <dl className="grid grid-cols-2 gap-2">

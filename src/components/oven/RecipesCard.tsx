@@ -2,11 +2,14 @@ import { useId, useRef, useState, type KeyboardEvent } from 'react'
 import type { RecipeCategoryIcon, RecipeTab, RecipeTabKey } from '../../types/oven'
 import { cx } from '../../utils/cx'
 import { Card, CardTitle } from '../ui/Card'
+import { Button } from '../ui/Button'
 import { Icon } from '../ui/Icon'
 import { RECIPES_CARD_ID } from './anchors'
 
 interface RecipesCardProps {
   tabs: RecipeTab[] | null
+  /** "Crea un Gruppo" in the empty state. */
+  onCreateGroup: () => void
   className?: string
 }
 
@@ -24,7 +27,7 @@ const CATEGORY_ICON: Record<RecipeCategoryIcon, string> = {
 }
 
 /** "Ricette presenti nel forno": tabs per recipe type, then recipe categories. */
-export function RecipesCard({ tabs, className }: RecipesCardProps) {
+export function RecipesCard({ tabs, onCreateGroup, className }: RecipesCardProps) {
   const [active, setActive] = useState<RecipeTabKey>(tabs?.[0]?.key ?? 'programs')
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const baseId = useId()
@@ -89,30 +92,45 @@ export function RecipesCard({ tabs, className }: RecipesCardProps) {
 
       {current ? (
         <div role="tabpanel" id={`${baseId}-panel`} aria-labelledby={`${baseId}-tab-${current.key}`}>
-        <ul className="grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-4 lg:grid-cols-4">
-          {current.categories.map((cat) => (
-            <li key={cat.name}>
-              <a
-                href="#"
-                onClick={(e) => e.preventDefault()}
-                className="state-layer flex items-center justify-between rounded-md bg-bg-secondary p-4"
-              >
-                <span className="flex min-w-0 flex-1 items-center gap-4 pr-4">
-                  <span className="flex size-8 shrink-0 items-center justify-center">
-                    <Icon name={CATEGORY_ICON[cat.icon]} size={32} />
+        {current.categories.length > 0 ? (
+          <ul className="grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-4 lg:grid-cols-4">
+            {current.categories.map((cat) => (
+              <li key={cat.name}>
+                <a
+                  href="#"
+                  onClick={(e) => e.preventDefault()}
+                  className="state-layer flex items-center justify-between rounded-md bg-bg-secondary p-4"
+                >
+                  <span className="flex min-w-0 flex-1 items-center gap-4 pr-4">
+                    <span className="flex size-8 shrink-0 items-center justify-center">
+                      <Icon name={CATEGORY_ICON[cat.icon]} size={32} />
+                    </span>
+                    <span className="flex min-w-0 flex-col gap-1">
+                      <span className="type-label-md text-content-primary">{cat.name}</span>
+                      <span className="type-paragraph-xs text-content-quaternary">{cat.count} ricette</span>
+                    </span>
                   </span>
-                  <span className="flex min-w-0 flex-col gap-1">
-                    <span className="type-label-md text-content-primary">{cat.name}</span>
-                    <span className="type-paragraph-xs text-content-quaternary">{cat.count} ricette</span>
+                  <span className="flex w-10 shrink-0 items-center justify-center p-2">
+                    <Icon name="chevron-next" size={24} />
                   </span>
-                </span>
-                <span className="flex w-10 shrink-0 items-center justify-center p-2">
-                  <Icon name="chevron-next" size={24} />
-                </span>
-              </a>
-            </li>
-          ))}
-        </ul>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          // New oven: nothing uploaded yet (Figma "Forno Appena Registrato")
+          <div className="flex min-h-[150px] flex-col items-start justify-center gap-4 lg:min-h-[110px]">
+            <div className="flex max-w-[321px] flex-col gap-1">
+              <p className="type-label-lg text-content-primary">Nessuna ricetta caricata</p>
+              <p className="type-paragraph-sm text-content-quaternary">
+                Crea un nuovo gruppo di ricette e caricalo sul forno.
+              </p>
+            </div>
+            <Button icon="add-white" onClick={onCreateGroup} fullWidth className="md:w-auto">
+              Crea un Gruppo
+            </Button>
+          </div>
+        )}
         </div>
       ) : (
         <p className="type-paragraph-sm text-content-quaternary">Nessuna ricetta presente</p>
