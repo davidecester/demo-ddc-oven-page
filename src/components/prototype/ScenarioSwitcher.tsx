@@ -56,7 +56,7 @@ export function ScenarioSwitcher({ scenarios, activeId, onSelect, onReset }: Sce
       {open && (
         <div
           id={panelId}
-          className="mb-2 flex w-64 flex-col gap-3 rounded-md border border-white/20 bg-grey-400/95 p-3 text-white shadow-elevation-1 backdrop-blur"
+          className="switcher-panel-in mb-2 flex w-64 flex-col gap-3 rounded-md border border-white/20 bg-grey-400/95 p-3 text-white shadow-elevation-1 backdrop-blur"
         >
           <div className="flex flex-col gap-1">
             <label htmlFor={selectId} className="text-white/70">
@@ -92,22 +92,24 @@ export function ScenarioSwitcher({ scenarios, activeId, onSelect, onReset }: Sce
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
-        className={`flex items-center rounded-full border border-white/20 bg-grey-400/90 px-[11px] py-1.5 text-white shadow-elevation-1 backdrop-blur hover:bg-grey-400 ${
-          intro ? 'switcher-pulse' : ''
-        }`}
+        className="flex items-center rounded-full border border-white/20 bg-grey-400/90 px-[11px] py-1.5 text-white shadow-elevation-1 backdrop-blur hover:bg-grey-400"
       >
-        {/* Reduced to the dot: a gentle pulsing glow keeps it findable without distracting */}
+        {/* A ripple spreads from the dot during the intro and while shrunk to the dot, to keep it findable;
+            it stops while the user is hovering, focusing or using the panel */}
+        <span aria-hidden="true" className="relative flex size-2 shrink-0">
+          {!(hovered || focused || open) && (
+            <span className="switcher-ripple absolute inset-0 rounded-full bg-magenta-300" />
+          )}
+          <span className="relative size-2 rounded-full bg-magenta-300" />
+        </span>
+        {/* Grid 0fr → 1fr animates to the label's real width, so growing and shrinking take the same
+            450 ms at the same pace. The label stays in the accessible name when visually collapsed. */}
         <span
-          aria-hidden="true"
-          className={`size-2 shrink-0 rounded-full bg-magenta-300 ${expanded ? '' : 'switcher-dot-glow'}`}
-        />
-        {/* Stays in the accessible name when visually collapsed */}
-        <span
-          className={`overflow-hidden whitespace-nowrap transition-[max-width,opacity,margin] duration-300 ease-out ${
-            expanded ? 'ml-2 max-w-[240px] opacity-100' : 'ml-0 max-w-0 opacity-0'
+          className={`grid transition-[grid-template-columns,opacity,margin] duration-[450ms] ease-in-out ${
+            expanded ? 'ml-2 grid-cols-[1fr] opacity-100' : 'ml-0 grid-cols-[0fr] opacity-0'
           }`}
         >
-          Prototipo · {activeId}
+          <span className="min-w-0 overflow-hidden whitespace-nowrap">Prototipo · {activeId}</span>
         </span>
       </button>
     </aside>
