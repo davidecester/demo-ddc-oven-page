@@ -8,11 +8,11 @@ export function dirtLevelOf(value: number): DirtLevel {
 }
 
 /**
- * Header styling per level (Figma "Card · SENSE.Klean"): Pulito has no icon,
+ * Header styling per level (Figma "Card · SENSE.Klean"): Pulito is primary text with no icon,
  * Sporco a yellow warning, Molto Sporco the red `error` glyph in alarm red.
  */
 export const DIRT_LEVEL: Record<DirtLevel, { label: string; text: string; icon: string | null; icon20: string | null }> = {
-  clean: { label: 'Pulito', text: 'text-green-text', icon: null, icon20: null },
+  clean: { label: 'Pulito', text: 'text-content-primary', icon: null, icon20: null },
   dirty: { label: 'Sporco', text: 'text-yellow-500', icon: 'dirt-warning-32', icon20: 'dirt-warning-20' },
   veryDirty: { label: 'Molto Sporco', text: 'text-alarm', icon: 'dirt-error-32', icon20: 'dirt-error-20' },
 }
