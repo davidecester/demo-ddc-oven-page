@@ -54,16 +54,16 @@ Any section set to `null` renders that card's empty state.
 
 If the new Figma frame introduces a new visual state, add it to the matching config map (e.g. `DIRT_LEVEL` in `components/oven/senseKlean.ts`, `TAG_STYLES` in `components/ui/StatusTag.tsx`) rather than to the component markup.
 
-## Deploy (Cloudflare Pages)
+## Deploy (Cloudflare Workers)
 
-Cloudflare Pages is connected to this GitHub repository and rebuilds on every push to `main`;
-other branches get their own preview URL.
+A Cloudflare Worker is connected to this GitHub repository and rebuilds on every push to `main`.
+`wrangler.jsonc` tells it to serve the Vite build (`dist/`) as static assets.
 
 | Setting | Value |
 | --- | --- |
-| Framework preset | Vite |
+| Project name | `demo-ddc-oven-page` (must match `name` in `wrangler.jsonc`) |
 | Build command | `npm run build` |
-| Build output directory | `dist` |
+| Deploy command | `npx wrangler deploy` |
 | Node version | from `.node-version` (22) |
 
 The site is served from the domain root, so no base path is needed. To host under a sub-path instead
