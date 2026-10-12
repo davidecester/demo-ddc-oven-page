@@ -113,7 +113,9 @@ export interface SenseKleanReading {
 
 export interface SenseKlean {
   current: number
-  readAt: string
+  /** `null` for a new oven with no readings yet. */
+  readAt: string | null
+  /** Empty for a new oven: the chart shows its "no data" state. */
   hourly: SenseKleanReading[]
 }
 

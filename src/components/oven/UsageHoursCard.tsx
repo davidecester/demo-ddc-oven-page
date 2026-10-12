@@ -1,5 +1,6 @@
-import type { Usage, UsageCategoryKey } from '../../types/oven'
+import type { Usage, UsageCategory, UsageCategoryKey } from '../../types/oven'
 import { Card, CardTitle } from '../ui/Card'
+import { EmptyData } from '../ui/EmptyData'
 import { Icon } from '../ui/Icon'
 
 interface UsageHoursCardProps {
@@ -7,13 +8,21 @@ interface UsageHoursCardProps {
   className?: string
 }
 
-const CATEGORY: Record<UsageCategoryKey, { icon: string | null; bar: string }> = {
-  cookingSet: { icon: 'cooking-set', bar: 'bg-brown-500' },
-  programs: { icon: 'programs', bar: 'bg-blue-300' },
-  chefunox: { icon: 'chefunox', bar: 'bg-purple-300' },
-  multiTime: { icon: 'multi-time', bar: 'bg-magenta-300' },
-  other: { icon: null, bar: 'bg-grey-300' },
+const CATEGORY: Record<UsageCategoryKey, { label: string; icon: string | null; bar: string }> = {
+  cookingSet: { label: 'Cooking Set', icon: 'cooking-set', bar: 'bg-brown-500' },
+  programs: { label: 'Programmi', icon: 'programs', bar: 'bg-blue-300' },
+  chefunox: { label: 'CHEFUNOX', icon: 'chefunox', bar: 'bg-purple-300' },
+  multiTime: { label: 'MULTI.Time', icon: 'multi-time', bar: 'bg-magenta-300' },
+  other: { label: 'Altro', icon: null, bar: 'bg-grey-300' },
 }
+
+/** New oven: every category at "- min · 0%" (Figma "Forno Appena Registrato"). */
+const EMPTY_CATEGORIES: UsageCategory[] = (Object.keys(CATEGORY) as UsageCategoryKey[]).map((key) => ({
+  key,
+  label: CATEGORY[key].label,
+  duration: '- min',
+  percent: 0,
+}))
 
 /** "Ore di utilizzo totali": usage split by cooking mode. */
 export function UsageHoursCard({ data, className }: UsageHoursCardProps) {
@@ -27,40 +36,50 @@ export function UsageHoursCard({ data, className }: UsageHoursCardProps) {
         {data && <p className="type-heading-xl text-content-primary">{data.total}</p>}
       </div>
 
-      {data ? (
-        <ul className="flex flex-col gap-4">
-          {data.categories.map((c) => {
-            const cfg = CATEGORY[c.key]
-            return (
-              <li key={c.key} className="flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  {cfg.icon && <Icon name={cfg.icon} size={20} />}
-                  <div className="flex min-w-0 flex-1 items-baseline justify-between gap-4">
-                    <span className="type-label-md text-content-primary">{c.label}</span>
-                    <span className="flex items-center gap-4 type-paragraph-sm whitespace-nowrap">
-                      <span className="text-content-quaternary">{c.duration}</span>
-                      <span className="min-w-[34px] text-right text-content-primary tabular-nums">{c.percent}%</span>
-                    </span>
-                  </div>
-                </div>
-                <div
-                  role="meter"
-                  aria-label={c.label}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-valuenow={c.percent}
-                  aria-valuetext={`${c.percent}%, ${c.duration}`}
-                  className="h-2 w-full rounded-sm bg-grey-100"
-                >
-                  <div className={`h-2 rounded-sm ${cfg.bar}`} style={{ width: `${c.percent}%` }} />
-                </div>
-              </li>
-            )
-          })}
-        </ul>
+      {data && data.categories.length > 0 ? (
+        <CategoryList categories={data.categories} />
+      ) : data ? (
+        <EmptyData fade="rows">
+          <CategoryList categories={EMPTY_CATEGORIES} />
+        </EmptyData>
       ) : (
         <p className="type-paragraph-sm text-content-quaternary">Nessun dato disponibile</p>
       )}
     </Card>
+  )
+}
+
+function CategoryList({ categories }: { categories: UsageCategory[] }) {
+  return (
+    <ul className="flex flex-col gap-4">
+      {categories.map((c) => {
+        const cfg = CATEGORY[c.key]
+        return (
+          <li key={c.key} className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              {cfg.icon && <Icon name={cfg.icon} size={20} />}
+              <div className="flex min-w-0 flex-1 items-baseline justify-between gap-4">
+                <span className="type-label-md text-content-primary">{c.label}</span>
+                <span className="flex items-center gap-4 type-paragraph-sm whitespace-nowrap">
+                  <span className="text-content-quaternary">{c.duration}</span>
+                  <span className="min-w-[34px] text-right text-content-primary tabular-nums">{c.percent}%</span>
+                </span>
+              </div>
+            </div>
+            <div
+              role="meter"
+              aria-label={c.label}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={c.percent}
+              aria-valuetext={`${c.percent}%, ${c.duration}`}
+              className="h-2 w-full rounded-sm bg-grey-100"
+            >
+              <div className={`h-2 rounded-sm ${cfg.bar}`} style={{ width: `${c.percent}%` }} />
+            </div>
+          </li>
+        )
+      })}
+    </ul>
   )
 }
