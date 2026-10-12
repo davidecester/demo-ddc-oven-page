@@ -7,6 +7,7 @@ import { Icon } from '../ui/Icon'
 import { LabelValue } from '../ui/LabelValue'
 import { ProgressRing } from '../ui/ProgressRing'
 import { StatusTag } from '../ui/StatusTag'
+import { ACTIVITY_CARD_ID } from './anchors'
 
 interface ActivityCardProps {
   activity: LiveActivity
@@ -26,7 +27,7 @@ export function ActivityCard({ activity, onStartWashing, className }: ActivityCa
   const tag = HEADER_TAG[activity.status]
 
   return (
-    <Card labelledBy="activity-title" className={`gap-9 ${className ?? ''}`}>
+    <Card id={ACTIVITY_CARD_ID} labelledBy="activity-title" className={`anchor-target gap-9 ${className ?? ''}`}>
       <div className="flex flex-wrap items-center gap-4">
         <CardTitle id="activity-title">Attività in corso</CardTitle>
         <StatusTag type={tag.type} label={tag.label} />

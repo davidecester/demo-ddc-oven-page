@@ -1,11 +1,11 @@
+import { useEffect, useRef, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { TABLET_UP, useMediaQuery } from '../../hooks/useMediaQuery'
 import type { SenseKlean } from '../../types/oven'
 import { axisTick, gridStroke, renderYTick } from '../charts/chartTheme'
-import { ChartTooltip } from '../charts/ChartTooltip'
 import { Card } from '../ui/Card'
 import { Icon } from '../ui/Icon'
-import { DIRT_LEGEND, DIRT_LEVEL, dirtLevelOf } from './senseKlean'
+import { DIRT_LEGEND, DIRT_LEVEL, dirtLevelOf, readingTimeLabel } from './senseKlean'
 
 interface SenseKleanCardProps {
   data: SenseKlean | null
@@ -18,9 +18,21 @@ function labelledHours(hours: string[], wide: boolean): string[] {
   return hours.filter((_, i) => i % step === 0)
 }
 
-/** "SENSE.Klean – Livello di sporco": hourly dirt level over the last 24 h. */
+/**
+ * "SENSE.Klean – Livello di sporco": hourly dirt level over the last 24 h.
+ * Hovering (or tapping) a bar previews that reading in the header, like a
+ * stock chart scrubber; leaving the chart returns to the current reading.
+ */
 export function SenseKleanCard({ data, className }: SenseKleanCardProps) {
   const wide = useMediaQuery(TABLET_UP)
+  const [selected, setSelected] = useState<number | null>(null)
+
+  const hours = data?.hourly.map((h) => h.hour) ?? []
+  const lastIndex = hours.length - 1
+  const shown =
+    data && selected !== null && selected !== lastIndex
+      ? { value: data.hourly[selected].value, readAt: readingTimeLabel(hours, selected) }
+      : data && { value: data.current, readAt: data.readAt }
 
   return (
     <Card labelledBy="sense-title" className={`gap-9 ${className ?? ''}`}>
@@ -31,10 +43,14 @@ export function SenseKleanCard({ data, className }: SenseKleanCardProps) {
           </h2>
           <p className="type-paragraph-sm text-content-quaternary">Ultime 24 ore</p>
         </div>
-        {data && <CurrentValue value={data.current} readAt={data.readAt} />}
+        {shown && <CurrentValue value={shown.value} readAt={shown.readAt} />}
       </div>
 
-      {data ? <DirtChart data={data} wide={wide} /> : <p className="type-paragraph-sm text-content-quaternary">Nessun dato disponibile</p>}
+      {data ? (
+        <DirtChart data={data} wide={wide} selected={selected ?? lastIndex} onSelect={setSelected} />
+      ) : (
+        <p className="type-paragraph-sm text-content-quaternary">Nessun dato disponibile</p>
+      )}
     </Card>
   )
 }
@@ -43,14 +59,18 @@ function CurrentValue({ value, readAt }: { value: number; readAt: string }) {
   const level = DIRT_LEVEL[dirtLevelOf(value)]
   return (
     <div className="flex items-start gap-4 md:items-center">
-      <span className="pt-[5px] md:hidden">
-        <Icon name={level.icon20} size={20} />
-      </span>
-      <span className="hidden md:block">
-        <Icon name={level.icon} size={32} />
-      </span>
+      {level.icon20 && (
+        <span className="pt-[5px] md:hidden">
+          <Icon name={level.icon20} size={20} />
+        </span>
+      )}
+      {level.icon && (
+        <span className="hidden md:block">
+          <Icon name={level.icon} size={32} />
+        </span>
+      )}
       <p className="flex flex-col gap-1 md:flex-row md:items-baseline md:gap-2">
-        <span className={`type-heading-sm md:type-heading-xl ${level.text}`}>
+        <span className={`type-heading-sm md:type-heading-xl tabular-nums ${level.text}`}>
           {value}% · {level.label}
         </span>
         <span className="type-paragraph-sm text-content-quaternary">{readAt}</span>
@@ -59,13 +79,36 @@ function CurrentValue({ value, readAt }: { value: number; readAt: string }) {
   )
 }
 
-function DirtChart({ data, wide }: { data: SenseKlean; wide: boolean }) {
-  const lastIndex = data.hourly.length - 1
+interface DirtChartProps {
+  data: SenseKlean
+  wide: boolean
+  /** Highlighted bar: the hovered/tapped one, or the latest reading. */
+  selected: number
+  /** `null` returns to the latest reading. */
+  onSelect: (index: number | null) => void
+}
+
+function DirtChart({ data, wide, selected, onSelect }: DirtChartProps) {
+  const plotRef = useRef<HTMLDivElement>(null)
   const ticks = labelledHours(
     data.hourly.map((h) => h.hour),
     wide,
   )
   const radius = wide ? 4 : 2
+
+  // Touch has no "mouse leave": a tap outside the chart returns to the latest reading
+  useEffect(() => {
+    const reset = (event: PointerEvent) => {
+      if (!plotRef.current?.contains(event.target as Node)) onSelect(null)
+    }
+    document.addEventListener('pointerdown', reset)
+    return () => document.removeEventListener('pointerdown', reset)
+  }, [onSelect])
+
+  const pick = (state: { activeTooltipIndex?: number | string | null }) => {
+    const index = Number(state.activeTooltipIndex)
+    if (state.activeTooltipIndex != null && Number.isInteger(index)) onSelect(index)
+  }
 
   return (
     <figure className="flex flex-col gap-6">
@@ -78,7 +121,7 @@ function DirtChart({ data, wide }: { data: SenseKlean; wide: boolean }) {
         ))}
       </ul>
 
-      <div className="h-[238px] w-full md:h-[236px]" aria-hidden="true">
+      <div ref={plotRef} className="h-[238px] w-full touch-pan-y md:h-[236px] [&_*]:outline-none" aria-hidden="true">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={data.hourly}
@@ -88,6 +131,9 @@ function DirtChart({ data, wide }: { data: SenseKlean; wide: boolean }) {
             margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
             style={{ overflow: 'visible' }}
             accessibilityLayer={false}
+            onMouseMove={pick}
+            onClick={pick}
+            onMouseLeave={() => onSelect(null)}
           >
             <CartesianGrid stroke={gridStroke} />
             <YAxis
@@ -108,29 +154,15 @@ function DirtChart({ data, wide }: { data: SenseKlean; wide: boolean }) {
               tickMargin={8}
               height={36}
             />
-            <Tooltip
-              cursor={{ fill: 'var(--color-grey-100)' }}
-              content={({ active, payload, label }) =>
-                active && payload?.length ? (
-                  <ChartTooltip
-                    title={String(label)}
-                    rows={[
-                      {
-                        label: DIRT_LEVEL[dirtLevelOf(Number(payload[0].value))].label,
-                        value: Number(payload[0].value) === 0 ? 'Lavaggio' : `${payload[0].value}%`,
-                      },
-                    ]}
-                  />
-                ) : null
-              }
-            />
+            {/* No floating tooltip: the header above shows the hovered reading */}
+            <Tooltip cursor={{ fill: 'var(--color-grey-100)' }} content={() => null} />
             <Bar
               dataKey="value"
               radius={[radius, radius, 0, 0]}
               minPointSize={1}
               isAnimationActive={false}
               label={({ index, x, y, width }) =>
-                index === lastIndex ? (
+                index === selected ? (
                   <circle
                     cx={Number(x) + Number(width) / 2}
                     cy={Number(y) - (wide ? 12 : 5)}
@@ -145,7 +177,7 @@ function DirtChart({ data, wide }: { data: SenseKlean; wide: boolean }) {
               }
             >
               {data.hourly.map((h, i) => (
-                <Cell key={h.hour} fill={i === lastIndex ? 'var(--color-accent)' : 'var(--color-grey-bar)'} />
+                <Cell key={h.hour} fill={i === selected ? 'var(--color-accent)' : 'var(--color-grey-bar)'} />
               ))}
             </Bar>
           </BarChart>
