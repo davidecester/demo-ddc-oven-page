@@ -37,7 +37,7 @@ export function BottomSheet({ open, onClose, title, titleId, children }: BottomS
         // Clicks on the dialog element itself land on the ::backdrop area
         if (e.target === e.currentTarget) onClose()
       }}
-      className="sheet fixed inset-x-0 top-auto bottom-0 m-0 max-h-[90dvh] w-full max-w-none overflow-y-auto rounded-t-lg bg-bg-primary p-0 shadow-sheet lg:left-(--spacing-sidebar) lg:w-[calc(100%-var(--spacing-sidebar))]"
+      className="sheet fixed inset-x-0 top-auto bottom-0 m-0 max-h-[90dvh] w-full max-w-none overflow-y-auto rounded-t-lg bg-bg-primary p-0 lg:left-(--spacing-sidebar) lg:w-[calc(100%-var(--spacing-sidebar))]"
     >
       <div className="flex flex-col gap-9 p-4 pb-[calc(16px+env(safe-area-inset-bottom))] md:p-6">
         <div className="relative flex items-center justify-between pr-10">
