@@ -1,6 +1,7 @@
 import type { ActivityStatus, OvenAlert, OvenInfo, StatusTagType } from '../../types/oven'
 import { Icon } from '../ui/Icon'
 import { StatusTag } from '../ui/StatusTag'
+import { ACTIVITY_CARD_ID } from './anchors'
 
 interface OvenOverviewCardProps {
   oven: OvenInfo
@@ -22,10 +23,9 @@ const CONNECTION = {
 } as const
 
 export function OvenOverviewCard({ oven, activityStatus, alerts, onOpenAlerts, className }: OvenOverviewCardProps) {
-  const tags: StatusTagType[] = [
-    ...(oven.connection === 'offline' ? (['offline'] as const) : [ACTIVITY_TAG[activityStatus]]),
-    ...(oven.extraTags ?? []),
-  ]
+  // The live activity tag links to the "Attività in corso" card; offline/extra tags stay static
+  const activityTag = oven.connection === 'offline' ? null : ACTIVITY_TAG[activityStatus]
+  const tags: StatusTagType[] = [...(activityTag ? [] : (['offline'] as const)), ...(oven.extraTags ?? [])]
   const actionCount = alerts.filter((a) => a.action).length
   const connection = CONNECTION[oven.connection]
 
@@ -43,6 +43,12 @@ export function OvenOverviewCard({ oven, activityStatus, alerts, onOpenAlerts, c
             className="absolute inset-0 size-full rounded-md object-contain"
           />
           <div className="absolute top-2 left-2 flex flex-wrap items-center gap-2">
+            {activityTag && (
+              <a href={`#${ACTIVITY_CARD_ID}`} className="state-layer flex rounded-lg">
+                <StatusTag type={activityTag} />
+                <span className="sr-only">: vai ad Attività in corso</span>
+              </a>
+            )}
             {tags.map((tag) => (
               <StatusTag key={tag} type={tag} />
             ))}

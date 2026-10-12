@@ -1,0 +1,89 @@
+# DDC Oven Page Prototype — Context for a new session
+
+Read this first, then wait for the user to explain the next scenario. Don't start building a scenario before the user describes it.
+
+## Goal
+An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, built from Figma. Desktop (1440px) and mobile (390px) share one codebase and should match Figma pixel for pixel. Scenarios are switched with data only, so no rebuild is needed for each one.
+
+## Branches and deploy (important)
+- **Repo:** `github.com/davidecester/demo-ddc-oven-page`.
+- **Never push to `main`.** Cloudflare Workers Builds deploys every push to `main`, and **the user decides when to merge**.
+- Work on a `claude/...` feature branch and push only there. The user merges it via a PR.
+- The previous work branch is `claude/wonderful-turing-r4a56e` (PR #1). If PR #1 is still open, start from that branch so you have the Scenario 1 changes. If it's merged, start from `main`.
+- **Commit identity:** Davide Cester <cesterdav@gmail.com>.
+- **Language:** UI copy in Italian. Code and commit messages in English. Nav labels stay in English.
+
+## Status
+- **Scenario 1 (cooking)** is complete, pixel-matched at 1440 and 390, and passes build, lint and axe.
+- These changes are on the PR #1 branch:
+  - The overview activity tag ("Cottura in corso") is an `<a href="#attivita-in-corso">` to the Attività in corso card. The anchor id is in `src/components/oven/anchors.ts`, and `.anchor-target` sets a scroll-margin of 120px on mobile and 144px on desktop for the sticky TopBar.
+  - **SENSE.Klean chart scrubbing (Revolut-style):** hovering or tapping a bar updates the header's %, level label, colour, icon and time ("Oggi/Ieri alle HH:MM"). Leaving the chart or tapping outside resets it to the current reading. The levels are:
+    - Pulito: primary black text, no icon.
+    - Sporco: `text-yellow-500` with the warning icon.
+    - Molto Sporco: `text-alarm` (#ff0033) with the red "!" error icon (`dirt-error-32/20.svg`).
+    - Thresholds: ≤50 clean, ≤75 dirty, otherwise veryDirty (`senseKlean.ts`).
+- **Next:** Scenarios 2–5. The user will share Figma links and explain each one. **Pending from Scenario 1:** the overview "maintenance" tag should link to the maintenance alert (do this together with the Manutenzione scenario).
+- **Open questions to raise when relevant:**
+  - Bring back a floating tooltip on the SENSE.Klean chart? It was removed when scrubbing was added.
+  - Should 0% (wash) bars read "Lavaggio" instead of "Pulito"?
+  - Scenario 1 data shows 62%, but one Figma frame shows 78%.
+
+## Stack
+- Vite 8, React 19, TypeScript, Tailwind 4 and Recharts 3. Node 22. Lint is oxlint. No component library.
+- Run `npm ci` first in a fresh container. Without it, build and lint fail.
+- Scripts: `npm run dev`, `npm run build` (tsc + vite build), `npm run lint`, `npm run preview`.
+- **Tokens** are in `src/styles/tokens.css`, for example `--color-alarm`, `--color-accent #0073e1`, `--color-green-text #008a00` and `--color-yellow-500`.
+- **Text styles** are `@utility type-*` in `src/styles/typography.css`. State-layer and mask-icon utilities are in `src/styles/states.css`.
+- **Assets** are in `/public/assets` (icons in `/public/assets/icons`).
+- **Fonts:** Roboto, plus Montserrat for ring percentages.
+- **Breakpoints:** md 768, lg 1024, xl 1440. The sticky TopBar is 104px high below 1024 and 128px at 1024 and above.
+
+## Architecture
+- **Scenario model:** `src/types/oven.ts`. A `null` section renders that card's empty state, which is how the newly registered oven works.
+- **Scenario data:** `src/data/scenarios/*.ts`, one file per scenario, registered in `index.ts`. Only `cooking.ts` exists so far.
+- **Switching:** `?scenario=<id>` selects a scenario. A magenta "Prototipo" pill (ScenarioSwitcher, bottom left) switches between them.
+- **`useOvenSimulation`** drives the live behaviour:
+  - The countdown and progress ring run off the remaining time.
+  - Chamber temperature heats from 185 to 190 °C (red `#b30024` while heating, green `#008a00` at target).
+  - "Avvia lavaggio" switches to washing for 75 minutes and disables the CTAs.
+- **Alerts** open in a bottom sheet with a scrim, focus trap, and Esc/scrim/✕ to close.
+- **Recipe tabs** work with click and the arrow keys. Container queries switch the ring layout when the card is 520px wide.
+- **Cards** are in `src/components/oven/`. `Card` (in `src/components/ui/Card.tsx`) accepts an `id` prop for anchors.
+
+## Layout and grid
+- **Mobile:** 4 columns, 16 margin, 8 gutter. **Tablet:** 8 columns, 24 margin, 16 gutter. **Desktop:** 12 columns, 24 margin, 16 gutter, plus a 94px sidebar.
+- **Desktop card heights at 1440:** 348 / 280 / 347 / 347 / 478 / 428 / 428 / 232 / 220.
+- Browser chrome and the iOS status bar are left out.
+
+## Figma
+- File key `1bn8wNuEBinpGhweOO9f0Y`, page "Copia per Prototipo" (`35804:2011`):
+  - Scenario Base `35807:8455`: desktop `35807:8456`, mobile `35807:9057`, desktop sheet `35807:8975`, mobile sheet `35807:9014`.
+  - Activity in Progress - Idle: `35807:9479`
+  - SENSE.Klean header states: `35807:9758`
+  - Manutenzione Richiesta: `35807:10539`
+  - Forno Appena Registrato: `35807:11672`
+- Component page `35707:297`: Activity Card variants (Desktop/Mobile × Cooking/Washing/Standby), the Status Tag set (9 variants) and the Progress Ring.
+- **How to use the Figma MCP:**
+  - Load the `figma-design-to-code` skill before calling `get_design_context`.
+  - `get_design_context` and `get_screenshot` read designs.
+  - Downloading assets from `https://www.figma.com/api/mcp/asset/...` needs `www.figma.com` allowed in the environment's network access. If downloads return 403, ask the user to allow the domain or to export the assets and upload them. Don't redraw assets unless the user agrees.
+- Copy must match Figma exactly. Times use a colon.
+
+## Accessibility
+- **Fixed for AA:**
+  - Page background is `#ebebeb`.
+  - Green text is `#008a00`.
+  - SENSE and "Altro" bars are `#8e8e8e`.
+- **Intentionally NOT fixed (design system, the user's call):**
+  - Active nav accent `#0073e1` on `#f9f8f8` (4.36:1). It's the only expected axe violation.
+  - Search placeholder `#ccc`.
+
+## Verification (before every push)
+1. Run `npm run build` and `npm run lint`.
+2. Run `npx vite preview --port 4173`, then check with Playwright at 1440×900 and 390×844. Playwright is preinstalled (`/opt/node-tools/node_modules/playwright`, Chromium at `/opt/pw-browsers`). Check:
+   - The interactions you changed.
+   - No horizontal overflow (`scrollWidth <= innerWidth`).
+   - An axe-core audit. Install `axe-core` in the scratchpad and inject `axe.min.js`. Expect only the nav-accent contrast issue.
+3. Compare screenshots against Figma at both widths.
+4. Don't `pkill -f` with a pattern that appears in the same shell command line, because it kills the shell. Stop the preview server separately.
+5. Push to the feature branch only, then tell the user what changed. They merge to `main` when ready.
