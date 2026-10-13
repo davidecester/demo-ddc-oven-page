@@ -9,15 +9,21 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 - **Repo:** `github.com/davidecester/demo-ddc-oven-page`.
 - **Never push to `main`.** Cloudflare Workers Builds deploys every push to `main`, and **the user decides when to merge**.
 - Work on a `claude/...` feature branch and push only there. The user merges it via a PR.
-- **Use one working branch for all further updates: `claude/hopeful-pascal-y3fr0j`.** Don't create new branches. Before starting, bring it up to date with `main` (fast-forward). Push there, open one PR into `main`, and merge only when the user asks. After a merge, keep reusing the same branch (the user's rule, so branches don't pile up).
-- History: PR #1 `claude/wonderful-turing-r4a56e` (Scenario 1), PR #2 `claude/hopeful-pascal-y3fr0j` (Scenario 2 + AA colours), PR #3 `claude/scenario-3-maintenance`, PR #4 `claude/scenario-4-new-oven`, PR #5 (hint spacing). All are merged into `main`.
-- Scenario switcher labels are the user's scenario names: Scenario Base, Activity in Progress - Idle, Manutenzione Richiesta, Forno Appena Registrato. If PR #1 is still open, start from that branch so you have the Scenario 1 changes. If it's merged, start from `main`.
+- **Use one working branch for all further updates: `claude/prototype-updates`.** Don't use any other branch name. Push there and keep one PR open into `main`; the user checks it and merges.
+- **GitHub auto-deletes the branch after a merge.** So before starting an update:
+  1. `git fetch origin main claude/prototype-updates`.
+  2. If `origin/claude/prototype-updates` still exists and its PR is open, keep working on it (merge `main` in if it's behind).
+  3. If it's gone (or its PR is merged), recreate it from the latest main: `git checkout -B claude/prototype-updates origin/main`, then push with `git push -u origin claude/prototype-updates`. Never stack new work on already-merged history.
+  4. Open a new PR into `main` for the recreated branch (the old merged PR can't be reused).
+- History: PRs #1–#9 (Scenarios 1–4, accessibility, spacing, shadows, scenario switcher) are all merged into `main`. Their branches (`claude/wonderful-turing-r4a56e`, `claude/hopeful-pascal-y3fr0j`, `claude/scenario-3-maintenance`, `claude/scenario-4-new-oven`) have been deleted from GitHub; only `main` and `claude/prototype-updates` remain.
+- Scenario switcher labels are the user's scenario names: Scenario Base, Activity in Progress - Idle, Manutenzione Richiesta, Forno Appena Registrato.
+- When the user asks to see an option first, show a preview and wait for an explicit choice before building.
 - **Commit identity:** Davide Cester <cesterdav@gmail.com>.
 - **Language:** UI copy in Italian. Code and commit messages in English. Nav labels stay in English.
 
 ## Status
 - **Scenario 1 (cooking)** is complete, pixel-matched at 1440 and 390, and passes build, lint and axe.
-- These changes are on the PR #1 branch:
+- Scenario 1 details (merged):
   - The overview activity tag ("Cottura in corso") is an `<a href="#attivita-in-corso">` to the Attività in corso card. The anchor id is in `src/components/oven/anchors.ts`, and `.anchor-target` sets a scroll-margin of 120px on mobile and 144px on desktop for the sticky TopBar.
   - **SENSE.Klean chart scrubbing (Revolut-style):** hovering or tapping a bar updates the header's %, level label, colour, icon and time ("Oggi/Ieri alle HH:MM"). Leaving the chart or tapping outside resets it to the current reading. The levels are:
     - Pulito: primary black text, no icon.
@@ -52,8 +58,8 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 
 ## Architecture
 - **Scenario model:** `src/types/oven.ts`. A `null` section renders that card's empty state, which is how the newly registered oven works.
-- **Scenario data:** `src/data/scenarios/*.ts`, one file per scenario, registered in `index.ts`. Only `cooking.ts` exists so far.
-- **Switching:** `?scenario=<id>` selects a scenario. A magenta "Prototipo" pill (ScenarioSwitcher, bottom left) switches between them. After load it shows dot + label for 6 s, then shrinks to a 32px dot. During the intro and while shrunk, a magenta ripple spreads from the dot (2.8x, from 90% opacity, every 1.2 s; the pill and dot keep their size); it stops while hovered, focused or open; hover (mouse), keyboard focus or an open panel expand it again; tapping outside closes the panel.
+- **Scenario data:** `src/data/scenarios/*.ts`, one file per scenario, registered in `index.ts`: `cooking.ts`, `idle.ts`, `maintenance.ts`, `newOven.ts`.
+- **Switching:** `?scenario=<id>` selects a scenario. A magenta "Prototipo" pill (ScenarioSwitcher, bottom left) switches between them. After load it shows dot + label for 6 s, then shrinks to a 32px dot. During the intro and while shrunk, a magenta ripple spreads from the dot (2.8x, from 90% opacity, every 1.2 s; the pill and dot keep their size); it stops while hovered, focused or open; hover (mouse), keyboard focus or an open panel expand it again; tapping outside closes the panel. Growing and shrinking are symmetric: the label animates via a grid 0fr→1fr transition over 450 ms ease-in-out, and the panel fades/slides in over 450 ms (`switcher-panel-in` in `states.css`). Behaviour is verified identical on desktop (mouse) and mobile (touch).
 - **`useOvenSimulation`** drives the live behaviour:
   - The countdown and progress ring run off the remaining time.
   - Chamber temperature heats from 185 to 190 °C (red `#b30024` while heating, green `#008a00` at target).
@@ -66,6 +72,8 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 - **Mobile:** 4 columns, 16 margin, 8 gutter. **Tablet:** 8 columns, 24 margin, 16 gutter. **Desktop:** 12 columns, 24 margin, 16 gutter, plus a 94px sidebar.
 - **Desktop card heights at 1440:** 348 / 280 / 347 / 347 / 478 / 428 / 428 / 232 / 220.
 - Browser chrome and the iOS status bar are left out.
+- **Shadows:** cards use `shadow-elevation-1` (matches Figma); the alerts drawer has no shadow.
+- **Activity hint** (under the CTA): icon + text 4px apart (`gap-1`), centred.
 
 ## Figma
 - File key `1bn8wNuEBinpGhweOO9f0Y`, page "Copia per Prototipo" (`35804:2011`):
