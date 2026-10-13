@@ -24,6 +24,14 @@ const CATEGORY_ICON: Record<RecipeCategoryIcon, string> = {
   seafood: 'seafood-color',
   vegetable: 'vegetable-color',
   bread: 'bread-color',
+  chicken: 'chicken-color',
+  pizza: 'pizza-color',
+  frozenSnack: 'frozen-snack-color',
+  sandwich: 'sandwich-color',
+  eggs: 'eggs-color',
+  puffPastry: 'puff-pastry-color',
+  dessert: 'dessert-color',
+  toast: 'toast-color',
 }
 
 /** "Ricette presenti nel forno": tabs per recipe type, then recipe categories. */
@@ -107,7 +115,7 @@ export function RecipesCard({ tabs, onCreateGroup, className }: RecipesCardProps
                     </span>
                     <span className="flex min-w-0 flex-col gap-1">
                       <span className="type-label-md text-content-primary">{cat.name}</span>
-                      <span className="type-paragraph-xs text-content-quaternary">{cat.count} ricette</span>
+                      <span className="type-paragraph-xs text-content-quaternary">{cat.count} {cat.count === 1 ? 'ricetta' : 'ricette'}</span>
                     </span>
                   </span>
                   <span className="flex w-10 shrink-0 items-center justify-center p-2">
