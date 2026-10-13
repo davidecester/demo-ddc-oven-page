@@ -51,7 +51,7 @@ export function ScenarioSwitcher({ scenarios, activeId, onSelect, onReset }: Sce
       onPointerLeave={() => setHovered(false)}
       onFocus={(e) => setFocused(e.target.matches(':focus-visible'))}
       onBlur={(e) => !e.currentTarget.contains(e.relatedTarget as Node) && setFocused(false)}
-      className="fixed bottom-[calc(var(--spacing-bottom-nav)+12px+env(safe-area-inset-bottom))] left-3 z-30 font-mono text-[12px] lg:bottom-4 lg:left-[calc(var(--spacing-sidebar)+16px)]"
+      className="fixed bottom-[calc(var(--spacing-bottom-nav)+12px+env(safe-area-inset-bottom))] left-3 z-30 font-mono text-[12px] lg:bottom-[42px] lg:left-[calc(var(--spacing-sidebar)-33px)]"
     >
       {open && (
         <div
