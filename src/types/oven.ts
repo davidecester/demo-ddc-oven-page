@@ -146,7 +146,19 @@ export interface Usage {
   categories: UsageCategory[]
 }
 
-export type RecipeCategoryIcon = 'beef' | 'seafood' | 'vegetable' | 'bread'
+export type RecipeCategoryIcon =
+  | 'beef'
+  | 'seafood'
+  | 'vegetable'
+  | 'bread'
+  | 'chicken'
+  | 'pizza'
+  | 'frozenSnack'
+  | 'sandwich'
+  | 'eggs'
+  | 'puffPastry'
+  | 'dessert'
+  | 'toast'
 export type RecipeTabKey = 'programs' | 'multiTime' | 'miseEnPlace'
 
 export interface RecipeCategory {

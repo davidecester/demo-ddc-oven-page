@@ -1,6 +1,6 @@
 import type { DownloadGroup, RecipeTab } from '../types/oven'
 
-/** Recipes stored on the oven. MULTI.Time and MISE.EN.PLACE reuse the Programmi layout with their own counts. */
+/** Recipes stored on the oven. Each tab has its own categories, with icons from the Figma "Chefunox food categories" set. */
 export const sharedRecipes: RecipeTab[] = [
   {
     key: 'programs',
@@ -16,20 +16,20 @@ export const sharedRecipes: RecipeTab[] = [
     key: 'multiTime',
     label: 'MULTI.Time',
     categories: [
-      { name: 'Manzo', count: 2, icon: 'beef' },
-      { name: 'Pesce', count: 2, icon: 'seafood' },
-      { name: 'Verdure', count: 3, icon: 'vegetable' },
-      { name: 'Panificazione', count: 1, icon: 'bread' },
+      { name: 'Pollo', count: 2, icon: 'chicken' },
+      { name: 'Pizza', count: 2, icon: 'pizza' },
+      { name: 'Snack surgelati', count: 3, icon: 'frozenSnack' },
+      { name: 'Panini', count: 1, icon: 'sandwich' },
     ],
   },
   {
     key: 'miseEnPlace',
     label: 'MISE.EN.PLACE',
     categories: [
-      { name: 'Manzo', count: 1, icon: 'beef' },
-      { name: 'Pesce', count: 2, icon: 'seafood' },
-      { name: 'Verdure', count: 1, icon: 'vegetable' },
-      { name: 'Panificazione', count: 1, icon: 'bread' },
+      { name: 'Uova', count: 1, icon: 'eggs' },
+      { name: 'Pasta sfoglia', count: 2, icon: 'puffPastry' },
+      { name: 'Dessert', count: 1, icon: 'dessert' },
+      { name: 'Toast', count: 1, icon: 'toast' },
     ],
   },
 ]
