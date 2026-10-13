@@ -9,7 +9,12 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 - **Repo:** `github.com/davidecester/demo-ddc-oven-page`.
 - **Never push to `main`.** Cloudflare Workers Builds deploys every push to `main`, and **the user decides when to merge**.
 - Work on a `claude/...` feature branch and push only there. The user merges it via a PR.
-- **Use one working branch for all further updates: `claude/prototype-updates`.** Don't create new branches. Before starting, bring it up to date with `main` (fast-forward). Push there and open one PR into `main`; the user checks it and merges. After a merge, keep reusing the same branch.
+- **Use one working branch for all further updates: `claude/prototype-updates`.** Don't use any other branch name. Push there and keep one PR open into `main`; the user checks it and merges.
+- **GitHub auto-deletes the branch after a merge.** So before starting an update:
+  1. `git fetch origin main claude/prototype-updates`.
+  2. If `origin/claude/prototype-updates` still exists and its PR is open, keep working on it (merge `main` in if it's behind).
+  3. If it's gone (or its PR is merged), recreate it from the latest main: `git checkout -B claude/prototype-updates origin/main`, then push with `git push -u origin claude/prototype-updates`. Never stack new work on already-merged history.
+  4. Open a new PR into `main` for the recreated branch (the old merged PR can't be reused).
 - History: PRs #1–#9 (Scenarios 1–4, accessibility, spacing, shadows, scenario switcher) are all merged into `main`. Their branches (`claude/wonderful-turing-r4a56e`, `claude/hopeful-pascal-y3fr0j`, `claude/scenario-3-maintenance`, `claude/scenario-4-new-oven`) have been deleted from GitHub; only `main` and `claude/prototype-updates` remain.
 - Scenario switcher labels are the user's scenario names: Scenario Base, Activity in Progress - Idle, Manutenzione Richiesta, Forno Appena Registrato.
 - When the user asks to see an option first, show a preview and wait for an explicit choice before building.
