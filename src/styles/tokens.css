@@ -34,8 +34,6 @@
   --color-orange-400: #ff6900;
   --color-orange-500: #b34a00;
   --color-yellow-400: #ffc107;
-  /* Figma yellow500 #b38705 darkened for WCAG AA: 3.52:1 as large text on white ("Sporco"). Same value in the yellow dirt-warning SVG icons. */
-  --color-yellow-500: #ad8205;
   --color-warning-16: rgb(255 193 7 / 0.16);
   --color-green-100: #ccf5cc;
   /* Figma green500 #008f00 darkened for WCAG AA: 4.53:1 as text on white. Same value in the green SVG icons. */

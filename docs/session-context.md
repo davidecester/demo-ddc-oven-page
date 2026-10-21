@@ -31,15 +31,15 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
   3. The activity tag (links to `#attivita-in-corso`), or "Forno offline".
   Then model line, name + 10px status dot (no "Online" text; it's in `sr-only`) and Gruppo. "Mostra informazioni / Nascondi informazioni" (`aria-expanded`) reveals warranty + the 2×2 info grid with a 300 ms grid-rows transition; on desktop the image column stretches with it. Heights: desktop 234 closed / 374 open, mobile 390 / 530 in every scenario (wrapped tags overlay the image).
   - Tag padding is the Figma value minus the 1px border (Figma strokes are inside): S `px-[7px] py-[3px]`, M `px-[11px] py-[5px]`.
-  - **Decided (a11y):** yellow-500 is `#ad8205` instead of Figma's `#b38705` everywhere (token, "Sporco" text, dirt-warning icons): `#ad8205` is 3.52:1 as large text on white. (The pale yellow-100 tag that also needed it is gone.) yellow-400 stays as a surface with black text (12.9:1). The multicolour food illustrations keep their Figma colours.
+  - **Decided (a11y):** no yellow is used as text or icon colour any more (Figma's `#b38705` failed, and any yellow that passes 3:1 on white looks ochre). Warning yellow appears only as the yellow-400 `#ffc107` tag surface with black text (12.9:1); the `yellow-500` token and the yellow dirt icons were removed. The multicolour food illustrations keep their Figma colours.
 - **Avvisi card:** the "+N more alerts" row is plain text + chevron (no severity dot, removed by the user for a cleaner row). The idle "In attesa" tag is grey-200 `#e0e0e0` everywhere. Alert titles are sentence case ("Camera sporca", "Camera molto sporca").
 - **Scenario 1 (cooking)** is complete, pixel-matched at 1440 and 390, and passes build, lint and axe.
 - Scenario 1 details (merged):
   - The overview activity tag ("Cottura in corso") is an `<a href="#attivita-in-corso">` to the Attività in corso card. The anchor id is in `src/components/oven/anchors.ts`, and `.anchor-target` sets a scroll-margin of 120px on mobile and 144px on desktop for the sticky TopBar.
-  - **SENSE.Klean chart scrubbing (Revolut-style):** hovering or tapping a bar updates the header's %, level label, colour, icon and time ("Oggi/Ieri alle HH:MM"). Leaving the chart or tapping outside resets it to the current reading. The levels are:
-    - Pulito: primary black text, no icon.
-    - Sporco: `text-yellow-500` with the warning icon.
-    - Molto Sporco: `text-alarm` with the red "!" error icon (`dirt-error-32/20.svg`).
+  - **SENSE.Klean chart scrubbing (Revolut-style):** hovering or tapping a bar updates the header's %, level tag and time ("Today/Yesterday at HH:MM"). Leaving the chart or tapping outside resets it to the current reading. The levels (`DIRT_LEVEL` in `senseKlean.ts`):
+    - Clean: black value only, no tag (the level is in `sr-only`).
+    - Dirty: black value + S `warning` tag "Dirty".
+    - Very dirty: black value + S `critical` tag "Very dirty".
     - Thresholds: ≤50 clean, ≤75 dirty, otherwise veryDirty (`senseKlean.ts`).
 - **Scenario 2 (idle, `?scenario=idle`)** is done in `src/data/scenarios/idle.ts`. It reuses Scenario 1 and overrides the activity (idle, 78% · Molto Sporco), the critical alert "Camera molto sporca" (WF54) and the SENSE.Klean reading (78% at 13:00).
   - Critical alerts use `bg-alarm-16` (`--color-alarm-16`) and the `sheet-error` icon.
@@ -57,14 +57,14 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 - **All four scenarios are done.**
 - **Recipes:** each tab has its own categories (`src/data/shared.ts`), with icons from the Figma "Chefunox food categories" frame (`3545:232623`). Programmi: Manzo, Pesce, Verdure, Panificazione. MULTI.Time: Pollo, Pizza, Snack surgelati, Panini. MISE.EN.PLACE: Uova, Pasta sfoglia, Dessert, Toast. The count uses "1 ricetta" / "N ricette".
 - **Figma audit follow-up (21 Oct 2026, done):** two-digit hours on the SENSE.Klean axis (`02:00`); Base "now" is 13:05, so the cooking ends at 14:21 and the 13:00 reading isn't in the future; the Activity trend cooking hours add up to 42.5 h (6 · 6.5 · 5.5 · 6 · 7 · 6.5 · 5), matching the 42 h 30 min usage total; Idle hint = washing *required*; the new oven's RO.Care installation 21/10/2026, last update 21/10/2026 12:05; "0% · Clean" stays above "No data available yet" (decided).
-- **SENSE.Klean value line (designer edit):** "62% · Dirty · ⚠" — the status icon ends the line after a " · " (32px on desktop with an 8px gap, 20px on mobile with 4px), and the reading time sits on its own line below. Clean has no separator and no icon.
+- **SENSE.Klean value line (decided by the user, replaces the Figma "62% · Sporco · ⚠"):** the value in black (`type-heading-sm` mobile, `type-heading-xl` desktop), then the S Status Tag (Warning for Dirty, Critical for Very dirty) vertically centred on it, 12px apart; Clean shows the value only. The reading time sits on its own line below. Figma still needs this update.
 - **Decided:** no floating tooltip on the SENSE.Klean chart; 0% (wash) bars read "Pulito"; the 78% frame belongs to Scenario 2.
 
 ## Stack
 - Vite 8, React 19, TypeScript, Tailwind 4 and Recharts 3. Node 22. Lint is oxlint. No component library.
 - Run `npm ci` first in a fresh container. Without it, build and lint fail.
 - Scripts: `npm run dev`, `npm run build` (tsc + vite build), `npm run lint`, `npm run preview`.
-- **Tokens** are in `src/styles/tokens.css`, for example `--color-alarm`, `--color-accent #006fd9`, `--color-green-500 #008a00` and `--color-yellow-500`.
+- **Tokens** are in `src/styles/tokens.css`, for example `--color-alarm`, `--color-accent #006fd9`, `--color-green-500 #008a00`.
 - **Text styles** are `@utility type-*` in `src/styles/typography.css`. State-layer and mask-icon utilities are in `src/styles/states.css`.
 - **Assets** are in `/public/assets` (icons in `/public/assets/icons`).
 - **Fonts:** Roboto, plus Montserrat for ring percentages.
