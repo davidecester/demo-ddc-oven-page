@@ -20,8 +20,8 @@ const ACTIVITY_TAG: Record<ActivityStatus, StatusTagType> = {
 
 /** The most severe alert gets its own tag, by name; info alerts only count. */
 const SEVERITY_TAG: Partial<Record<AlertSeverity, { type: StatusTagType; srLabel: string }>> = {
-  critical: { type: 'alertCritical', srLabel: 'critical' },
-  warning: { type: 'alertWarning', srLabel: 'warning' },
+  critical: { type: 'critical', srLabel: 'critical' },
+  warning: { type: 'warning', srLabel: 'warning' },
 }
 
 const ALERTS_TARGET = { id: ALERTS_CARD_ID, label: 'Alerts' }
