@@ -5,7 +5,7 @@ import type { SenseKlean } from '../../types/oven'
 import { axisTick, gridStroke, renderYTick } from '../charts/chartTheme'
 import { Card } from '../ui/Card'
 import { EmptyData } from '../ui/EmptyData'
-import { Icon } from '../ui/Icon'
+import { StatusTag } from '../ui/StatusTag'
 import { DIRT_LEGEND, DIRT_LEVEL, dirtLevelOf, readingTimeLabel } from './senseKlean'
 
 interface SenseKleanCardProps {
@@ -61,25 +61,17 @@ export function SenseKleanCard({ data, className }: SenseKleanCardProps) {
   )
 }
 
-/** Figma "Current value": "62% · Sporco · ⚠" (the status icon ends the line), reading time below. */
+/** "Current value": the value in black, then a Warning / Critical S tag centred on it (none when clean); reading time below. */
 function CurrentValue({ value, readAt }: { value: number; readAt: string | null }) {
   const level = DIRT_LEVEL[dirtLevelOf(value)]
   return (
     <div className="flex flex-col gap-1">
-      <p className="flex items-center gap-1 md:gap-2">
-        <span className={`type-heading-sm md:type-heading-xl tabular-nums ${level.text}`}>
-          {value}% · {level.label}
-          {level.icon && ' ·'}
-        </span>
-        {level.icon20 && (
-          <span className="md:hidden">
-            <Icon name={level.icon20} size={20} />
-          </span>
-        )}
-        {level.icon && (
-          <span className="hidden md:block">
-            <Icon name={level.icon} size={32} />
-          </span>
+      <p className="flex items-center gap-3">
+        <span className="type-heading-sm md:type-heading-xl text-content-primary tabular-nums">{value}%</span>
+        {level.tag ? (
+          <StatusTag type={level.tag} label={level.label} />
+        ) : (
+          <span className="sr-only">{level.label}</span>
         )}
       </p>
       {readAt && <p className="type-paragraph-sm text-content-quaternary">{readAt}</p>}

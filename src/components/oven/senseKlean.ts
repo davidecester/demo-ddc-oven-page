@@ -1,4 +1,4 @@
-import type { DirtLevel } from '../../types/oven'
+import type { DirtLevel, StatusTagType } from '../../types/oven'
 
 /** Thresholds from the chart legend: Pulito 0–50, Sporco 51–75, Molto Sporco 76–100. */
 export function dirtLevelOf(value: number): DirtLevel {
@@ -8,13 +8,13 @@ export function dirtLevelOf(value: number): DirtLevel {
 }
 
 /**
- * Header styling per level (Figma "Card · SENSE.Klean"): Pulito is primary text with no icon,
- * Sporco a yellow warning, Molto Sporco the red `error` glyph in alarm red.
+ * Status per level, shown after the value with the same Warning / Critical tags as the alerts:
+ * Clean has no tag, Dirty is Warning, Very dirty is Critical.
  */
-export const DIRT_LEVEL: Record<DirtLevel, { label: string; text: string; icon: string | null; icon20: string | null }> = {
-  clean: { label: 'Clean', text: 'text-content-primary', icon: null, icon20: null },
-  dirty: { label: 'Dirty', text: 'text-yellow-500', icon: 'dirt-warning-32', icon20: 'dirt-warning-20' },
-  veryDirty: { label: 'Very dirty', text: 'text-alarm', icon: 'dirt-error-32', icon20: 'dirt-error-20' },
+export const DIRT_LEVEL: Record<DirtLevel, { label: string; tag: StatusTagType | null }> = {
+  clean: { label: 'Clean', tag: null },
+  dirty: { label: 'Dirty', tag: 'warning' },
+  veryDirty: { label: 'Very dirty', tag: 'critical' },
 }
 
 /**

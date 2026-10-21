@@ -17,8 +17,6 @@ export type StatusTagType =
   | 'warning'
   /** Oven overview: neutral count of the other alerts, and the most severe alert by name. */
   | 'alertCount'
-  | 'alertCritical'
-  | 'alertWarning'
 
 export type ActivityStatus = 'cooking' | 'washing' | 'idle'
 

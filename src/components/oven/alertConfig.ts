@@ -9,8 +9,6 @@ export const SEVERITY: Record<
     badge: string
     icon: string
     icon16: string
-    /** Dot on the "+N altri avvisi" row when this is the most severe alert. */
-    dot: string
     srLabel: string
   }
 > = {
@@ -20,7 +18,6 @@ export const SEVERITY: Record<
     badge: 'bg-alarm',
     icon: 'sheet-error',
     icon16: 'tag-error',
-    dot: 'dot-red',
     srLabel: 'Critical',
   },
   warning: {
@@ -29,7 +26,6 @@ export const SEVERITY: Record<
     badge: 'bg-yellow-400',
     icon: 'sheet-warning',
     icon16: 'sheet-warning-16',
-    dot: 'dot-yellow',
     srLabel: 'Warning',
   },
   info: {
@@ -38,7 +34,6 @@ export const SEVERITY: Record<
     badge: 'bg-bg-tertiary',
     icon: 'sheet-info',
     icon16: 'sheet-info-16',
-    dot: 'dot-blue',
     srLabel: 'Information',
   },
 }
