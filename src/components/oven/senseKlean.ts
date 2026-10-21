@@ -12,9 +12,9 @@ export function dirtLevelOf(value: number): DirtLevel {
  * Sporco a yellow warning, Molto Sporco the red `error` glyph in alarm red.
  */
 export const DIRT_LEVEL: Record<DirtLevel, { label: string; text: string; icon: string | null; icon20: string | null }> = {
-  clean: { label: 'Pulito', text: 'text-content-primary', icon: null, icon20: null },
-  dirty: { label: 'Sporco', text: 'text-yellow-500', icon: 'dirt-warning-32', icon20: 'dirt-warning-20' },
-  veryDirty: { label: 'Molto Sporco', text: 'text-alarm', icon: 'dirt-error-32', icon20: 'dirt-error-20' },
+  clean: { label: 'Clean', text: 'text-content-primary', icon: null, icon20: null },
+  dirty: { label: 'Dirty', text: 'text-yellow-500', icon: 'dirt-warning-32', icon20: 'dirt-warning-20' },
+  veryDirty: { label: 'Very dirty', text: 'text-alarm', icon: 'dirt-error-32', icon20: 'dirt-error-20' },
 }
 
 /**
@@ -23,12 +23,12 @@ export const DIRT_LEVEL: Record<DirtLevel, { label: string; text: string; icon: 
  */
 export function readingTimeLabel(hours: string[], index: number): string {
   const midnight = hours.lastIndexOf('00:00')
-  const day = midnight !== -1 && index < midnight ? 'Ieri' : 'Oggi'
-  return `${day} alle ${hours[index]}`
+  const day = midnight !== -1 && index < midnight ? 'Yesterday' : 'Today'
+  return `${day} at ${hours[index]}`
 }
 
 export const DIRT_LEGEND = [
-  { label: 'Pulito', range: '0% - 50%' },
-  { label: 'Sporco', range: '51% - 75%' },
-  { label: 'Molto Sporco', range: '76% - 100%' },
+  { label: 'Clean', range: '0% - 50%' },
+  { label: 'Dirty', range: '51% - 75%' },
+  { label: 'Very dirty', range: '76% - 100%' },
 ]

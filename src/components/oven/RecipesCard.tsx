@@ -8,7 +8,7 @@ import { RECIPES_CARD_ID } from './anchors'
 
 interface RecipesCardProps {
   tabs: RecipeTab[] | null
-  /** "Crea un Gruppo" in the empty state. */
+  /** "Create a group" in the empty state. */
   onCreateGroup: () => void
   className?: string
 }
@@ -55,7 +55,7 @@ export function RecipesCard({ tabs, onCreateGroup, className }: RecipesCardProps
   return (
     <Card id={RECIPES_CARD_ID} labelledBy="recipes-title" className={`anchor-target gap-9 ${className ?? ''}`}>
       <div className="flex flex-col gap-4">
-        <CardTitle id="recipes-title">Ricette presenti nel forno</CardTitle>
+        <CardTitle id="recipes-title">Recipes on the oven</CardTitle>
         {tabs && (
           // Tabs scroll horizontally on narrow screens (Figma "~h-scroll")
           <div className="no-scrollbar -mx-4 overflow-x-auto px-4 md:mx-0 md:px-0">
@@ -115,7 +115,7 @@ export function RecipesCard({ tabs, onCreateGroup, className }: RecipesCardProps
                     </span>
                     <span className="flex min-w-0 flex-col gap-1">
                       <span className="type-label-md text-content-primary">{cat.name}</span>
-                      <span className="type-paragraph-xs text-content-quaternary">{cat.count} {cat.count === 1 ? 'ricetta' : 'ricette'}</span>
+                      <span className="type-paragraph-xs text-content-quaternary">{cat.count} {cat.count === 1 ? 'recipe' : 'recipes'}</span>
                     </span>
                   </span>
                   <span className="flex w-10 shrink-0 items-center justify-center p-2">
@@ -129,19 +129,19 @@ export function RecipesCard({ tabs, onCreateGroup, className }: RecipesCardProps
           // New oven: nothing uploaded yet (Figma "Forno Appena Registrato")
           <div className="flex min-h-[150px] flex-col items-start justify-center gap-4 lg:min-h-[110px]">
             <div className="flex max-w-[321px] flex-col gap-1">
-              <p className="type-label-lg text-content-primary">Nessuna ricetta caricata</p>
+              <p className="type-label-lg text-content-primary">No recipes uploaded</p>
               <p className="type-paragraph-sm text-content-quaternary">
-                Crea un nuovo gruppo di ricette e caricalo sul forno.
+                Create a new recipe group and upload it to the oven.
               </p>
             </div>
             <Button icon="add-white" onClick={onCreateGroup} fullWidth className="md:w-auto">
-              Crea un Gruppo
+              Create a group
             </Button>
           </div>
         )}
         </div>
       ) : (
-        <p className="type-paragraph-sm text-content-quaternary">Nessuna ricetta presente</p>
+        <p className="type-paragraph-sm text-content-quaternary">No recipes</p>
       )}
     </Card>
   )

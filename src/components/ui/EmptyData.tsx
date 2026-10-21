@@ -9,7 +9,7 @@ interface EmptyDataProps {
   className?: string
 }
 
-export const EMPTY_DATA_MESSAGE = 'Nessun dato ancora disponibile'
+export const EMPTY_DATA_MESSAGE = 'No data available yet'
 
 /**
  * Figma "empty-message": the card's normal layout, faded and hidden from assistive tech

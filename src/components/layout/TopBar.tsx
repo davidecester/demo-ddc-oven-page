@@ -33,13 +33,13 @@ export function TopBar({ ovenName }: TopBarProps) {
         </label>
 
         <div className="flex items-center justify-end gap-2">
-          <IconButton icon="send-to-oven" label="Invia al forno" />
-          <IconButton icon="notifications" label="Notifiche" />
+          <IconButton icon="send-to-oven" label="Send to oven" />
+          <IconButton icon="notifications" label="Notifications" />
           <IconButton icon="search" label="Search" className="lg:hidden" />
           <button
             type="button"
-            aria-label="Novità"
-            title="Novità"
+            aria-label="What’s new"
+            title="What’s new"
             className="state-layer hidden size-9 items-center justify-center rounded-md border-[1.5px] border-new-features bg-new-features-8 lg:flex"
           >
             <Icon name="new-features" size={20} />
@@ -53,7 +53,7 @@ export function TopBar({ ovenName }: TopBarProps) {
       {/* ToolbarDDC */}
       <div className="flex h-[52px] items-center justify-between gap-2 px-3 py-2 lg:h-[60px] lg:px-6">
         <div className="flex min-w-0 flex-1 items-center gap-2">
-          <IconButton icon="nav-back" label="Torna a Ovens" className="lg:hidden" />
+          <IconButton icon="nav-back" label="Back to Ovens" className="lg:hidden" />
           <p className="min-w-0 truncate type-label-sm text-content-tertiary lg:hidden">{ovenName}</p>
 
           <nav aria-label="Breadcrumb" className="hidden lg:block">
@@ -83,7 +83,7 @@ export function TopBar({ ovenName }: TopBarProps) {
           <Button variant="secondary" icon="analytics">
             Analytics
           </Button>
-          <IconButton icon="more" label="Altre opzioni" />
+          <IconButton icon="more" label="More options" />
         </div>
       </div>
     </header>

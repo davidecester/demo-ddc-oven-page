@@ -10,10 +10,10 @@ interface UsageHoursCardProps {
 
 const CATEGORY: Record<UsageCategoryKey, { label: string; icon: string | null; bar: string }> = {
   cookingSet: { label: 'Cooking Set', icon: 'cooking-set', bar: 'bg-brown-500' },
-  programs: { label: 'Programmi', icon: 'programs', bar: 'bg-blue-300' },
+  programs: { label: 'Programs', icon: 'programs', bar: 'bg-blue-300' },
   chefunox: { label: 'CHEFUNOX', icon: 'chefunox', bar: 'bg-purple-300' },
   multiTime: { label: 'MULTI.Time', icon: 'multi-time', bar: 'bg-magenta-300' },
-  other: { label: 'Altro', icon: null, bar: 'bg-grey-300' },
+  other: { label: 'Other', icon: null, bar: 'bg-grey-300' },
 }
 
 /** New oven: every category at "- min · 0%" (Figma "Forno Appena Registrato"). */
@@ -30,8 +30,8 @@ export function UsageHoursCard({ data, className }: UsageHoursCardProps) {
     <Card labelledBy="usage-title" className={`gap-9 ${className ?? ''}`}>
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-1">
-          <CardTitle id="usage-title">Ore di utilizzo totali</CardTitle>
-          <p className="type-paragraph-sm text-content-quaternary">Ultimi 7 giorni</p>
+          <CardTitle id="usage-title">Total usage hours</CardTitle>
+          <p className="type-paragraph-sm text-content-quaternary">Last 7 days</p>
         </div>
         {data && <p className="type-heading-xl text-content-primary">{data.total}</p>}
       </div>
@@ -43,7 +43,7 @@ export function UsageHoursCard({ data, className }: UsageHoursCardProps) {
           <CategoryList categories={EMPTY_CATEGORIES} />
         </EmptyData>
       ) : (
-        <p className="type-paragraph-sm text-content-quaternary">Nessun dato disponibile</p>
+        <p className="type-paragraph-sm text-content-quaternary">No data available</p>
       )}
     </Card>
   )

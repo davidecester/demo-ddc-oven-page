@@ -18,8 +18,8 @@ const FULL = 'col-span-full'
 const HALF = 'col-span-4 md:col-span-8 lg:col-span-6'
 
 const TOAST_MESSAGE: Record<Exclude<AlertAction['type'], 'startWashing'>, string> = {
-  scheduleMaintenance: 'Richiesta di manutenzione inviata',
-  orderConsumables: 'Ordine detergenti inviato',
+  scheduleMaintenance: 'Maintenance request sent',
+  orderConsumables: 'Detergent order sent',
 }
 
 export function OvenPage({ scenario }: { scenario: Scenario }) {
@@ -32,7 +32,7 @@ export function OvenPage({ scenario }: { scenario: Scenario }) {
   const handleStartWashing = useCallback(() => {
     startWashing()
     setAlertsOpen(false)
-    setAnnouncement('Lavaggio avviato')
+    setAnnouncement('Washing started')
   }, [startWashing])
 
   const handleAlertAction = useCallback(
@@ -79,7 +79,7 @@ export function OvenPage({ scenario }: { scenario: Scenario }) {
         <RecipesCard
           className={FULL}
           tabs={scenario.recipes}
-          onCreateGroup={() => setToast('Nuovo gruppo di ricette creato')}
+          onCreateGroup={() => setToast('New recipe group created')}
         />
         <DownloadArea className={FULL} groups={scenario.downloads} />
       </main>

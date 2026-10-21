@@ -40,9 +40,9 @@ export function SenseKleanCard({ data, className }: SenseKleanCardProps) {
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-1">
           <h2 id="sense-title" className="type-heading-xs text-content-primary">
-            SENSE.Klean <span className="font-normal">– Livello di sporco</span>
+            SENSE.Klean <span className="font-normal">– Dirt level</span>
           </h2>
-          <p className="type-paragraph-sm text-content-quaternary">Ultime 24 ore</p>
+          <p className="type-paragraph-sm text-content-quaternary">Last 24 hours</p>
         </div>
         {shown && <CurrentValue value={shown.value} readAt={shown.readAt} />}
       </div>
@@ -55,32 +55,34 @@ export function SenseKleanCard({ data, className }: SenseKleanCardProps) {
           <DirtChart data={{ ...data, hourly: EMPTY_DAY }} wide={wide} selected={-1} onSelect={() => {}} empty />
         </EmptyData>
       ) : (
-        <p className="type-paragraph-sm text-content-quaternary">Nessun dato disponibile</p>
+        <p className="type-paragraph-sm text-content-quaternary">No data available</p>
       )}
     </Card>
   )
 }
 
+/** Figma "Current value": "62% · Sporco · ⚠" (the status icon ends the line), reading time below. */
 function CurrentValue({ value, readAt }: { value: number; readAt: string | null }) {
   const level = DIRT_LEVEL[dirtLevelOf(value)]
   return (
-    <div className="flex items-start gap-4 md:items-center">
-      {level.icon20 && (
-        <span className="pt-[5px] md:hidden">
-          <Icon name={level.icon20} size={20} />
-        </span>
-      )}
-      {level.icon && (
-        <span className="hidden md:block">
-          <Icon name={level.icon} size={32} />
-        </span>
-      )}
-      <p className="flex flex-col gap-1 md:flex-row md:items-baseline md:gap-2">
+    <div className="flex flex-col gap-1">
+      <p className="flex items-center gap-1 md:gap-2">
         <span className={`type-heading-sm md:type-heading-xl tabular-nums ${level.text}`}>
           {value}% · {level.label}
+          {level.icon && ' ·'}
         </span>
-        {readAt && <span className="type-paragraph-sm text-content-quaternary">{readAt}</span>}
+        {level.icon20 && (
+          <span className="md:hidden">
+            <Icon name={level.icon20} size={20} />
+          </span>
+        )}
+        {level.icon && (
+          <span className="hidden md:block">
+            <Icon name={level.icon} size={32} />
+          </span>
+        )}
       </p>
+      {readAt && <p className="type-paragraph-sm text-content-quaternary">{readAt}</p>}
     </div>
   )
 }
@@ -98,7 +100,7 @@ interface DirtChartProps {
 
 /** Hour labels for the empty chart: the same 24 h window as a reading day (14:00 → 13:00). */
 const EMPTY_DAY: SenseKlean['hourly'] = Array.from({ length: 24 }, (_, i) => ({
-  hour: `${(14 + i) % 24 === 0 ? '00' : (14 + i) % 24}:00`,
+  hour: `${String((14 + i) % 24).padStart(2, '0')}:00`,
   value: 0,
 }))
 
@@ -201,8 +203,8 @@ function DirtChart({ data, wide, selected, onSelect, empty = false }: DirtChartP
 
       {!empty && (
         <figcaption className="sr-only">
-          Livello di sporco orario delle ultime 24 ore. Valore attuale {data.current}%. Letture:{' '}
-          {data.hourly.map((h) => `${h.hour} ${h.value === 0 ? 'lavaggio' : `${h.value}%`}`).join(', ')}.
+          Hourly dirt level over the last 24 hours. Current value {data.current}%. Readings:{' '}
+          {data.hourly.map((h) => `${h.hour} ${h.value === 0 ? 'washing' : `${h.value}%`}`).join(', ')}.
         </figcaption>
       )}
     </figure>

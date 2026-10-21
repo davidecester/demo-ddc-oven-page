@@ -11,19 +11,19 @@ interface TagStyle {
 
 /** Variants of the Figma "Status Tag" component set (labels are the component defaults). */
 const TAG_STYLES: Record<StatusTagType, TagStyle> = {
-  cooking: { icon: 'tag-fire', label: 'Cottura in corso', surface: 'bg-orange-100', text: 'text-content-secondary' },
-  washing: { icon: 'tag-washing', label: 'Lavaggio in corso', surface: 'bg-blue-100', text: 'text-content-secondary' },
-  idle: { icon: 'tag-standby', label: 'In attesa', surface: 'bg-grey-200', text: 'text-content-secondary' },
-  filterGood: { icon: 'tag-water-good', label: 'Filtro buono', surface: 'bg-green-100', text: 'text-content-secondary' },
-  filterExhausted: { icon: 'tag-water-exhausted', label: 'Sostituire filtro', surface: 'bg-red-100', text: 'text-content-secondary' },
-  offline: { icon: 'tag-wifi-off', label: 'Forno offline', surface: 'bg-red-100', text: 'text-content-secondary' },
-  maintenance: { icon: 'tag-error-outline', label: 'Manutenzione richiesta', surface: 'bg-red-100', text: 'text-content-secondary' },
-  critical: { icon: 'tag-error', label: 'Critico', surface: 'bg-alarm', text: 'text-white' },
-  warning: { icon: 'tag-warning', label: 'Attenzione', surface: 'bg-yellow-400', text: 'text-black' },
+  cooking: { icon: 'tag-fire', label: 'Cooking in progress', surface: 'bg-orange-100', text: 'text-content-secondary' },
+  washing: { icon: 'tag-washing', label: 'Washing in progress', surface: 'bg-blue-100', text: 'text-content-secondary' },
+  idle: { icon: 'tag-standby', label: 'Idle', surface: 'bg-grey-200', text: 'text-content-secondary' },
+  filterGood: { icon: 'tag-water-good', label: 'Filter OK', surface: 'bg-green-100', text: 'text-content-secondary' },
+  filterExhausted: { icon: 'tag-water-exhausted', label: 'Replace filter', surface: 'bg-red-100', text: 'text-content-secondary' },
+  offline: { icon: 'tag-wifi-off', label: 'Oven offline', surface: 'bg-red-100', text: 'text-content-secondary' },
+  maintenance: { icon: 'tag-error-outline', label: 'Maintenance required', surface: 'bg-red-100', text: 'text-content-secondary' },
+  critical: { icon: 'tag-error', label: 'Critical', surface: 'bg-alarm', text: 'text-white' },
+  warning: { icon: 'tag-warning', label: 'Warning', surface: 'bg-yellow-400', text: 'text-black' },
   alertCount: { icon: 'tag-bell-info', label: '', surface: 'bg-blue-100', text: 'text-content-secondary' },
-  alertCritical: { icon: 'tag-error-outline', label: 'Critico', surface: 'bg-red-100', text: 'text-content-secondary' },
+  alertCritical: { icon: 'tag-error-outline', label: 'Critical', surface: 'bg-red-100', text: 'text-content-secondary' },
   // Icon in yellow-500 (#ad8205): 3.17:1 on yellow-100 (WCAG 1.4.11)
-  alertWarning: { icon: 'tag-warning-yellow', label: 'Attenzione', surface: 'bg-yellow-100', text: 'text-content-secondary' },
+  alertWarning: { icon: 'tag-warning-yellow', label: 'Warning', surface: 'bg-yellow-100', text: 'text-content-secondary' },
 }
 
 // Figma strokes sit inside the box, so each padding is the Figma value minus the 1px border

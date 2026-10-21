@@ -13,8 +13,8 @@ interface ActivityTrendCardProps {
 }
 
 const SERIES = [
-  { key: 'cooking', label: 'Cottura', color: 'var(--color-orange-500)' },
-  { key: 'washing', label: 'Lavaggio', color: 'var(--color-blue-400)' },
+  { key: 'cooking', label: 'Cooking', color: 'var(--color-orange-500)' },
+  { key: 'washing', label: 'Washing', color: 'var(--color-blue-400)' },
   { key: 'standby', label: 'Standby', color: 'var(--color-grey-400)' },
 ] as const
 
@@ -23,13 +23,13 @@ export function ActivityTrendCard({ trend, className }: ActivityTrendCardProps) 
   return (
     <Card labelledBy="trend-title" className={`gap-9 ${className ?? ''}`}>
       <div className="relative flex flex-col gap-1 pr-10">
-        <CardTitle id="trend-title">Andamento attività</CardTitle>
-        <p className="type-paragraph-sm text-content-quaternary">Ultimi 7 giorni</p>
+        <CardTitle id="trend-title">Activity trend</CardTitle>
+        <p className="type-paragraph-sm text-content-quaternary">Last 7 days</p>
         <IconButton
           icon="andamento-next"
           iconSize={24}
           boxSize={40}
-          label="Apri andamento attività in Analytics"
+          label="Open activity trend in Analytics"
           className="absolute -top-2 -right-2"
         />
       </div>
@@ -39,10 +39,10 @@ export function ActivityTrendCard({ trend, className }: ActivityTrendCardProps) 
           <TrendChart trend={trend} />
           <figcaption className="sr-only">
             <table>
-              <caption>Ore giornaliere per attività, ultimi 7 giorni</caption>
+              <caption>Daily hours by activity, last 7 days</caption>
               <thead>
                 <tr>
-                  <th scope="col">Giorno</th>
+                  <th scope="col">Day</th>
                   {SERIES.map((s) => (
                     <th key={s.key} scope="col">
                       {s.label}
@@ -75,7 +75,7 @@ export function ActivityTrendCard({ trend, className }: ActivityTrendCardProps) 
   )
 }
 
-const EMPTY_WEEK: ActivityTrendDay[] = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'].map((day) => ({
+const EMPTY_WEEK: ActivityTrendDay[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => ({
   day,
   cooking: 0,
   washing: 0,

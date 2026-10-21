@@ -12,21 +12,21 @@ export const idleScenario: Scenario = {
 
   activity: {
     status: 'idle',
-    label: 'In attesa',
-    dirtLevel: '78% · Molto Sporco',
-    cta: { type: 'startWashing', label: 'Avvia lavaggio', icon: 'washing-white' },
-    hint: 'Consigliato lavaggio prima della prossima cottura.',
+    label: 'Idle',
+    dirtLevel: '78% · Very dirty',
+    cta: { type: 'startWashing', label: 'Start washing', icon: 'washing-white' },
+    hint: 'Washing required before the next cooking.',
   },
 
   alerts: [
     {
-      id: 'camera-molto-sporca',
+      id: 'very-dirty-chamber',
       severity: 'critical',
-      title: 'Camera molto sporca',
-      description: 'Necessario lavaggio prima della prossima cottura.',
+      title: 'Very dirty chamber',
+      description: 'Washing required before the next cooking.',
       code: 'WF54',
       timestamp: '09/10/2026 18:30',
-      action: { type: 'startWashing', label: 'Avvia lavaggio', icon: 'washing-white' },
+      action: { type: 'startWashing', label: 'Start washing', icon: 'washing-white' },
     },
     ...cookingScenario.alerts.filter((a) => a.severity === 'info'),
   ],
@@ -34,7 +34,7 @@ export const idleScenario: Scenario = {
   // Same 24 h as Scenario 1, but the chamber kept getting dirtier: 78% at 13:00.
   senseKlean: {
     current: 78,
-    readAt: 'Oggi alle 13:00',
+    readAt: 'Today at 13:00',
     hourly: cookingScenario.senseKlean!.hourly.map((r) => (r.hour === '13:00' ? { ...r, value: 78 } : r)),
   },
 }

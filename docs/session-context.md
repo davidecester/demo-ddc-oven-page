@@ -19,7 +19,10 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 - Scenario switcher labels are the user's scenario names: Scenario Base, Activity in Progress - Idle, Manutenzione Richiesta, Forno Appena Registrato.
 - When the user asks to see an option first, show a preview and wait for an explicit choice before building.
 - **Commit identity:** Davide Cester <cesterdav@gmail.com>.
-- **Language:** UI copy in Italian. Code and commit messages in English. Nav labels stay in English.
+- **Language (decided 21 Oct 2026):** the prototype is **English only**, while the Figma file stays Italian. Every string is an English translation of the Figma copy, so match Figma's structure and meaning, not its words. Code and commit messages are in English. Sentence case for labels and alert titles. Dates DD/MM/YYYY, 24 h times, English number formats ("3,482 h", "4.2 MB").
+  - Glossary: Avvisi = Alerts, "+N altri avvisi" = "+N more alerts", Tutti gli avvisi = All alerts, Azione richiesta = Action required, Informazioni e cronologia = Information and history, Critico / Attenzione = Critical / Warning, Attività in corso = Current activity, Cottura (in corso) = Cooking (in progress), Lavaggio (in corso) = Washing (in progress), In attesa = Idle, Camera sporca / molto sporca = Dirty / Very dirty chamber, Pulito / Sporco / Molto sporco = Clean / Dirty / Very dirty, Oggi / Ieri alle = Today / Yesterday at, Mostra / Nascondi informazioni = Show / Hide details, Andamento attività = Activity trend, Ore di utilizzo totali = Total usage hours, Ricette presenti nel forno = Recipes on the oven, Area download = Downloads, Filtro RO.Care = RO.Care filter, Detergenti quasi esauriti = Detergents running low, Ordina detergenti = Order detergents, Pianifica manutenzione = Schedule maintenance, Avvia lavaggio = Start washing, Scegli una ricetta = Choose a recipe, Crea un gruppo = Create a group. Scenario names: Base Scenario, Activity in Progress - Idle, Maintenance Required, Newly Registered Oven (oven "New Oven"). Product names (SENSE.Klean, MULTI.Time, MISE.EN.PLACE, CHEFUNOX, Cooking Set, LONG.Life, CHEFTOP MIND.Maps) are never translated.
+  - Anchor ids are English: `#alerts`, `#current-activity`, `#recipes`.
+  - The nav labels ("Ovens", "Dashboard", …) and the "Search" placeholder were already English. Rule: the search placeholder always follows the nav labels' language; translate them together or not at all.
 
 ## Status
 - **Oven overview card (new design, all scenarios):** Figma component `37704:4165`. Mobile: image 200px high with the tags laid over its top (absolute, 16px from the card edge); desktop: 301px image column, tags as the first row of the info. Tags row (size M, 28px pills: `StatusTag size="md"`), in this order:
@@ -53,6 +56,8 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
   - **Decided:** the faded placeholder text stays as in Figma even though axe flags its contrast (decorative, `aria-hidden`; the only expected axe finding, Scenario 4 only). The breadcrumb uses the oven name ("Nuovo Forno"). The faded rows use "- h" / "- min · 0%" on both widths (the user fixed the Figma mobile frame to match).
 - **All four scenarios are done.**
 - **Recipes:** each tab has its own categories (`src/data/shared.ts`), with icons from the Figma "Chefunox food categories" frame (`3545:232623`). Programmi: Manzo, Pesce, Verdure, Panificazione. MULTI.Time: Pollo, Pizza, Snack surgelati, Panini. MISE.EN.PLACE: Uova, Pasta sfoglia, Dessert, Toast. The count uses "1 ricetta" / "N ricette".
+- **Figma audit follow-up (21 Oct 2026, done):** two-digit hours on the SENSE.Klean axis (`02:00`); Base "now" is 13:05, so the cooking ends at 14:21 and the 13:00 reading isn't in the future; the Activity trend cooking hours add up to 42.5 h (6 · 6.5 · 5.5 · 6 · 7 · 6.5 · 5), matching the 42 h 30 min usage total; Idle hint = washing *required*; the new oven's RO.Care installation 21/10/2026, last update 21/10/2026 12:05; "0% · Clean" stays above "No data available yet" (decided).
+- **SENSE.Klean value line (designer edit):** "62% · Dirty · ⚠" — the status icon ends the line after a " · " (32px on desktop with an 8px gap, 20px on mobile with 4px), and the reading time sits on its own line below. Clean has no separator and no icon.
 - **Decided:** no floating tooltip on the SENSE.Klean chart; 0% (wash) bars read "Pulito"; the 78% frame belongs to Scenario 2.
 
 ## Stack
@@ -102,7 +107,7 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
   - Load the `figma-design-to-code` skill before calling `get_design_context`.
   - `get_design_context` and `get_screenshot` read designs.
   - Downloading assets from `https://www.figma.com/api/mcp/asset/...` needs `www.figma.com` allowed in the environment's network access. If downloads return 403, ask the user to allow the domain or to export the assets and upload them. Don't redraw assets unless the user agrees.
-- Copy must match Figma exactly. Times use a colon.
+- Copy follows Figma's meaning, translated to English (see Language). Times use a colon.
 
 ## Accessibility
 - **Fixed for AA:**
