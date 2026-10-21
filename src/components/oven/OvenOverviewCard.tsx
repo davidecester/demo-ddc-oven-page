@@ -20,11 +20,11 @@ const ACTIVITY_TAG: Record<ActivityStatus, StatusTagType> = {
 
 /** The most severe alert gets its own tag, by name; info alerts only count. */
 const SEVERITY_TAG: Partial<Record<AlertSeverity, { type: StatusTagType; srLabel: string }>> = {
-  critical: { type: 'alertCritical', srLabel: 'critico' },
-  warning: { type: 'alertWarning', srLabel: 'attenzione' },
+  critical: { type: 'alertCritical', srLabel: 'critical' },
+  warning: { type: 'alertWarning', srLabel: 'warning' },
 }
 
-const ALERTS_TARGET = { id: ALERTS_CARD_ID, label: 'Avvisi' }
+const ALERTS_TARGET = { id: ALERTS_CARD_ID, label: 'Alerts' }
 
 const CONNECTION_DOT = {
   online: { label: 'Online', dot: 'bg-green-eco-400' },
@@ -59,7 +59,7 @@ export function OvenOverviewCard({ oven, activityStatus, alerts, className }: Ov
             key: 'count',
             type: 'alertCount' as const,
             count: others,
-            srText: `${others} ${severity ? (others === 1 ? 'altro avviso' : 'altri avvisi') : others === 1 ? 'avviso' : 'avvisi'}`,
+            srText: `${others} ${severity ? (others === 1 ? 'more alert' : 'more alerts') : others === 1 ? 'alert' : 'alerts'}`,
             target: ALERTS_TARGET,
           },
         ]
@@ -69,7 +69,7 @@ export function OvenOverviewCard({ oven, activityStatus, alerts, className }: Ov
       : []),
     oven.connection === 'offline'
       ? { key: 'activity', type: 'offline' as const }
-      : { key: 'activity', type: ACTIVITY_TAG[activityStatus], target: { id: ACTIVITY_CARD_ID, label: 'Attività in corso' } },
+      : { key: 'activity', type: ACTIVITY_TAG[activityStatus], target: { id: ACTIVITY_CARD_ID, label: 'Current activity' } },
   ]
 
   return (
@@ -102,7 +102,7 @@ export function OvenOverviewCard({ oven, activityStatus, alerts, className }: Ov
                 {tag.target ? (
                   <a href={`#${tag.target.id}`} className="state-layer flex rounded-full">
                     {content}
-                    <span className="sr-only">: vai ad {tag.target.label}</span>
+                    <span className="sr-only">: go to {tag.target.label}</span>
                   </a>
                 ) : (
                   content
@@ -123,7 +123,7 @@ export function OvenOverviewCard({ oven, activityStatus, alerts, className }: Ov
               <span className="sr-only">{connection.label}</span>
             </div>
             <p className="flex items-center gap-1">
-              <span className="type-paragraph-sm text-content-quaternary">Gruppo:</span>
+              <span className="type-paragraph-sm text-content-quaternary">Group:</span>
               <span className="font-fixed text-[14px] leading-4 font-bold text-content-primary">{oven.group}</span>
             </p>
           </div>
@@ -137,7 +137,7 @@ export function OvenOverviewCard({ oven, activityStatus, alerts, className }: Ov
               className="flex items-center gap-1 self-start rounded-sm text-[14px] leading-4 font-medium text-accent underline decoration-from-font [text-underline-position:from-font]"
             >
               <Icon name={open ? 'link-collapse' : 'link-expand'} size={20} />
-              {open ? 'Nascondi informazioni' : 'Mostra informazioni'}
+              {open ? 'Hide details' : 'Show details'}
             </button>
 
             {/* Grid 0fr → 1fr animates the panel to its real height, like the scenario switcher */}
@@ -159,9 +159,9 @@ export function OvenOverviewCard({ oven, activityStatus, alerts, className }: Ov
                     </p>
                   )}
                   <dl className="grid grid-cols-2 gap-2">
-                    <InfoItem label="Ore di utilizzo" value={oven.usageHours} />
+                    <InfoItem label="Usage hours" value={oven.usageHours} />
                     <InfoItem label="S/N" value={oven.serialNumber} />
-                    <InfoItem label="Codice prodotto" value={oven.productCode} />
+                    <InfoItem label="Product code" value={oven.productCode} />
                     <InfoItem label="Firmware" value={oven.firmware} />
                   </dl>
                 </div>

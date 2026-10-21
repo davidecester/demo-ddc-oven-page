@@ -17,9 +17,9 @@ interface ActivityCardProps {
 
 /** Header tag uses the short labels of the Figma "Activity Card" variants. */
 const HEADER_TAG: Record<LiveActivity['status'], { type: StatusTagType; label: string }> = {
-  cooking: { type: 'cooking', label: 'Cottura' },
-  washing: { type: 'washing', label: 'Lavaggio' },
-  idle: { type: 'idle', label: 'In attesa' },
+  cooking: { type: 'cooking', label: 'Cooking' },
+  washing: { type: 'washing', label: 'Washing' },
+  idle: { type: 'idle', label: 'Idle' },
 }
 
 /** "Attività in corso" — variants: cooking / washing / idle (Figma "Activity Card"). */
@@ -29,7 +29,7 @@ export function ActivityCard({ activity, onStartWashing, className }: ActivityCa
   return (
     <Card id={ACTIVITY_CARD_ID} labelledBy="activity-title" className={`anchor-target gap-9 ${className ?? ''}`}>
       <div className="flex flex-wrap items-center gap-4">
-        <CardTitle id="activity-title">Attività in corso</CardTitle>
+        <CardTitle id="activity-title">Current activity</CardTitle>
         <StatusTag type={tag.type} label={tag.label} />
       </div>
 
@@ -53,8 +53,8 @@ function ActivityVisual({ activity }: { activity: LiveActivity }) {
           color="var(--color-orange-500)"
           icon="fire-32"
           valueText={formatPercent(activity.progress)}
-          caption={`${formatDuration(activity.remainingSec)} rimanenti`}
-          label="Avanzamento cottura"
+          caption={`${formatDuration(activity.remainingSec)} remaining`}
+          label="Cooking progress"
         />
       )
     case 'washing':
@@ -64,8 +64,8 @@ function ActivityVisual({ activity }: { activity: LiveActivity }) {
           color="var(--color-blue-500)"
           icon="washing-32"
           valueText={formatPercent(activity.progress)}
-          caption={`${formatDuration(activity.remainingSec)} rimanenti`}
-          label="Avanzamento lavaggio"
+          caption={`${formatDuration(activity.remainingSec)} remaining`}
+          label="Washing progress"
         />
       )
     case 'idle':
@@ -92,12 +92,12 @@ function ActivityContent({ activity, onStartWashing }: { activity: LiveActivity;
     case 'cooking':
       return (
         <>
-          <ActivityName label="Ricetta" value={activity.recipe} />
+          <ActivityName label="Recipe" value={activity.recipe} />
           <div className="flex flex-col gap-4">
-            <LabelValue icon="timelapse" label="Termine cottura" value={formatClock(activity.endsAt)} />
+            <LabelValue icon="timelapse" label="Cooking ends" value={formatClock(activity.endsAt)} />
             <LabelValue
               icon="temperature"
-              label="Temperatura camera (Temperatura target)"
+              label="Chamber temperature (Target temperature)"
               value={
                 <>
                   <span
@@ -107,7 +107,7 @@ function ActivityContent({ activity, onStartWashing }: { activity: LiveActivity;
                   </span>{' '}
                   <span className="tabular-nums">({formatTemperature(activity.targetTempC)})</span>
                   <span className="sr-only">
-                    {activity.targetReached ? ', temperatura target raggiunta' : ', in riscaldamento'}
+                    {activity.targetReached ? ', target temperature reached' : ', heating up'}
                   </span>
                 </>
               }
@@ -118,17 +118,17 @@ function ActivityContent({ activity, onStartWashing }: { activity: LiveActivity;
     case 'washing':
       return (
         <>
-          <ActivityName label="Attività" value={activity.label} />
+          <ActivityName label="Activity" value={activity.label} />
           <div className="flex flex-col gap-2">
-            <LabelValue icon="timelapse" label="Termine lavaggio" value={formatClock(activity.endsAt)} />
+            <LabelValue icon="timelapse" label="Washing ends" value={formatClock(activity.endsAt)} />
           </div>
         </>
       )
     case 'idle':
       return (
         <>
-          <ActivityName label="Attività" value={activity.label} />
-          {activity.dirtLevel && <LabelValue label="Livello sporco camera" value={activity.dirtLevel} />}
+          <ActivityName label="Activity" value={activity.label} />
+          {activity.dirtLevel && <LabelValue label="Chamber dirt level" value={activity.dirtLevel} />}
           {activity.cta && (
             <div className="flex flex-col items-start gap-2">
               {/* Full width when stacked (Figma mobile), hugging its label beside the ring (desktop) */}

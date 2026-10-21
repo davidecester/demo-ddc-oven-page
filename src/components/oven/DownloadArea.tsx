@@ -20,7 +20,7 @@ export function DownloadArea({ groups, className }: DownloadAreaProps) {
       className={`flex flex-col gap-9 border-t border-white px-1 pt-[15px] pb-4 md:pt-[23px] md:pb-6 ${className ?? ''}`}
     >
       <h2 id="downloads-title" className="type-heading-xs text-content-primary">
-        Area download
+        Downloads
       </h2>
       <div className="flex flex-col gap-6 md:grid md:grid-cols-2 md:gap-4 lg:flex lg:flex-row">
         {groups.map((group) => (
@@ -36,7 +36,7 @@ export function DownloadArea({ groups, className }: DownloadAreaProps) {
                       <span className="type-paragraph-xs text-content-quaternary">{file.details}</span>
                     </span>
                   </span>
-                  <IconButton icon="download" iconSize={16} boxSize={32} label={`Scarica ${file.name}`} />
+                  <IconButton icon="download" iconSize={16} boxSize={32} label={`Download ${file.name}`} />
                 </li>
               ))}
             </ul>

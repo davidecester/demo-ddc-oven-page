@@ -7,7 +7,7 @@ import { SIDEBAR_GUIDE, SIDEBAR_MAIN, SIDEBAR_SETTINGS, type NavItem } from './n
 export function Sidebar() {
   return (
     <nav
-      aria-label="Navigazione principale"
+      aria-label="Main navigation"
       className="sticky top-0 hidden h-dvh w-(--spacing-sidebar) shrink-0 flex-col items-center bg-bg-secondary px-3 pb-6 lg:flex"
     >
       <a href="#" onClick={(e) => e.preventDefault()} className="flex w-full flex-col items-center gap-2 rounded-md py-8">

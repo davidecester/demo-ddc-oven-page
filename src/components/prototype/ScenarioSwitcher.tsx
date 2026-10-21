@@ -45,7 +45,7 @@ export function ScenarioSwitcher({ scenarios, activeId, onSelect, onReset }: Sce
   return (
     <aside
       ref={rootRef}
-      aria-label="Strumento prototipo"
+      aria-label="Prototype tool"
       // Hover only for mouse/pen, so a tap doesn't leave the pill stuck open on touch screens
       onPointerEnter={(e) => e.pointerType !== 'touch' && setHovered(true)}
       onPointerLeave={() => setHovered(false)}
@@ -80,10 +80,10 @@ export function ScenarioSwitcher({ scenarios, activeId, onSelect, onReset }: Sce
             onClick={onReset}
             className="rounded-sm border border-white/30 px-2 py-1.5 text-left hover:bg-white/10"
           >
-            ↺ Riavvia simulazione
+            ↺ Restart simulation
           </button>
           <p className="text-white/60">
-            Link condivisibile: <span className="break-all text-white/80">?scenario={activeId}</span>
+            Shareable link: <span className="break-all text-white/80">?scenario={activeId}</span>
           </p>
         </div>
       )}
@@ -109,7 +109,7 @@ export function ScenarioSwitcher({ scenarios, activeId, onSelect, onReset }: Sce
             expanded ? 'ml-2 grid-cols-[1fr] opacity-100' : 'ml-0 grid-cols-[0fr] opacity-0'
           }`}
         >
-          <span className="min-w-0 overflow-hidden whitespace-nowrap">Prototipo · {activeId}</span>
+          <span className="min-w-0 overflow-hidden whitespace-nowrap">Prototype · {activeId}</span>
         </span>
       </button>
     </aside>

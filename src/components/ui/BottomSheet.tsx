@@ -48,7 +48,7 @@ export function BottomSheet({ open, onClose, title, titleId, children }: BottomS
             icon="close"
             iconSize={24}
             boxSize={40}
-            label="Chiudi"
+            label="Close"
             onClick={onClose}
             className="absolute -top-2 -right-2"
           />

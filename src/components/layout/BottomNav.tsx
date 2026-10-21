@@ -6,7 +6,7 @@ import { BOTTOM_NAV } from './navItems'
 export function BottomNav() {
   return (
     <nav
-      aria-label="Navigazione principale"
+      aria-label="Main navigation"
       className="fixed inset-x-0 bottom-0 z-20 border-t border-black-8 bg-bg-secondary pb-[env(safe-area-inset-bottom)] lg:hidden"
     >
       <ul className="flex h-(--spacing-bottom-nav) items-center justify-between px-4">

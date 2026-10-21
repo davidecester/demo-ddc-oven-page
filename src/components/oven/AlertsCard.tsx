@@ -26,7 +26,7 @@ export function AlertsCard({ alerts, onOpenAll, onAction, isActionRunning, class
 
   return (
     <Card id={ALERTS_CARD_ID} labelledBy="alerts-title" className={`anchor-target gap-9 ${className ?? ''}`}>
-      <CardTitle id="alerts-title">Avvisi</CardTitle>
+      <CardTitle id="alerts-title">Alerts</CardTitle>
 
       {top ? (
         <div className="flex flex-col gap-2">
@@ -48,14 +48,14 @@ export function AlertsCard({ alerts, onOpenAll, onAction, isActionRunning, class
               <span className="flex items-center gap-2">
                 {/* Dot in the colour of the most severe alert */}
                 <Icon name={SEVERITY[top.severity].dot} size={20} />
-                <span className="type-paragraph-md text-content-primary">+{rest} altri avvisi</span>
+                <span className="type-paragraph-md text-content-primary">+{rest} more {rest === 1 ? 'alert' : 'alerts'}</span>
               </span>
               <Icon name="chevron-next" size={24} />
             </button>
           )}
         </div>
       ) : (
-        <p className="type-paragraph-sm text-content-quaternary">Nessun avviso</p>
+        <p className="type-paragraph-sm text-content-quaternary">No alerts</p>
       )}
     </Card>
   )

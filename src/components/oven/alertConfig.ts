@@ -21,7 +21,7 @@ export const SEVERITY: Record<
     icon: 'sheet-error',
     icon16: 'tag-error',
     dot: 'dot-red',
-    srLabel: 'Critico',
+    srLabel: 'Critical',
   },
   warning: {
     tag: 'warning',
@@ -30,7 +30,7 @@ export const SEVERITY: Record<
     icon: 'sheet-warning',
     icon16: 'sheet-warning-16',
     dot: 'dot-yellow',
-    srLabel: 'Attenzione',
+    srLabel: 'Warning',
   },
   info: {
     tag: null,
@@ -39,7 +39,7 @@ export const SEVERITY: Record<
     icon: 'sheet-info',
     icon16: 'sheet-info-16',
     dot: 'dot-blue',
-    srLabel: 'Informazione',
+    srLabel: 'Information',
   },
 }
 

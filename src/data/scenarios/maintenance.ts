@@ -8,36 +8,36 @@ import { cookingScenario } from './cooking'
 export const maintenanceScenario: Scenario = {
   ...cookingScenario,
   id: 'maintenance',
-  label: 'Manutenzione Richiesta',
+  label: 'Maintenance Required',
 
   oven: cookingScenario.oven,
 
   activity: {
     status: 'idle',
-    label: 'In attesa',
-    dirtLevel: '0% · Pulito',
-    cta: { type: 'chooseRecipe', label: 'Scegli una ricetta', icon: 'library-white' },
-    hint: 'Scegli un programma e imposta la prossima cottura.',
+    label: 'Idle',
+    dirtLevel: '0% · Clean',
+    cta: { type: 'chooseRecipe', label: 'Choose a recipe', icon: 'library-white' },
+    hint: 'Choose a program and set up the next cooking.',
   },
 
   alerts: [
     {
-      id: 'manutenzione',
+      id: 'maintenance',
       severity: 'critical',
-      title: 'Manutenzione richiesta',
-      description: 'È necessario pianificare il controllo periodico del forno.',
+      title: 'Maintenance required',
+      description: 'The oven’s periodic check needs to be scheduled.',
       code: 'MN02',
       timestamp: '10/10/2026 12:05',
-      action: { type: 'scheduleMaintenance', label: 'Pianifica manutenzione', icon: 'service-white' },
+      action: { type: 'scheduleMaintenance', label: 'Schedule maintenance', icon: 'service-white' },
     },
     {
-      id: 'consumabili',
+      id: 'detergents',
       severity: 'warning',
-      title: 'Detergenti quasi esauriti',
-      description: 'Il livello dei detergenti è basso.',
+      title: 'Detergents running low',
+      description: 'The detergent level is low.',
       code: 'CD04',
       timestamp: '09/10/2026 18:30',
-      action: { type: 'orderConsumables', label: 'Ordina detergenti', icon: 'consumables-white' },
+      action: { type: 'orderConsumables', label: 'Order detergents', icon: 'consumables-white' },
       badgeIcon: { icon: 'sheet-consumables', icon16: 'sheet-consumables-16' },
     },
     ...cookingScenario.alerts.filter((a) => a.severity === 'info'),
@@ -46,7 +46,7 @@ export const maintenanceScenario: Scenario = {
   // Same 24 h as Scenario 1, but the chamber was just washed: 0% at 13:00.
   senseKlean: {
     current: 0,
-    readAt: 'Oggi alle 13:00',
+    readAt: 'Today at 13:00',
     hourly: cookingScenario.senseKlean!.hourly.map((r) => (r.hour === '13:00' ? { ...r, value: 0 } : r)),
   },
 }

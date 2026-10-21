@@ -20,17 +20,17 @@ export function AlertsSheet({ open, onClose, alerts, onAction, isActionRunning }
   const informational = sorted.filter((a) => a.severity === 'info')
 
   return (
-    <BottomSheet open={open} onClose={onClose} title="Tutti gli avvisi" titleId="all-alerts-title">
+    <BottomSheet open={open} onClose={onClose} title="All alerts" titleId="all-alerts-title">
       <div className="flex flex-col gap-4">
         {actionRequired.length > 0 && (
-          <AlertGroup id="group-action" title="Azione richiesta">
+          <AlertGroup id="group-action" title="Action required">
             {actionRequired.map((alert) => (
               <AlertItem key={alert.id} alert={alert} onAction={onAction} isActionRunning={isActionRunning} />
             ))}
           </AlertGroup>
         )}
         {informational.length > 0 && (
-          <AlertGroup id="group-info" title="Informazioni e cronologia">
+          <AlertGroup id="group-info" title="Information and history">
             {informational.map((alert) => (
               <AlertItem key={alert.id} alert={alert} onAction={onAction} isActionRunning={isActionRunning} />
             ))}

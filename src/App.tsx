@@ -19,7 +19,7 @@ export default function App() {
         href="#main"
         className="sr-only z-50 rounded-md bg-bg-primary px-4 py-2 type-label-sm text-accent focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
       >
-        Vai al contenuto
+        Skip to content
       </a>
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">

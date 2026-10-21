@@ -23,11 +23,11 @@ export function RoCareCard({ data, className }: RoCareCardProps) {
       <div className="flex flex-col">
         <div className="flex flex-wrap items-center gap-4">
           <h2 id="rocare-title" className="type-heading-xs text-content-primary">
-            Filtro RO.Care
+            RO.Care filter
           </h2>
           {data && <StatusTag type={FILTER[data.status].tag} />}
         </div>
-        <p className="type-paragraph-sm text-content-quaternary">Filtro acqua</p>
+        <p className="type-paragraph-sm text-content-quaternary">Water filter</p>
       </div>
 
       {data ? (
@@ -37,28 +37,28 @@ export function RoCareCard({ data, className }: RoCareCardProps) {
             color={FILTER[data.status].ring}
             icon="water-32"
             valueText={formatPercent(data.lifePercent)}
-            caption="Vita residua"
-            label="Vita residua del filtro"
+            caption="Remaining life"
+            label="Filter remaining life"
           />
           <div className="flex w-full min-w-0 flex-1 flex-col gap-9">
             <div className="flex flex-col gap-4">
-              <LabelValue label="Durata residua" value={data.remainingDuration} />
-              <LabelValue label="Unità rimanenti" value={data.remainingUnits} />
-              <LabelValue label="Durezza acqua" value={data.waterHardness} />
-              <LabelValue label="Data installazione" value={data.installedAt} />
-              <LabelValue label="Ultimo aggiornamento" value={data.updatedAt} />
+              <LabelValue label="Remaining time" value={data.remainingDuration} />
+              <LabelValue label="Units remaining" value={data.remainingUnits} />
+              <LabelValue label="Water hardness" value={data.waterHardness} />
+              <LabelValue label="Installation date" value={data.installedAt} />
+              <LabelValue label="Last update" value={data.updatedAt} />
             </div>
             <a
               href={data.helpLink}
               onClick={(e) => e.preventDefault()}
               className="self-start rounded-sm font-fixed text-[14px] leading-4 text-accent underline hover:no-underline"
             >
-              Come sostituire il filtro
+              How to replace the filter
             </a>
           </div>
         </div>
       ) : (
-        <p className="type-paragraph-sm text-content-quaternary">Nessun dato disponibile</p>
+        <p className="type-paragraph-sm text-content-quaternary">No data available</p>
       )}
     </Card>
   )

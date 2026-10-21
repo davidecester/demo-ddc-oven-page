@@ -9,16 +9,16 @@ import { cookingScenario } from './cooking'
 export const newOvenScenario: Scenario = {
   ...cookingScenario,
   id: 'new-oven',
-  label: 'Forno Appena Registrato',
+  label: 'Newly Registered Oven',
 
-  oven: { ...cookingScenario.oven, name: 'Nuovo Forno', usageHours: '0 h' },
+  oven: { ...cookingScenario.oven, name: 'New Oven', usageHours: '0 h' },
 
   activity: {
     status: 'idle',
-    label: 'In attesa',
-    dirtLevel: '0% · Pulito',
-    cta: { type: 'chooseRecipe', label: 'Scegli una ricetta', icon: 'library-white' },
-    hint: 'Scegli un programma e imposta la prossima cottura.',
+    label: 'Idle',
+    dirtLevel: '0% · Clean',
+    cta: { type: 'chooseRecipe', label: 'Choose a recipe', icon: 'library-white' },
+    hint: 'Choose a program and set up the next cooking.',
   },
 
   alerts: [],
@@ -29,8 +29,10 @@ export const newOvenScenario: Scenario = {
   roCare: {
     ...cookingScenario.roCare!,
     lifePercent: 100,
-    remainingDuration: '365 giorni',
+    remainingDuration: '365 days',
     remainingUnits: '4',
+    installedAt: '21/10/2026',
+    updatedAt: '21/10/2026 12:05',
   },
 
   usage: { total: '0 min', categories: [] },
