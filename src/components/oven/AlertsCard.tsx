@@ -45,7 +45,8 @@ export function AlertsCard({ alerts, onOpenAll, onAction, isActionRunning, class
               aria-haspopup="dialog"
               className="state-layer flex w-full items-center justify-between rounded-lg bg-bg-secondary p-4 text-left"
             >
-              <span className="flex items-center gap-3">
+              <span className="flex items-center gap-2">
+                {/* Dot in the colour of the most severe alert */}
                 <Icon name={SEVERITY[top.severity].dot} size={20} />
                 <span className="type-paragraph-md text-content-primary">+{rest} altri avvisi</span>
               </span>

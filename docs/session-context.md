@@ -22,6 +22,14 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 - **Language:** UI copy in Italian. Code and commit messages in English. Nav labels stay in English.
 
 ## Status
+- **Oven overview card (new design, all scenarios):** Figma component `37704:4165`. Mobile: image 200px high with the tags laid over its top (absolute, 16px from the card edge); desktop: 301px image column, tags as the first row of the info. Tags row (size M, 28px pills: `StatusTag size="md"`), in this order:
+  1. Neutral count `alertCount` (blue-100, bell, number only) = the other alerts (all alerts minus the one named next). Hidden when 0. Screen readers hear "N altri avvisi". Links to `#avvisi`.
+  2. The most severe alert by name, only for critical (`alertCritical`: red-100 + red error_outline) or warning (`alertWarning`: yellow-100 `#fff3cd`, opaque so it stays readable over the image, + yellow-500 warning icon). Links to `#avvisi`. This replaced the old "Manutenzione richiesta" extra tag.
+  3. The activity tag (links to `#attivita-in-corso`), or "Forno offline".
+  Then model line, name + 10px status dot (no "Online" text; it's in `sr-only`) and Gruppo. "Mostra informazioni / Nascondi informazioni" (`aria-expanded`) reveals warranty + the 2×2 info grid with a 300 ms grid-rows transition; on desktop the image column stretches with it. Heights: desktop 234 closed / 374 open, mobile 390 / 530 in every scenario (wrapped tags overlay the image).
+  - Tag padding is the Figma value minus the 1px border (Figma strokes are inside): S `px-[7px] py-[3px]`, M `px-[11px] py-[5px]`.
+  - **Decided (a11y):** yellow-500 is `#ad8205` instead of Figma's `#b38705` everywhere (token, "Sporco" text, dirt-warning icons, overview warning icon, "+N altri avvisi" dot): `#b38705` is 2.97:1 on the yellow-100 tag, `#ad8205` is 3.17:1 (WCAG 1.4.11) and 3.52:1 as large text on white. yellow-400 stays as a surface with black text (12.9:1). The multicolour food illustrations keep their Figma colours.
+- **Avvisi card:** the "+N altri avvisi" dot takes the colour of the most severe alert (`dot-red`, `dot-yellow`, `dot-blue`; `SEVERITY[...].dot` in `alertConfig.ts`), 8px from the text. The idle "In attesa" tag is grey-200 `#e0e0e0` everywhere. Alert titles are sentence case ("Camera sporca", "Camera molto sporca").
 - **Scenario 1 (cooking)** is complete, pixel-matched at 1440 and 390, and passes build, lint and axe.
 - Scenario 1 details (merged):
   - The overview activity tag ("Cottura in corso") is an `<a href="#attivita-in-corso">` to the Attività in corso card. The anchor id is in `src/components/oven/anchors.ts`, and `.anchor-target` sets a scroll-margin of 120px on mobile and 144px on desktop for the sticky TopBar.
@@ -30,16 +38,16 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
     - Sporco: `text-yellow-500` with the warning icon.
     - Molto Sporco: `text-alarm` with the red "!" error icon (`dirt-error-32/20.svg`).
     - Thresholds: ≤50 clean, ≤75 dirty, otherwise veryDirty (`senseKlean.ts`).
-- **Scenario 2 (idle, `?scenario=idle`)** is done in `src/data/scenarios/idle.ts`. It reuses Scenario 1 and overrides the activity (idle, 78% · Molto Sporco), the critical alert "Camera Molto Sporca" (WF54) and the SENSE.Klean reading (78% at 13:00).
+- **Scenario 2 (idle, `?scenario=idle`)** is done in `src/data/scenarios/idle.ts`. It reuses Scenario 1 and overrides the activity (idle, 78% · Molto Sporco), the critical alert "Camera molto sporca" (WF54) and the SENSE.Klean reading (78% at 13:00).
   - Critical alerts use `bg-alarm-16` (`--color-alarm-16`), the `sheet-error` icon and a red dot (`dot-red`) on the "+N altri avvisi" row.
   - The idle CTA has the washing icon and is full width when stacked. The idle icon slot is 100px stacked and 200px beside the details.
-- **Scenario 3 (maintenance, `?scenario=maintenance`)** is done in `src/data/scenarios/maintenance.ts`: idle at 0% · Pulito with a "Scegli una ricetta" CTA (link to the Ricette card, `#ricette`), a critical "Manutenzione richiesta" (MN02) and a warning "Consumabili detergenti" (CD04) alert, and the `maintenance` image tag.
+- **Scenario 3 (maintenance, `?scenario=maintenance`)** is done in `src/data/scenarios/maintenance.ts`: idle at 0% · Pulito with a "Scegli una ricetta" CTA (link to the Ricette card, `#ricette`), a critical "Manutenzione richiesta" (MN02) and a warning "Detergenti quasi esauriti" (CD04, CTA "Ordina detergenti", toast "Ordine detergenti inviato"; chosen by the user over Figma's "Consumabili detergenti" for a stronger scent) alert, and the `maintenance` image tag.
   - The overview "Manutenzione richiesta" tag links to the Avvisi card (`#avvisi`). Anchor ids are in `anchors.ts`.
   - The Avvisi card shows a banner for every alert that needs action (critical and warning, stacked 4px apart), then "+N altri avvisi" for the informational ones (Figma `35811:16206` desktop, `35811:16853` mobile).
   - Alert actions carry their own icon (`AlertAction.icon`); an alert can override its badge glyph (`badgeIcon`). Idle CTAs are `IdleActivity.cta` (`startWashing` or `chooseRecipe`).
   - "N richiede/richiedono azione" is pluralised.
-  - "Pianifica manutenzione" and "Ordina consumabili" close the drawer and show a confirmation toast (`src/components/ui/Toast.tsx`, prototype-only). The overview counts alerts from the data: "Avvisi: 4" (Figma's "3" is a copy mistake, confirmed by the user).
-- **Scenario 4 (new oven, `?scenario=new-oven`)** is done in `src/data/scenarios/newOven.ts`: "Nuovo Forno", 0 h, no alerts (no Avvisi card; overview shows "Avvisi: -"), idle at 0% with "Scegli una ricetta", full RO.Care filter (100%, 365 giorni, 4 unità).
+  - "Pianifica manutenzione" and "Ordina consumabili" close the drawer and show a confirmation toast (`src/components/ui/Toast.tsx`, prototype-only). The overview counts alerts from the data: "4 Avvisi".
+- **Scenario 4 (new oven, `?scenario=new-oven`)** is done in `src/data/scenarios/newOven.ts`: "Nuovo Forno", 0 h, no alerts (no Avvisi card and no Avvisi tag in the overview), idle at 0% with "Scegli una ricetta", full RO.Care filter (100%, 365 giorni, 4 unità).
   - Empty data uses `EmptyData` (`src/components/ui/EmptyData.tsx`): the card's normal layout faded (charts 30%, usage rows 20%), `aria-hidden`, with "Nessun dato ancora disponibile" on top. Trend: `activityTrend: null`. SENSE.Klean: `hourly: []`, `readAt: null`. Usage: `categories: []`.
   - Recipes: tabs with no categories show "Nessuna ricetta caricata" and "Crea un Gruppo" (toast).
   - **Decided:** the faded placeholder text stays as in Figma even though axe flags its contrast (decorative, `aria-hidden`; the only expected axe finding, Scenario 4 only). The breadcrumb uses the oven name ("Nuovo Forno"). The faded rows use "- h" / "- min · 0%" on both widths (the user fixed the Figma mobile frame to match).
@@ -77,7 +85,13 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 - **Activity hint** (under the CTA): icon + text 4px apart (`gap-1`), centred.
 
 ## Figma
-- File key `1bn8wNuEBinpGhweOO9f0Y`, page "Copia per Prototipo" (`35804:2011`):
+- **Current design (use this):** file key `FH7w3DPC1SqueKQXfsQzHk`, page "🖋️ Exercise" (`31703:201`). Desktop / mobile frames per scenario:
+  - Scenario Base: desktop `37704:2240`, mobile `37704:2841`, sheets `37704:2759` / `37704:2798`.
+  - Activity in Progress - Idle: desktop `37704:5820`, mobile `37704:6380`.
+  - Manutenzione Richiesta: desktop `37704:8907`, mobile `37704:9537`.
+  - Forno Appena Registrato: desktop `37704:10647`, mobile `37704:11180`.
+  - Component "Oven-Overview-Card" `37704:4165` (Desktop/Mobile × Closed/Open).
+- Older work copy (superseded): file key `1bn8wNuEBinpGhweOO9f0Y`, page "Copia per Prototipo" (`35804:2011`):
   - Scenario Base `35807:8455`: desktop `35807:8456`, mobile `35807:9057`, desktop sheet `35807:8975`, mobile sheet `35807:9014`.
   - Activity in Progress - Idle: `35807:9479`
   - SENSE.Klean header states: `35807:9758`
@@ -97,6 +111,7 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
   - Accent is `#006fd9` instead of `#0073e1` everywhere (token, buttons, links, active nav, chart highlight, focus ring, accent SVG icons).
   - Grey-300 is `#707070` instead of `#cccccc` everywhere (search placeholder, SENSE.Klean and "Altro" bars).
   - Alarm red is `#e6002e` instead of Figma's `#ff0033` **everywhere**: the `--color-alarm` token and every SVG icon that used `#FF0033`. White text on it and it as text on white are both 4.77:1.
+  - Online dot green-eco-400 is `#469d2a` instead of Figma's `#52ae32` (3.43:1 on white, WCAG 1.4.11), since it is the only visible online cue. It is only used for that dot.
   - Critical alert surface (`--color-alarm-16`) is the alarm at 10% instead of 16%, so grey text on it is 4.6:1.
   - **Rule:** when a colour changes for accessibility, change it everywhere it is used (tokens and SVG fills), then check every pairing.
   - The avatar's accessible name starts with its visible initials ("EG, profilo utente").

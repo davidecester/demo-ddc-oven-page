@@ -29,7 +29,7 @@ export const SEVERITY: Record<
     badge: 'bg-yellow-400',
     icon: 'sheet-warning',
     icon16: 'sheet-warning-16',
-    dot: 'dot-orange',
+    dot: 'dot-yellow',
     srLabel: 'Attenzione',
   },
   info: {
@@ -38,7 +38,7 @@ export const SEVERITY: Record<
     badge: 'bg-bg-tertiary',
     icon: 'sheet-info',
     icon16: 'sheet-info-16',
-    dot: 'dot-orange',
+    dot: 'dot-blue',
     srLabel: 'Informazione',
   },
 }

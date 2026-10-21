@@ -34,12 +34,15 @@
   --color-orange-400: #ff6900;
   --color-orange-500: #b34a00;
   --color-yellow-400: #ffc107;
-  --color-yellow-500: #b38705;
+  --color-yellow-100: #fff3cd;
+  /* Figma yellow500 #b38705 darkened for WCAG AA: 3.17:1 as an icon on yellow-100 (overview tag), 3.52:1 as large text on white ("Sporco"). Same value in the yellow SVG icons and dot. */
+  --color-yellow-500: #ad8205;
   --color-warning-16: rgb(255 193 7 / 0.16);
   --color-green-100: #ccf5cc;
   /* Figma green500 #008f00 darkened for WCAG AA: 4.53:1 as text on white. Same value in the green SVG icons. */
   --color-green-500: #008a00;
-  --color-green-eco-400: #52ae32;
+  /* Figma #52ae32 darkened for WCAG AA non-text contrast: the online dot is the only visible status cue, 3.43:1 on white. */
+  --color-green-eco-400: #469d2a;
   --color-blue-100: #ccebff;
   --color-blue-200: #88cfff;
   --color-blue-300: #44b4ff;
@@ -54,6 +57,7 @@
   /* Figma alarm16 at 10% instead of 16% so content-quaternary text on it reaches 4.6:1 (WCAG AA) */
   --color-alarm-16: rgb(230 0 46 / 0.1);
   --color-grey-100: #f5f5f5;
+  --color-grey-200: #e0e0e0;
   /* Figma grey300 #cccccc darkened for WCAG AA: 4.67:1 for the search placeholder text on background-secondary.
      Same value for the data bars (SENSE.Klean, "Altro"). */
   --color-grey-300: #707070;

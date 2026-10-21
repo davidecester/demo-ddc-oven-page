@@ -10,7 +10,7 @@ export const maintenanceScenario: Scenario = {
   id: 'maintenance',
   label: 'Manutenzione Richiesta',
 
-  oven: { ...cookingScenario.oven, extraTags: ['maintenance'] },
+  oven: cookingScenario.oven,
 
   activity: {
     status: 'idle',
@@ -33,11 +33,11 @@ export const maintenanceScenario: Scenario = {
     {
       id: 'consumabili',
       severity: 'warning',
-      title: 'Consumabili detergenti',
+      title: 'Detergenti quasi esauriti',
       description: 'Il livello dei detergenti è basso.',
       code: 'CD04',
       timestamp: '09/10/2026 18:30',
-      action: { type: 'orderConsumables', label: 'Ordina consumabili', icon: 'consumables-white' },
+      action: { type: 'orderConsumables', label: 'Ordina detergenti', icon: 'consumables-white' },
       badgeIcon: { icon: 'sheet-consumables', icon16: 'sheet-consumables-16' },
     },
     ...cookingScenario.alerts.filter((a) => a.severity === 'info'),
