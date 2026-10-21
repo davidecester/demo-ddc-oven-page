@@ -22,13 +22,13 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 - **Language:** UI copy in Italian. Code and commit messages in English. Nav labels stay in English.
 
 ## Status
-- **Oven overview card (new design, all scenarios):** Figma component `37704:4165`. Mobile: image 150px high, then tags; desktop: 301px image column. Tags row (size M, 28px pills: `StatusTag size="md"`), in this order:
+- **Oven overview card (new design, all scenarios):** Figma component `37704:4165`. Mobile: image 200px high with the tags laid over its top (absolute, 16px from the card edge); desktop: 301px image column, tags as the first row of the info. Tags row (size M, 28px pills: `StatusTag size="md"`), in this order:
   1. Neutral count `alertCount` (blue-100, bell, number only) = the other alerts (all alerts minus the one named next). Hidden when 0. Screen readers hear "N altri avvisi". Links to `#avvisi`.
-  2. The most severe alert by name, only for critical (`alertCritical`: red-100 + red error_outline) or warning (`alertWarning`: warning-16 + yellow-500 warning icon). Links to `#avvisi`. This replaced the old "Manutenzione richiesta" extra tag.
+  2. The most severe alert by name, only for critical (`alertCritical`: red-100 + red error_outline) or warning (`alertWarning`: yellow-100 `#fff3cd`, opaque so it stays readable over the image, + yellow-500 warning icon). Links to `#avvisi`. This replaced the old "Manutenzione richiesta" extra tag.
   3. The activity tag (links to `#attivita-in-corso`), or "Forno offline".
-  Then model line, name + 10px status dot (no "Online" text; it's in `sr-only`) and Gruppo. "Mostra informazioni / Nascondi informazioni" (`aria-expanded`) reveals warranty + the 2×2 info grid with a 300 ms grid-rows transition; on desktop the image column stretches with it. Heights: desktop 234 closed / 374 open, mobile 392 / 532 (428 / 568 when the tags wrap, Scenario 3).
+  Then model line, name + 10px status dot (no "Online" text; it's in `sr-only`) and Gruppo. "Mostra informazioni / Nascondi informazioni" (`aria-expanded`) reveals warranty + the 2×2 info grid with a 300 ms grid-rows transition; on desktop the image column stretches with it. Heights: desktop 234 closed / 374 open, mobile 390 / 530 in every scenario (wrapped tags overlay the image).
   - Tag padding is the Figma value minus the 1px border (Figma strokes are inside): S `px-[7px] py-[3px]`, M `px-[11px] py-[5px]`.
-  - **Decided (a11y):** the yellow warning icon in the overview tag and the yellow "+N altri avvisi" dot use yellow-500 `#b38705` instead of Figma's `#ffc107` (1.5:1 → 3.02:1, WCAG 1.4.11). yellow-400 stays as a surface with black text (12.9:1).
+  - **Decided (a11y):** yellow-500 is `#ad8205` instead of Figma's `#b38705` everywhere (token, "Sporco" text, dirt-warning icons, overview warning icon, "+N altri avvisi" dot): `#b38705` is 2.97:1 on the yellow-100 tag, `#ad8205` is 3.17:1 (WCAG 1.4.11) and 3.52:1 as large text on white. yellow-400 stays as a surface with black text (12.9:1). The multicolour food illustrations keep their Figma colours.
 - **Avvisi card:** the "+N altri avvisi" dot takes the colour of the most severe alert (`dot-red`, `dot-yellow`, `dot-blue`; `SEVERITY[...].dot` in `alertConfig.ts`), 8px from the text. The idle "In attesa" tag is grey-200 `#e0e0e0` everywhere. Alert titles are sentence case ("Camera sporca", "Camera molto sporca").
 - **Scenario 1 (cooking)** is complete, pixel-matched at 1440 and 390, and passes build, lint and axe.
 - Scenario 1 details (merged):

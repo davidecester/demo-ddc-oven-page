@@ -75,15 +75,16 @@ export function OvenOverviewCard({ oven, activityStatus, alerts, className }: Ov
   return (
     <section
       aria-labelledby="oven-name"
-      className={`flex flex-col gap-6 rounded-lg bg-bg-primary p-4 shadow-elevation-1 md:flex-row md:p-6 ${className ?? ''}`}
+      className={`relative flex flex-col gap-6 rounded-lg bg-bg-primary p-4 shadow-elevation-1 md:flex-row md:p-6 ${className ?? ''}`}
     >
       {/* Desktop: 301px column that stretches with the info, so the oven grows when the info opens */}
-      <div className="relative h-[150px] shrink-0 md:h-auto md:w-[301px] md:self-stretch">
+      <div className="relative h-[200px] shrink-0 md:h-auto md:w-[301px] md:self-stretch">
         <img src={oven.image.src} alt={oven.image.alt} className="absolute inset-0 size-full object-contain" />
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col gap-6">
-        <ul className="flex flex-wrap items-center gap-2">
+        {/* Mobile: the tags sit over the top of the oven image, 16px from the card edge; desktop: first row of the info */}
+        <ul className="absolute inset-x-4 top-4 z-10 flex flex-wrap items-center gap-2 md:static">
           {tags.map((tag) => {
             const visual = (
               <StatusTag type={tag.type} label={tag.label} count={tag.count} size="md" />

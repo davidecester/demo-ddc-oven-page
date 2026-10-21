@@ -22,8 +22,8 @@ const TAG_STYLES: Record<StatusTagType, TagStyle> = {
   warning: { icon: 'tag-warning', label: 'Attenzione', surface: 'bg-yellow-400', text: 'text-black' },
   alertCount: { icon: 'tag-bell-info', label: '', surface: 'bg-blue-100', text: 'text-content-secondary' },
   alertCritical: { icon: 'tag-error-outline', label: 'Critico', surface: 'bg-red-100', text: 'text-content-secondary' },
-  // Icon in yellow-500 (#b38705): Figma's #ffc107 is 1.5:1 on this surface, 3.02:1 passes WCAG 1.4.11
-  alertWarning: { icon: 'tag-warning-yellow', label: 'Attenzione', surface: 'bg-warning-16', text: 'text-content-secondary' },
+  // Icon in yellow-500 (#ad8205): 3.17:1 on yellow-100 (WCAG 1.4.11)
+  alertWarning: { icon: 'tag-warning-yellow', label: 'Attenzione', surface: 'bg-yellow-100', text: 'text-content-secondary' },
 }
 
 // Figma strokes sit inside the box, so each padding is the Figma value minus the 1px border
