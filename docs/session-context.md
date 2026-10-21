@@ -38,7 +38,7 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
     - Sporco: `text-yellow-500` with the warning icon.
     - Molto Sporco: `text-alarm` with the red "!" error icon (`dirt-error-32/20.svg`).
     - Thresholds: ≤50 clean, ≤75 dirty, otherwise veryDirty (`senseKlean.ts`).
-- **Scenario 2 (idle, `?scenario=idle`)** is done in `src/data/scenarios/idle.ts`. It reuses Scenario 1 and overrides the activity (idle, 78% · Molto Sporco), the critical alert "Camera Molto Sporca" (WF54) and the SENSE.Klean reading (78% at 13:00).
+- **Scenario 2 (idle, `?scenario=idle`)** is done in `src/data/scenarios/idle.ts`. It reuses Scenario 1 and overrides the activity (idle, 78% · Molto Sporco), the critical alert "Camera molto sporca" (WF54) and the SENSE.Klean reading (78% at 13:00).
   - Critical alerts use `bg-alarm-16` (`--color-alarm-16`), the `sheet-error` icon and a red dot (`dot-red`) on the "+N altri avvisi" row.
   - The idle CTA has the washing icon and is full width when stacked. The idle icon slot is 100px stacked and 200px beside the details.
 - **Scenario 3 (maintenance, `?scenario=maintenance`)** is done in `src/data/scenarios/maintenance.ts`: idle at 0% · Pulito with a "Scegli una ricetta" CTA (link to the Ricette card, `#ricette`), a critical "Manutenzione richiesta" (MN02) and a warning "Detergenti quasi esauriti" (CD04, CTA "Ordina detergenti", toast "Ordine detergenti inviato"; chosen by the user over Figma's "Consumabili detergenti" for a stronger scent) alert, and the `maintenance` image tag.
