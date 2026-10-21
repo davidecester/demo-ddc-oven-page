@@ -1,6 +1,6 @@
 # DDC Oven Page Prototype — Context for a new session
 
-Read this first, then wait for the user to explain the next scenario. For fixing the Figma file, read `docs/figma-audit.md` instead. Don't start building a scenario before the user describes it.
+Read this first, then wait for the user to explain the next scenario. Don't start building a scenario before the user describes it.
 
 ## Goal
 An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, built from Figma. Desktop (1440px) and mobile (390px) share one codebase and should match Figma pixel for pixel. Scenarios are switched with data only, so no rebuild is needed for each one.
