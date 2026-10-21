@@ -20,23 +20,25 @@ const TAG_STYLES: Record<StatusTagType, TagStyle> = {
   maintenance: { icon: 'tag-error-outline', label: 'Manutenzione richiesta', surface: 'bg-red-100', text: 'text-content-secondary' },
   critical: { icon: 'tag-error', label: 'Critico', surface: 'bg-alarm', text: 'text-white' },
   warning: { icon: 'tag-warning', label: 'Attenzione', surface: 'bg-yellow-400', text: 'text-black' },
-  alertsCritical: { icon: 'tag-bell-critical', label: 'Avvisi', surface: 'bg-alarm', text: 'text-white' },
-  alertsWarning: { icon: 'tag-bell-warning', label: 'Avvisi', surface: 'bg-yellow-400', text: 'text-content-secondary' },
-  alertsInfo: { icon: 'tag-bell-info', label: 'Avvisi', surface: 'bg-blue-100', text: 'text-content-secondary' },
+  alertCount: { icon: 'tag-bell-info', label: '', surface: 'bg-blue-100', text: 'text-content-secondary' },
+  alertCritical: { icon: 'tag-error-outline', label: 'Critico', surface: 'bg-red-100', text: 'text-content-secondary' },
+  // Icon in yellow-500 (#b38705): Figma's #ffc107 is 1.5:1 on this surface, 3.02:1 passes WCAG 1.4.11
+  alertWarning: { icon: 'tag-warning-yellow', label: 'Attenzione', surface: 'bg-warning-16', text: 'text-content-secondary' },
 }
 
+// Figma strokes sit inside the box, so each padding is the Figma value minus the 1px border
 const SIZES = {
-  // Figma strokes sit inside the box: 1px border + padding + 16px icon row
-  sm: 'h-6 rounded-lg px-2 py-[3px]',
-  // M: the overview tags, one step up in hierarchy (28px, pill)
-  md: 'h-7 rounded-full px-3 py-[5px]',
+  // S: 24px, Figma padding 4/8
+  sm: 'h-6 rounded-lg px-[7px] py-[3px]',
+  // M: the overview tags, one step up in hierarchy (28px pill, Figma padding 6/12)
+  md: 'h-7 rounded-full px-[11px] py-[5px]',
 } as const
 
 interface StatusTagProps {
   type: StatusTagType
   /** Overrides the default label (e.g. "Cottura" in the activity card header). */
   label?: string
-  /** Number shown before the label, 2px apart (Figma "Number-Notification"), e.g. "3 Avvisi". */
+  /** Number shown before the label, 2px apart (Figma "Number-Notification"). */
   count?: number
   size?: keyof typeof SIZES
   className?: string
@@ -56,7 +58,7 @@ export function StatusTag({ type, label, count, size = 'sm', className }: Status
       <Icon name={style.icon} size={16} />
       <span className={cx('type-label-xs flex gap-[2px] whitespace-nowrap', style.text)}>
         {count !== undefined && <span>{count}</span>}
-        <span>{label ?? style.label}</span>
+        {(label ?? style.label) && <span>{label ?? style.label}</span>}
       </span>
     </span>
   )

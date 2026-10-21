@@ -15,10 +15,10 @@ export type StatusTagType =
   | 'maintenance'
   | 'critical'
   | 'warning'
-  /** Alert count on the oven overview, coloured by the most severe alert. */
-  | 'alertsCritical'
-  | 'alertsWarning'
-  | 'alertsInfo'
+  /** Oven overview: neutral count of the other alerts, and the most severe alert by name. */
+  | 'alertCount'
+  | 'alertCritical'
+  | 'alertWarning'
 
 export type ActivityStatus = 'cooking' | 'washing' | 'idle'
 
@@ -36,8 +36,6 @@ export interface OvenInfo {
   productCode: string
   firmware: string
   image: { src: string; alt: string }
-  /** Extra tags shown on the product image, e.g. `maintenance` (scenario 4). */
-  extraTags?: StatusTagType[]
 }
 
 interface ActivityBase {

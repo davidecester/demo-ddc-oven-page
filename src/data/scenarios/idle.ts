@@ -22,7 +22,7 @@ export const idleScenario: Scenario = {
     {
       id: 'camera-molto-sporca',
       severity: 'critical',
-      title: 'Camera Molto Sporca',
+      title: 'Camera molto sporca',
       description: 'Necessario lavaggio prima della prossima cottura.',
       code: 'WF54',
       timestamp: '09/10/2026 18:30',

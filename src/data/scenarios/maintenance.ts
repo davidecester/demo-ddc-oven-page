@@ -10,7 +10,7 @@ export const maintenanceScenario: Scenario = {
   id: 'maintenance',
   label: 'Manutenzione Richiesta',
 
-  oven: { ...cookingScenario.oven, extraTags: ['maintenance'] },
+  oven: cookingScenario.oven,
 
   activity: {
     status: 'idle',

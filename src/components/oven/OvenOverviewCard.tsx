@@ -18,12 +18,13 @@ const ACTIVITY_TAG: Record<ActivityStatus, StatusTagType> = {
   idle: 'idle',
 }
 
-/** The alert count tag takes the colour of the most severe alert. */
-const ALERTS_TAG: Record<AlertSeverity, StatusTagType> = {
-  critical: 'alertsCritical',
-  warning: 'alertsWarning',
-  info: 'alertsInfo',
+/** The most severe alert gets its own tag, by name; info alerts only count. */
+const SEVERITY_TAG: Partial<Record<AlertSeverity, { type: StatusTagType; srLabel: string }>> = {
+  critical: { type: 'alertCritical', srLabel: 'critico' },
+  warning: { type: 'alertWarning', srLabel: 'attenzione' },
 }
+
+const ALERTS_TARGET = { id: ALERTS_CARD_ID, label: 'Avvisi' }
 
 const CONNECTION_DOT = {
   online: { label: 'Online', dot: 'bg-green-eco-400' },
@@ -31,8 +32,12 @@ const CONNECTION_DOT = {
 } as const
 
 interface TagItem {
+  key: string
   type: StatusTagType
+  label?: string
   count?: number
+  /** Replaces the visible text for screen readers, e.g. "2 altri avvisi". */
+  srText?: string
   /** Card the tag links to, if any. */
   target?: { id: string; label: string }
 }
@@ -44,17 +49,27 @@ export function OvenOverviewCard({ oven, activityStatus, alerts, className }: Ov
   const connection = CONNECTION_DOT[oven.connection]
   const top = sortBySeverity(alerts)[0]
 
-  // Order as in Figma: alert count, extra tags (e.g. maintenance), then the live activity
+  // Order as in Figma: neutral count of the other alerts, the most severe alert by name, then the live activity
+  const severity = top ? SEVERITY_TAG[top.severity] : undefined
+  const others = alerts.length - (severity ? 1 : 0)
   const tags: TagItem[] = [
-    ...(top
-      ? [{ type: ALERTS_TAG[top.severity], count: alerts.length, target: { id: ALERTS_CARD_ID, label: 'Avvisi' } }]
+    ...(others > 0
+      ? [
+          {
+            key: 'count',
+            type: 'alertCount' as const,
+            count: others,
+            srText: `${others} ${severity ? (others === 1 ? 'altro avviso' : 'altri avvisi') : others === 1 ? 'avviso' : 'avvisi'}`,
+            target: ALERTS_TARGET,
+          },
+        ]
       : []),
-    ...(oven.extraTags ?? []).map((type) =>
-      type === 'maintenance' ? { type, target: { id: ALERTS_CARD_ID, label: 'Avvisi' } } : { type },
-    ),
+    ...(top && severity
+      ? [{ key: 'severity', type: severity.type, label: top.title, srText: `${top.title}, ${severity.srLabel}`, target: ALERTS_TARGET }]
+      : []),
     oven.connection === 'offline'
-      ? { type: 'offline' as const }
-      : { type: ACTIVITY_TAG[activityStatus], target: { id: ACTIVITY_CARD_ID, label: 'Attività in corso' } },
+      ? { key: 'activity', type: 'offline' as const }
+      : { key: 'activity', type: ACTIVITY_TAG[activityStatus], target: { id: ACTIVITY_CARD_ID, label: 'Attività in corso' } },
   ]
 
   return (
@@ -63,24 +78,37 @@ export function OvenOverviewCard({ oven, activityStatus, alerts, className }: Ov
       className={`flex flex-col gap-6 rounded-lg bg-bg-primary p-4 shadow-elevation-1 md:flex-row md:p-6 ${className ?? ''}`}
     >
       {/* Desktop: 301px column that stretches with the info, so the oven grows when the info opens */}
-      <div className="relative h-[200px] shrink-0 md:h-auto md:w-[301px] md:self-stretch">
+      <div className="relative h-[150px] shrink-0 md:h-auto md:w-[301px] md:self-stretch">
         <img src={oven.image.src} alt={oven.image.alt} className="absolute inset-0 size-full object-contain" />
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col gap-6">
         <ul className="flex flex-wrap items-center gap-2">
-          {tags.map((tag) => (
-            <li key={tag.type} className="flex">
-              {tag.target ? (
-                <a href={`#${tag.target.id}`} className="state-layer flex rounded-full">
-                  <StatusTag type={tag.type} count={tag.count} size="md" />
-                  <span className="sr-only">: vai ad {tag.target.label}</span>
-                </a>
-              ) : (
-                <StatusTag type={tag.type} count={tag.count} size="md" />
-              )}
-            </li>
-          ))}
+          {tags.map((tag) => {
+            const visual = (
+              <StatusTag type={tag.type} label={tag.label} count={tag.count} size="md" />
+            )
+            const content = tag.srText ? (
+              <>
+                <span aria-hidden="true" className="flex">{visual}</span>
+                <span className="sr-only">{tag.srText}</span>
+              </>
+            ) : (
+              visual
+            )
+            return (
+              <li key={tag.key} className="flex">
+                {tag.target ? (
+                  <a href={`#${tag.target.id}`} className="state-layer flex rounded-full">
+                    {content}
+                    <span className="sr-only">: vai ad {tag.target.label}</span>
+                  </a>
+                ) : (
+                  content
+                )}
+              </li>
+            )
+          })}
         </ul>
 
         <div className="flex flex-col gap-9">

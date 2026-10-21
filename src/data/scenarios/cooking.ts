@@ -39,7 +39,7 @@ export const cookingScenario: Scenario = {
     {
       id: 'camera-sporca',
       severity: 'warning',
-      title: 'Camera Sporca',
+      title: 'Camera sporca',
       description: 'Consigliato lavaggio prima della prossima cottura.',
       code: 'WF53',
       timestamp: '09/10/2026 18:30',
