@@ -18,7 +18,7 @@ const ACTIVITY_TAG: Record<ActivityStatus, StatusTagType> = {
   idle: 'idle',
 }
 
-/** The most severe alert gets its own tag, by name; info alerts only count. */
+/** The most severe alert gets its own tag, by name, in the same Critical / Warning style as the alert banners; info alerts only count. */
 const SEVERITY_TAG: Partial<Record<AlertSeverity, { type: StatusTagType; srLabel: string }>> = {
   critical: { type: 'critical', srLabel: 'critical' },
   warning: { type: 'warning', srLabel: 'warning' },
