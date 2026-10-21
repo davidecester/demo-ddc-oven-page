@@ -19,7 +19,7 @@ const HALF = 'col-span-4 md:col-span-8 lg:col-span-6'
 
 const TOAST_MESSAGE: Record<Exclude<AlertAction['type'], 'startWashing'>, string> = {
   scheduleMaintenance: 'Richiesta di manutenzione inviata',
-  orderConsumables: 'Ordine consumabili inviato',
+  orderConsumables: 'Ordine detergenti inviato',
 }
 
 export function OvenPage({ scenario }: { scenario: Scenario }) {

@@ -39,7 +39,8 @@
   --color-green-100: #ccf5cc;
   /* Figma green500 #008f00 darkened for WCAG AA: 4.53:1 as text on white. Same value in the green SVG icons. */
   --color-green-500: #008a00;
-  --color-green-eco-400: #52ae32;
+  /* Figma #52ae32 darkened for WCAG AA non-text contrast: the online dot is the only visible status cue, 3.43:1 on white. */
+  --color-green-eco-400: #469d2a;
   --color-blue-100: #ccebff;
   --color-blue-200: #88cfff;
   --color-blue-300: #44b4ff;
