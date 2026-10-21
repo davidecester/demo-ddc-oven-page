@@ -61,7 +61,6 @@ export function OvenPage({ scenario }: { scenario: Scenario }) {
           oven={scenario.oven}
           activityStatus={live.status}
           alerts={scenario.alerts}
-          onOpenAlerts={() => setAlertsOpen(true)}
         />
         {scenario.alerts.length > 0 && (
           <AlertsCard

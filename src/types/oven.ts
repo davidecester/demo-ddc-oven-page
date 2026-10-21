@@ -15,6 +15,10 @@ export type StatusTagType =
   | 'maintenance'
   | 'critical'
   | 'warning'
+  /** Alert count on the oven overview, coloured by the most severe alert. */
+  | 'alertsCritical'
+  | 'alertsWarning'
+  | 'alertsInfo'
 
 export type ActivityStatus = 'cooking' | 'washing' | 'idle'
 
@@ -25,7 +29,8 @@ export interface OvenInfo {
   name: string
   group: string
   connection: ConnectionStatus
-  warranty: string | null
+  /** e.g. { label: 'Garanzia LONG.Life:', value: 'Attiva fino al 03/2028' } */
+  warranty: { label: string; value: string } | null
   usageHours: string
   serialNumber: string
   productCode: string

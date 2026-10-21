@@ -14,7 +14,7 @@ export const cookingScenario: Scenario = {
     name: 'Academy 5',
     group: 'UNOX',
     connection: 'online',
-    warranty: 'Garanzia LONG.Life: Attiva fino al 03/2028',
+    warranty: { label: 'Garanzia LONG.Life:', value: 'Attiva fino al 03/2028' },
     usageHours: '3.482 h',
     serialNumber: '2309-AX-004871',
     productCode: 'XEVC-1011-E1RM',

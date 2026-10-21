@@ -22,6 +22,8 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 - **Language:** UI copy in Italian. Code and commit messages in English. Nav labels stay in English.
 
 ## Status
+- **Oven overview card (new design, all scenarios):** Figma component `37704:4165`. Tags row (size M, 28px pills: `StatusTag size="md"`) above model line, name + 10px status dot (no "Online" text; it's in `sr-only`) and Gruppo. Tag order: "N Avvisi" (coloured by the most severe alert: critical red/white, warning yellow, info blue; links to `#avvisi`), extra tags such as "Manutenzione richiesta" (links to `#avvisi`), then the activity tag (links to `#attivita-in-corso`). No alerts → no Avvisi tag. "Mostra informazioni / Nascondi informazioni" (`aria-expanded`) reveals warranty + the 2×2 info grid with a 300 ms grid-rows transition; on desktop the 301px image column stretches with it. Heights: desktop 234 closed / 374 open, mobile 442 / 582 (478 / 618 when the tags wrap, Scenario 3).
+- **Avvisi card:** the "+N altri avvisi" dot takes the colour of the most severe alert (`dot-red`, `dot-yellow`, `dot-blue`; `SEVERITY[...].dot` in `alertConfig.ts`), 8px from the text. The idle "In attesa" tag is grey-200 `#e0e0e0` everywhere.
 - **Scenario 1 (cooking)** is complete, pixel-matched at 1440 and 390, and passes build, lint and axe.
 - Scenario 1 details (merged):
   - The overview activity tag ("Cottura in corso") is an `<a href="#attivita-in-corso">` to the Attività in corso card. The anchor id is in `src/components/oven/anchors.ts`, and `.anchor-target` sets a scroll-margin of 120px on mobile and 144px on desktop for the sticky TopBar.
@@ -38,8 +40,8 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
   - The Avvisi card shows a banner for every alert that needs action (critical and warning, stacked 4px apart), then "+N altri avvisi" for the informational ones (Figma `35811:16206` desktop, `35811:16853` mobile).
   - Alert actions carry their own icon (`AlertAction.icon`); an alert can override its badge glyph (`badgeIcon`). Idle CTAs are `IdleActivity.cta` (`startWashing` or `chooseRecipe`).
   - "N richiede/richiedono azione" is pluralised.
-  - "Pianifica manutenzione" and "Ordina consumabili" close the drawer and show a confirmation toast (`src/components/ui/Toast.tsx`, prototype-only). The overview counts alerts from the data: "Avvisi: 4" (Figma's "3" is a copy mistake, confirmed by the user).
-- **Scenario 4 (new oven, `?scenario=new-oven`)** is done in `src/data/scenarios/newOven.ts`: "Nuovo Forno", 0 h, no alerts (no Avvisi card; overview shows "Avvisi: -"), idle at 0% with "Scegli una ricetta", full RO.Care filter (100%, 365 giorni, 4 unità).
+  - "Pianifica manutenzione" and "Ordina consumabili" close the drawer and show a confirmation toast (`src/components/ui/Toast.tsx`, prototype-only). The overview counts alerts from the data: "4 Avvisi".
+- **Scenario 4 (new oven, `?scenario=new-oven`)** is done in `src/data/scenarios/newOven.ts`: "Nuovo Forno", 0 h, no alerts (no Avvisi card and no Avvisi tag in the overview), idle at 0% with "Scegli una ricetta", full RO.Care filter (100%, 365 giorni, 4 unità).
   - Empty data uses `EmptyData` (`src/components/ui/EmptyData.tsx`): the card's normal layout faded (charts 30%, usage rows 20%), `aria-hidden`, with "Nessun dato ancora disponibile" on top. Trend: `activityTrend: null`. SENSE.Klean: `hourly: []`, `readAt: null`. Usage: `categories: []`.
   - Recipes: tabs with no categories show "Nessuna ricetta caricata" and "Crea un Gruppo" (toast).
   - **Decided:** the faded placeholder text stays as in Figma even though axe flags its contrast (decorative, `aria-hidden`; the only expected axe finding, Scenario 4 only). The breadcrumb uses the oven name ("Nuovo Forno"). The faded rows use "- h" / "- min · 0%" on both widths (the user fixed the Figma mobile frame to match).
@@ -77,7 +79,13 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 - **Activity hint** (under the CTA): icon + text 4px apart (`gap-1`), centred.
 
 ## Figma
-- File key `1bn8wNuEBinpGhweOO9f0Y`, page "Copia per Prototipo" (`35804:2011`):
+- **Current design (use this):** file key `FH7w3DPC1SqueKQXfsQzHk`, page "🖋️ Exercise" (`31703:201`). Desktop / mobile frames per scenario:
+  - Scenario Base: desktop `37704:2240`, mobile `37704:2841`, sheets `37704:2759` / `37704:2798`.
+  - Activity in Progress - Idle: desktop `37704:5820`, mobile `37704:6380`.
+  - Manutenzione Richiesta: desktop `37704:8907`, mobile `37704:9537`.
+  - Forno Appena Registrato: desktop `37704:10647`, mobile `37704:11180`.
+  - Component "Oven-Overview-Card" `37704:4165` (Desktop/Mobile × Closed/Open).
+- Older work copy (superseded): file key `1bn8wNuEBinpGhweOO9f0Y`, page "Copia per Prototipo" (`35804:2011`):
   - Scenario Base `35807:8455`: desktop `35807:8456`, mobile `35807:9057`, desktop sheet `35807:8975`, mobile sheet `35807:9014`.
   - Activity in Progress - Idle: `35807:9479`
   - SENSE.Klean header states: `35807:9758`

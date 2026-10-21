@@ -54,6 +54,7 @@
   /* Figma alarm16 at 10% instead of 16% so content-quaternary text on it reaches 4.6:1 (WCAG AA) */
   --color-alarm-16: rgb(230 0 46 / 0.1);
   --color-grey-100: #f5f5f5;
+  --color-grey-200: #e0e0e0;
   /* Figma grey300 #cccccc darkened for WCAG AA: 4.67:1 for the search placeholder text on background-secondary.
      Same value for the data bars (SENSE.Klean, "Altro"). */
   --color-grey-300: #707070;

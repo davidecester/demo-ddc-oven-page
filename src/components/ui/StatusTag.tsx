@@ -13,35 +13,51 @@ interface TagStyle {
 const TAG_STYLES: Record<StatusTagType, TagStyle> = {
   cooking: { icon: 'tag-fire', label: 'Cottura in corso', surface: 'bg-orange-100', text: 'text-content-secondary' },
   washing: { icon: 'tag-washing', label: 'Lavaggio in corso', surface: 'bg-blue-100', text: 'text-content-secondary' },
-  idle: { icon: 'tag-standby', label: 'In attesa', surface: 'bg-grey-100', text: 'text-content-secondary' },
+  idle: { icon: 'tag-standby', label: 'In attesa', surface: 'bg-grey-200', text: 'text-content-secondary' },
   filterGood: { icon: 'tag-water-good', label: 'Filtro buono', surface: 'bg-green-100', text: 'text-content-secondary' },
   filterExhausted: { icon: 'tag-water-exhausted', label: 'Sostituire filtro', surface: 'bg-red-100', text: 'text-content-secondary' },
   offline: { icon: 'tag-wifi-off', label: 'Forno offline', surface: 'bg-red-100', text: 'text-content-secondary' },
   maintenance: { icon: 'tag-error-outline', label: 'Manutenzione richiesta', surface: 'bg-red-100', text: 'text-content-secondary' },
   critical: { icon: 'tag-error', label: 'Critico', surface: 'bg-alarm', text: 'text-white' },
   warning: { icon: 'tag-warning', label: 'Attenzione', surface: 'bg-yellow-400', text: 'text-black' },
+  alertsCritical: { icon: 'tag-bell-critical', label: 'Avvisi', surface: 'bg-alarm', text: 'text-white' },
+  alertsWarning: { icon: 'tag-bell-warning', label: 'Avvisi', surface: 'bg-yellow-400', text: 'text-content-secondary' },
+  alertsInfo: { icon: 'tag-bell-info', label: 'Avvisi', surface: 'bg-blue-100', text: 'text-content-secondary' },
 }
+
+const SIZES = {
+  // Figma strokes sit inside the box: 1px border + padding + 16px icon row
+  sm: 'h-6 rounded-lg px-2 py-[3px]',
+  // M: the overview tags, one step up in hierarchy (28px, pill)
+  md: 'h-7 rounded-full px-3 py-[5px]',
+} as const
 
 interface StatusTagProps {
   type: StatusTagType
   /** Overrides the default label (e.g. "Cottura" in the activity card header). */
   label?: string
+  /** Number shown before the label, 2px apart (Figma "Number-Notification"), e.g. "3 Avvisi". */
+  count?: number
+  size?: keyof typeof SIZES
   className?: string
 }
 
-export function StatusTag({ type, label, className }: StatusTagProps) {
+export function StatusTag({ type, label, count, size = 'sm', className }: StatusTagProps) {
   const style = TAG_STYLES[type]
   return (
     <span
       className={cx(
-        // Figma strokes sit inside the 24px box: 1px border + 3px padding + 16px icon row
-        'inline-flex h-6 shrink-0 items-center gap-1 rounded-lg border border-black/5 px-2 py-[3px] backdrop-blur-[15px]',
+        'inline-flex shrink-0 items-center gap-1 border border-black/5 backdrop-blur-[15px]',
+        SIZES[size],
         style.surface,
         className,
       )}
     >
       <Icon name={style.icon} size={16} />
-      <span className={cx('type-label-xs whitespace-nowrap', style.text)}>{label ?? style.label}</span>
+      <span className={cx('type-label-xs flex gap-[2px] whitespace-nowrap', style.text)}>
+        {count !== undefined && <span>{count}</span>}
+        <span>{label ?? style.label}</span>
+      </span>
     </span>
   )
 }
