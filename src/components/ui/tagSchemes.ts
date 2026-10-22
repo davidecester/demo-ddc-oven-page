@@ -17,7 +17,7 @@ export const TAG_SCHEMES: Record<StatusTagType, TagScheme> = {
   idle: { icon: 'tag-standby', label: 'Idle', surface: 'bg-grey-200', text: 'text-content-secondary' },
   filterGood: { icon: 'tag-water-good', label: 'Filter OK', surface: 'bg-green-100', text: 'text-content-secondary' },
   filterExhausted: { icon: 'tag-water-exhausted', label: 'Replace filter', surface: 'bg-red-100', text: 'text-content-secondary' },
-  offline: { icon: 'tag-wifi-off', label: 'Oven offline', surface: 'bg-red-100', text: 'text-content-secondary' },
+  offline: { icon: 'tag-wifi-off', label: 'Oven offline', surface: 'bg-alarm', text: 'text-white' },
   maintenance: { icon: 'tag-error-outline', label: 'Maintenance required', surface: 'bg-red-100', text: 'text-content-secondary' },
   critical: { icon: 'tag-error', label: 'Critical', surface: 'bg-alarm', text: 'text-white' },
   warning: { icon: 'tag-warning', label: 'Warning', surface: 'bg-yellow-400', text: 'text-black' },
