@@ -1,7 +1,7 @@
 import { useId, useState } from 'react'
 import type { ActivityStatus, AlertSeverity, OvenAlert, OvenInfo, StatusTagType } from '../../types/oven'
 import { Icon } from '../ui/Icon'
-import { StatusTag } from '../ui/StatusTag'
+import { Chip } from '../ui/Chip'
 import { sortBySeverity } from './alertConfig'
 import { ACTIVITY_CARD_ID, ALERTS_CARD_ID } from './anchors'
 
@@ -85,31 +85,18 @@ export function OvenOverviewCard({ oven, activityStatus, alerts, className }: Ov
       <div className="flex min-w-0 flex-1 flex-col gap-6">
         {/* Mobile: the tags sit over the top of the oven image, 16px from the card edge; desktop: first row of the info */}
         <ul className="absolute inset-x-4 top-4 z-10 flex flex-wrap items-center gap-2 md:static">
-          {tags.map((tag) => {
-            const visual = (
-              <StatusTag type={tag.type} label={tag.label} count={tag.count} size="md" />
-            )
-            const content = tag.srText ? (
-              <>
-                <span aria-hidden="true" className="flex">{visual}</span>
-                <span className="sr-only">{tag.srText}</span>
-              </>
-            ) : (
-              visual
-            )
-            return (
-              <li key={tag.key} className="flex">
-                {tag.target ? (
-                  <a href={`#${tag.target.id}`} className="state-layer flex rounded-full">
-                    {content}
-                    <span className="sr-only">: go to {tag.target.label}</span>
-                  </a>
-                ) : (
-                  content
-                )}
-              </li>
-            )
-          })}
+          {tags.map((tag) => (
+            <li key={tag.key} className="flex">
+              <Chip
+                type={tag.type}
+                label={tag.label}
+                count={tag.count}
+                srText={tag.srText}
+                href={tag.target && `#${tag.target.id}`}
+                targetLabel={tag.target?.label}
+              />
+            </li>
+          ))}
         </ul>
 
         <div className="flex flex-col gap-9">

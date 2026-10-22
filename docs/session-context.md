@@ -25,7 +25,7 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
   - The nav labels ("Ovens", "Dashboard", …) and the "Search" placeholder were already English. Rule: the search placeholder always follows the nav labels' language; translate them together or not at all.
 
 ## Status
-- **Oven overview card (new design, all scenarios):** Figma component `37704:4165`. Mobile: image 200px high with the tags laid over its top (absolute, 16px from the card edge); desktop: 301px image column, tags as the first row of the info. Tags row (size M, 28px pills with a 14px `type-label-sm` label and 16px icon: `StatusTag size="md"`; decided by the user: the pill shape and bigger label mark them as clickable chips, while the read-only S tags are 24px with a 4px radius and a 12px label), in this order:
+- **Oven overview card (new design, all scenarios):** Figma component `37704:4165`. Mobile: image 200px high with the tags laid over its top (absolute, 16px from the card edge); desktop: 301px image column, tags as the first row of the info. Tags row: the **Chip** component (`ui/Chip.tsx`: 28px pill, 14px `type-label-sm` label, 16px icon, an in-page link that lifts on hover and recesses on press). Decided by the user: chips are a separate component from the read-only **Status Tag** (`ui/StatusTag.tsx`: 24px, 4px radius, 12px label); both read their colours from one table, `ui/tagSchemes.ts`, so a colour fix lands on both. Order:
   1. Neutral count `alertCount` (blue-100, bell, number only) = the other alerts (all alerts minus the one named next). Hidden when 0. Screen readers hear "N altri avvisi". Links to `#avvisi`.
   2. The most severe alert by name, only for critical or warning, in the **same two styles as the alert banners** (decided by the user to reduce tag colours): `critical` = solid alarm `#e6002e`, white text + white error icon (4.7:1); `warning` = solid yellow-400 `#ffc107`, black text + black warning icon (12.9:1). So "Dirty chamber" is Warning; "Very dirty chamber" and "Maintenance required" are Critical. Solid, so they stay readable over the image. Links to `#avvisi`. This replaced the old "Manutenzione richiesta" extra tag.
   3. The activity tag (links to `#attivita-in-corso`), or "Forno offline".
@@ -65,7 +65,8 @@ An interactive, responsive prototype of UNOX DDC's redesigned **Oven page**, bui
 - Run `npm ci` first in a fresh container. Without it, build and lint fail.
 - Scripts: `npm run dev`, `npm run build` (tsc + vite build), `npm run lint`, `npm run preview`.
 - **Tokens** are in `src/styles/tokens.css`, for example `--color-alarm`, `--color-accent #006fd9`, `--color-green-500 #008a00`.
-- **Text styles** are `@utility type-*` in `src/styles/typography.css`. State-layer and mask-icon utilities are in `src/styles/states.css`.
+- **Text styles** are `@utility type-*` in `src/styles/typography.css`. State-layer, state-lift and mask-icon utilities are in `src/styles/states.css`.
+- **Interaction states (decided by the user):** every interactive element gets the state layer, a black overlay under the content (6% hover, 12% press; 12/24% on accent), so text and icons keep their colour. Elements that sit on a surface as separate objects (chips, primary and secondary buttons) also get `state-lift`: hover comes toward you (`elevation-1` shadow, 1px up, only on devices that hover), press recesses (no shadow, 1px down). Flat elements (nav items, list rows, icon buttons, links, avatar) only get the state layer.
 - **Assets** are in `/public/assets` (icons in `/public/assets/icons`).
 - **Fonts:** Roboto, plus Montserrat for ring percentages.
 - **Breakpoints:** md 768, lg 1024, xl 1440. The sticky TopBar is 104px high below 1024 and 128px at 1024 and above.

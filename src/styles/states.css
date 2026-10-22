@@ -1,6 +1,7 @@
 /*
  * Interaction state layer: a translucent overlay for hover / pressed,
  * so every surface colour gets consistent feedback without new tokens.
+ * It sits under the content (z-index -1 inside the isolated element), so text and icons keep their colour.
  */
 @utility state-layer {
   position: relative;
@@ -13,6 +14,7 @@
     border-radius: inherit;
     background-color: var(--color-black);
     opacity: 0;
+    z-index: -1;
     pointer-events: none;
     transition: opacity 120ms ease-out;
   }
@@ -38,6 +40,7 @@
     border-radius: inherit;
     background-color: var(--color-black);
     opacity: 0;
+    z-index: -1;
     pointer-events: none;
     transition: opacity 120ms ease-out;
   }
@@ -48,6 +51,30 @@
 
   &:active:not(:disabled, [aria-disabled='true'])::after {
     opacity: 0.24;
+  }
+}
+
+/*
+ * Lift: for interactive elements that sit on a surface as separate objects (chips, filled buttons).
+ * Hover comes toward you (elevation-1, 1px up), press recesses (no shadow, 1px down).
+ * Used together with a state layer; flat elements (nav items, rows, links) only get the state layer.
+ * Hover only on devices that really hover, so a tap doesn't leave a chip lifted on touch screens.
+ */
+@utility state-lift {
+  transition:
+    box-shadow 120ms ease-out,
+    translate 120ms ease-out;
+
+  @media (hover: hover) {
+    &:hover:not(:disabled, [aria-disabled='true']) {
+      box-shadow: var(--shadow-elevation-1);
+      translate: 0 -1px;
+    }
+  }
+
+  &:active:not(:disabled, [aria-disabled='true']) {
+    box-shadow: none;
+    translate: 0 1px;
   }
 }
 
