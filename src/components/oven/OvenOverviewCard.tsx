@@ -28,7 +28,7 @@ const ALERTS_TARGET = { id: ALERTS_CARD_ID, label: 'Alerts' }
 
 const CONNECTION_DOT = {
   online: { label: 'Online', dot: 'bg-green-eco-400' },
-  offline: { label: 'Offline', dot: 'bg-content-quaternary' },
+  offline: { label: 'Offline', dot: 'bg-alarm' },
 } as const
 
 interface TagItem {
@@ -68,7 +68,7 @@ export function OvenOverviewCard({ oven, activityStatus, alerts, className }: Ov
       ? [{ key: 'severity', type: severity.type, label: top.title, srText: `${top.title}, ${severity.srLabel}`, target: ALERTS_TARGET }]
       : []),
     oven.connection === 'offline'
-      ? { key: 'activity', type: 'offline' as const }
+      ? { key: 'activity', type: 'offline' as const, target: ALERTS_TARGET }
       : { key: 'activity', type: ACTIVITY_TAG[activityStatus], target: { id: ACTIVITY_CARD_ID, label: 'Current activity' } },
   ]
 

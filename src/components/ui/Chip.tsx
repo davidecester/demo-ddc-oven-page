@@ -8,7 +8,7 @@ interface ChipProps {
   label?: string
   /** Number shown before the label, 2px apart (Figma "Number-Notification"). */
   count?: number
-  /** In-page link; without it the chip is shown read-only (e.g. "Oven offline"). */
+  /** In-page link to the card the chip is about. */
   href?: string
   /** Replaces the visible text for screen readers, e.g. "2 more alerts". */
   srText?: string
