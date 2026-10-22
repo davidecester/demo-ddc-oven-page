@@ -27,8 +27,8 @@ const TAG_STYLES: Record<StatusTagType, TagStyle> = {
 const SIZES = {
   // S: 24px, Figma padding 4/8. Read-only status, so a 4px radius instead of a pill.
   sm: { box: 'h-6 rounded-sm px-[7px] py-[3px]', text: 'type-label-xs', icon: 16 },
-  // M: the overview chips, clickable (28px pill, Figma padding 4/12, 14px label, 20px icon)
-  md: { box: 'h-7 rounded-full px-[11px] py-[3px]', text: 'type-label-sm', icon: 20 },
+  // M: the overview chips, clickable (28px pill, Figma padding 6/12, 14px label)
+  md: { box: 'h-7 rounded-full px-[11px] py-[5px]', text: 'type-label-sm', icon: 16 },
 } as const
 
 interface StatusTagProps {
