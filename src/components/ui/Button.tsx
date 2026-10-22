@@ -14,9 +14,9 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const VARIANTS: Record<ButtonVariant, string> = {
   // Figma "Primary-CTA": accent, 36px, button/medium
-  primary: 'state-layer-inverse bg-accent text-white type-button-md',
+  primary: 'state-layer-inverse state-lift bg-accent text-white type-button-md',
   // Figma toolbar "Analytics" button: secondary surface, button/small
-  secondary: 'state-layer bg-bg-secondary text-content-quaternary type-button-sm',
+  secondary: 'state-layer state-lift bg-bg-secondary text-content-quaternary type-button-sm',
 }
 
 function buttonClasses(variant: ButtonVariant, fullWidth: boolean, className?: string) {

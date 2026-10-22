@@ -1,7 +1,7 @@
 import { useId, useState } from 'react'
 import type { ActivityStatus, AlertSeverity, OvenAlert, OvenInfo, StatusTagType } from '../../types/oven'
 import { Icon } from '../ui/Icon'
-import { StatusTag } from '../ui/StatusTag'
+import { Chip } from '../ui/Chip'
 import { sortBySeverity } from './alertConfig'
 import { ACTIVITY_CARD_ID, ALERTS_CARD_ID } from './anchors'
 
@@ -28,7 +28,7 @@ const ALERTS_TARGET = { id: ALERTS_CARD_ID, label: 'Alerts' }
 
 const CONNECTION_DOT = {
   online: { label: 'Online', dot: 'bg-green-eco-400' },
-  offline: { label: 'Offline', dot: 'bg-content-quaternary' },
+  offline: { label: 'Offline', dot: 'bg-alarm' },
 } as const
 
 interface TagItem {
@@ -68,7 +68,7 @@ export function OvenOverviewCard({ oven, activityStatus, alerts, className }: Ov
       ? [{ key: 'severity', type: severity.type, label: top.title, srText: `${top.title}, ${severity.srLabel}`, target: ALERTS_TARGET }]
       : []),
     oven.connection === 'offline'
-      ? { key: 'activity', type: 'offline' as const }
+      ? { key: 'activity', type: 'offline' as const, target: ALERTS_TARGET }
       : { key: 'activity', type: ACTIVITY_TAG[activityStatus], target: { id: ACTIVITY_CARD_ID, label: 'Current activity' } },
   ]
 
@@ -85,31 +85,18 @@ export function OvenOverviewCard({ oven, activityStatus, alerts, className }: Ov
       <div className="flex min-w-0 flex-1 flex-col gap-6">
         {/* Mobile: the tags sit over the top of the oven image, 16px from the card edge; desktop: first row of the info */}
         <ul className="absolute inset-x-4 top-4 z-10 flex flex-wrap items-center gap-2 md:static">
-          {tags.map((tag) => {
-            const visual = (
-              <StatusTag type={tag.type} label={tag.label} count={tag.count} size="md" />
-            )
-            const content = tag.srText ? (
-              <>
-                <span aria-hidden="true" className="flex">{visual}</span>
-                <span className="sr-only">{tag.srText}</span>
-              </>
-            ) : (
-              visual
-            )
-            return (
-              <li key={tag.key} className="flex">
-                {tag.target ? (
-                  <a href={`#${tag.target.id}`} className="state-layer flex rounded-full">
-                    {content}
-                    <span className="sr-only">: go to {tag.target.label}</span>
-                  </a>
-                ) : (
-                  content
-                )}
-              </li>
-            )
-          })}
+          {tags.map((tag) => (
+            <li key={tag.key} className="flex">
+              <Chip
+                type={tag.type}
+                label={tag.label}
+                count={tag.count}
+                srText={tag.srText}
+                href={tag.target && `#${tag.target.id}`}
+                targetLabel={tag.target?.label}
+              />
+            </li>
+          ))}
         </ul>
 
         <div className="flex flex-col gap-9">
