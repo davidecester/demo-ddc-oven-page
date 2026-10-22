@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, XAxis, YAxis } from 'recharts'
 import { TABLET_UP, useMediaQuery } from '../../hooks/useMediaQuery'
 import type { SenseKlean } from '../../types/oven'
 import { axisTick, gridStroke, renderYTick } from '../charts/chartTheme'
@@ -21,8 +21,9 @@ function labelledHours(hours: string[], wide: boolean): string[] {
 
 /**
  * "SENSE.Klean – Livello di sporco": hourly dirt level over the last 24 h.
- * Hovering (or tapping) a bar previews that reading in the header, like a
- * stock chart scrubber; leaving the chart returns to the current reading.
+ * Hovering a column (desktop) or scrubbing a finger across the chart (touch)
+ * previews that reading in the header, like a stock chart scrubber; moving the
+ * mouse out, or tapping outside the chart, returns to the current reading.
  */
 export function SenseKleanCard({ data, className }: SenseKleanCardProps) {
   const wide = useMediaQuery(TABLET_UP)
@@ -48,11 +49,24 @@ export function SenseKleanCard({ data, className }: SenseKleanCardProps) {
       </div>
 
       {data && data.hourly.length > 0 ? (
-        <DirtChart data={data} wide={wide} selected={selected ?? lastIndex} onSelect={setSelected} />
+        <DirtChart
+          data={data}
+          wide={wide}
+          selected={selected ?? lastIndex}
+          scrubbing={selected !== null}
+          onSelect={setSelected}
+        />
       ) : data ? (
         // New oven: legend and axes faded, no bars (Figma "Forno Appena Registrato")
         <EmptyData>
-          <DirtChart data={{ ...data, hourly: EMPTY_DAY }} wide={wide} selected={-1} onSelect={() => {}} empty />
+          <DirtChart
+            data={{ ...data, hourly: EMPTY_DAY }}
+            wide={wide}
+            selected={-1}
+            scrubbing={false}
+            onSelect={() => {}}
+            empty
+          />
         </EmptyData>
       ) : (
         <p className="type-paragraph-sm text-content-quaternary">No data available</p>
@@ -84,6 +98,8 @@ interface DirtChartProps {
   wide: boolean
   /** Highlighted bar: the hovered/tapped one, or the latest reading. */
   selected: number
+  /** The pointer is on a column: shade it like a chart cursor. */
+  scrubbing: boolean
   /** `null` returns to the latest reading. */
   onSelect: (index: number | null) => void
   /** Placeholder for the empty state: axes and legend only, no bars or caption. */
@@ -96,7 +112,12 @@ const EMPTY_DAY: SenseKlean['hourly'] = Array.from({ length: 24 }, (_, i) => ({
   value: 0,
 }))
 
-function DirtChart({ data, wide, selected, onSelect, empty = false }: DirtChartProps) {
+/** Y axis gutter left of the bars; the columns share the remaining width evenly. */
+const Y_AXIS_WIDTH = 44
+/** X axis labels below the bars, outside the column shading. */
+const X_AXIS_HEIGHT = 36
+
+function DirtChart({ data, wide, selected, scrubbing, onSelect, empty = false }: DirtChartProps) {
   const plotRef = useRef<HTMLDivElement>(null)
   const ticks = labelledHours(
     data.hourly.map((h) => h.hour),
@@ -113,10 +134,26 @@ function DirtChart({ data, wide, selected, onSelect, empty = false }: DirtChartP
     return () => document.removeEventListener('pointerdown', reset)
   }, [onSelect])
 
-  const pick = (state: { activeTooltipIndex?: number | string | null }) => {
-    const index = Number(state.activeTooltipIndex)
-    if (state.activeTooltipIndex != null && Number.isInteger(index)) onSelect(index)
+  // Our own pointer tracking instead of Recharts' click/tooltip events, so a mouse
+  // previews on hover and a finger previews while it slides, not only on tap.
+  // `touch-pan-y` keeps vertical page scrolling; horizontal drags reach us.
+  const count = data.hourly.length
+  const pick = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const box = event.currentTarget.getBoundingClientRect()
+    const column = Math.floor(((event.clientX - box.left - Y_AXIS_WIDTH) / (box.width - Y_AXIS_WIDTH)) * count)
+    const index = Math.min(count - 1, Math.max(0, column))
+    if (index !== selected || !scrubbing) onSelect(index)
   }
+  const pointer = empty
+    ? {}
+    : {
+        onPointerDown: pick,
+        onPointerMove: pick,
+        // Touch keeps the scrubbed reading after lifting the finger, until a tap outside
+        onPointerLeave: (event: ReactPointerEvent) => {
+          if (event.pointerType === 'mouse') onSelect(null)
+        },
+      }
 
   return (
     <figure className="flex flex-col gap-6">
@@ -129,7 +166,23 @@ function DirtChart({ data, wide, selected, onSelect, empty = false }: DirtChartP
         ))}
       </ul>
 
-      <div ref={plotRef} className="h-[238px] w-full touch-pan-y md:h-[236px] [&_*]:outline-none" aria-hidden="true">
+      <div
+        ref={plotRef}
+        className="relative isolate h-[238px] w-full touch-pan-y select-none md:h-[236px] [&_*]:outline-none"
+        aria-hidden="true"
+        {...pointer}
+      >
+        {scrubbing && (
+          // Column cursor behind the bars, the same wash Recharts' tooltip cursor drew
+          <span
+            className="pointer-events-none absolute top-0 -z-10 bg-grey-100"
+            style={{
+              bottom: X_AXIS_HEIGHT,
+              left: `calc(${Y_AXIS_WIDTH}px + (100% - ${Y_AXIS_WIDTH}px) * ${selected / count})`,
+              width: `calc((100% - ${Y_AXIS_WIDTH}px) / ${count})`,
+            }}
+          />
+        )}
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={data.hourly}
@@ -139,9 +192,6 @@ function DirtChart({ data, wide, selected, onSelect, empty = false }: DirtChartP
             margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
             style={{ overflow: 'visible' }}
             accessibilityLayer={false}
-            onMouseMove={empty ? undefined : pick}
-            onClick={empty ? undefined : pick}
-            onMouseLeave={empty ? undefined : () => onSelect(null)}
           >
             <CartesianGrid stroke={gridStroke} />
             <YAxis
@@ -150,7 +200,7 @@ function DirtChart({ data, wide, selected, onSelect, empty = false }: DirtChartP
               axisLine={false}
               tickLine={false}
               tick={(props) => renderYTick({ ...props, format: (v) => `${v}%` })}
-              width={44}
+              width={Y_AXIS_WIDTH}
             />
             <XAxis
               dataKey="hour"
@@ -160,10 +210,8 @@ function DirtChart({ data, wide, selected, onSelect, empty = false }: DirtChartP
               tickLine={false}
               tick={axisTick}
               tickMargin={8}
-              height={36}
+              height={X_AXIS_HEIGHT}
             />
-            {/* No floating tooltip: the header above shows the hovered reading */}
-            {!empty && <Tooltip cursor={{ fill: 'var(--color-grey-100)' }} content={() => null} />}
             <Bar
               dataKey="value"
               radius={[radius, radius, 0, 0]}
