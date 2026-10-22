@@ -21,7 +21,7 @@ export function RoCareCard({ data, className }: RoCareCardProps) {
   return (
     <Card labelledBy="rocare-title" className={`gap-9 ${className ?? ''}`}>
       <div className="flex flex-col">
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex items-center justify-between gap-2">
           <h2 id="rocare-title" className="type-heading-xs text-content-primary">
             RO.Care filter
           </h2>
