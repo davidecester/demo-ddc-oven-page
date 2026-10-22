@@ -28,7 +28,7 @@ export function ActivityCard({ activity, onStartWashing, className }: ActivityCa
 
   return (
     <Card id={ACTIVITY_CARD_ID} labelledBy="activity-title" className={`anchor-target gap-9 ${className ?? ''}`}>
-      <div className="flex flex-wrap items-center gap-4">
+      <div className="flex items-center justify-between gap-2">
         <CardTitle id="activity-title">Current activity</CardTitle>
         <StatusTag type={tag.type} label={tag.label} />
       </div>
