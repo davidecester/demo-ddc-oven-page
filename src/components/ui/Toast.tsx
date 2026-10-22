@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { Icon } from './Icon'
 
 const DURATION_MS = 4000
 
@@ -10,7 +11,7 @@ interface ToastProps {
 
 /**
  * Short confirmation shown above the bottom nav and the prototype switcher (mobile) or at the bottom of the content (desktop).
- * Prototype feedback for actions that have no screen of their own; not part of the Figma file.
+ * Prototype feedback for actions that have no screen of their own; matches the Figma Toast component.
  * Announced politely; hides itself after 4 s.
  */
 export function Toast({ message, onDismiss }: ToastProps) {
@@ -26,7 +27,8 @@ export function Toast({ message, onDismiss }: ToastProps) {
       className="pointer-events-none fixed inset-x-4 bottom-[calc(var(--spacing-bottom-nav)+56px+env(safe-area-inset-bottom))] z-40 flex justify-center lg:bottom-6 lg:left-(--spacing-sidebar)"
     >
       {message && (
-        <p className="toast-in rounded-md bg-grey-400 px-4 py-3 text-center type-paragraph-md text-white shadow-elevation-1">
+        <p className="toast-in flex items-center gap-2 rounded-md bg-content-primary px-4 py-2 type-paragraph-md text-white shadow-elevation-2">
+          <Icon name="check-circle-positive" size={20} />
           {message}
         </p>
       )}
