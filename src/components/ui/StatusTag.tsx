@@ -25,10 +25,10 @@ const TAG_STYLES: Record<StatusTagType, TagStyle> = {
 
 // Figma strokes sit inside the box, so each padding is the Figma value minus the 1px border
 const SIZES = {
-  // S: 24px, Figma padding 4/8
-  sm: 'h-6 rounded-lg px-[7px] py-[3px]',
-  // M: the overview tags, one step up in hierarchy (28px pill, Figma padding 6/12)
-  md: 'h-7 rounded-full px-[11px] py-[5px]',
+  // S: 24px, Figma padding 4/8. Read-only status, so a 4px radius instead of a pill.
+  sm: { box: 'h-6 rounded-sm px-[7px] py-[3px]', text: 'type-label-xs' },
+  // M: the overview chips, clickable (28px pill, Figma padding 6/12, 14px label)
+  md: { box: 'h-7 rounded-full px-[11px] py-[5px]', text: 'type-label-sm' },
 } as const
 
 interface StatusTagProps {
@@ -47,13 +47,13 @@ export function StatusTag({ type, label, count, size = 'sm', className }: Status
     <span
       className={cx(
         'inline-flex shrink-0 items-center gap-1 border border-black/5 backdrop-blur-[15px]',
-        SIZES[size],
+        SIZES[size].box,
         style.surface,
         className,
       )}
     >
       <Icon name={style.icon} size={16} />
-      <span className={cx('type-label-xs flex gap-[2px] whitespace-nowrap', style.text)}>
+      <span className={cx(SIZES[size].text, 'flex gap-[2px] whitespace-nowrap', style.text)}>
         {count !== undefined && <span>{count}</span>}
         {(label ?? style.label) && <span>{label ?? style.label}</span>}
       </span>

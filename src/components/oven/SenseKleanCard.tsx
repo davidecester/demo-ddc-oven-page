@@ -66,7 +66,7 @@ function CurrentValue({ value, readAt }: { value: number; readAt: string | null 
   const level = DIRT_LEVEL[dirtLevelOf(value)]
   return (
     <div className="flex flex-col gap-1">
-      <p className="flex items-center gap-3">
+      <p className="flex items-center gap-2">
         <span className="type-heading-sm md:type-heading-xl text-content-primary tabular-nums">{value}%</span>
         {level.tag ? (
           <StatusTag type={level.tag} label={level.label} />
