@@ -44,7 +44,7 @@ export const cookingScenario: Scenario = {
       code: 'WF53',
       timestamp: '09/10/2026 18:30',
       // A wash can't start while cooking: queue it for the end of the cycle instead
-      action: { type: 'scheduleWashing', label: 'Schedule washing', icon: 'washing-white' },
+      action: { type: 'scheduleWashing', label: 'Schedule washing', doneLabel: 'Washing scheduled', icon: 'washing-white' },
     },
     {
       id: 'firmware',

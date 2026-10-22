@@ -10,13 +10,13 @@ interface AlertsCardProps {
   alerts: OvenAlert[]
   onOpenAll: () => void
   onAction: (action: AlertAction) => void
-  /** Action already running (e.g. wash started): its CTA is shown disabled. */
-  isActionRunning: (action: AlertAction) => boolean
+  /** Action already under way or done (e.g. wash started): its CTA is shown disabled with its done label. */
+  isActionDone: (action: AlertAction) => boolean
   className?: string
 }
 
 /** "Avvisi": a banner per alert that needs action, plus a row that opens the full list. */
-export function AlertsCard({ alerts, onOpenAll, onAction, isActionRunning, className }: AlertsCardProps) {
+export function AlertsCard({ alerts, onOpenAll, onAction, isActionDone, className }: AlertsCardProps) {
   const sorted = sortBySeverity(alerts)
   // Every alert that needs action gets its own banner; the rest are counted in the row below
   const actionable = sorted.filter((a) => a.severity !== 'info')
@@ -33,7 +33,7 @@ export function AlertsCard({ alerts, onOpenAll, onAction, isActionRunning, class
           <ul className="flex flex-col gap-1">
             {banners.map((alert) => (
               <li key={alert.id}>
-                <AlertBanner alert={alert} onAction={onAction} isActionRunning={isActionRunning} />
+                <AlertBanner alert={alert} onAction={onAction} isActionDone={isActionDone} />
               </li>
             ))}
           </ul>
@@ -60,13 +60,13 @@ export function AlertsCard({ alerts, onOpenAll, onAction, isActionRunning, class
 interface AlertBannerProps {
   alert: OvenAlert
   onAction: (action: AlertAction) => void
-  isActionRunning: (action: AlertAction) => boolean
+  isActionDone: (action: AlertAction) => boolean
 }
 
 /** Figma "Most-Severe-Alert-Banner": severity tag, title, description and the alert's CTA. */
-function AlertBanner({ alert, onAction, isActionRunning }: AlertBannerProps) {
+function AlertBanner({ alert, onAction, isActionDone }: AlertBannerProps) {
   const sev = SEVERITY[alert.severity]
-  const running = alert.action ? isActionRunning(alert.action) : false
+  const done = alert.action ? isActionDone(alert.action) : false
   return (
     <div
       className={`flex flex-col justify-center gap-6 rounded-lg p-4 md:flex-row md:items-center md:gap-4 ${sev.surface}`}
@@ -85,11 +85,11 @@ function AlertBanner({ alert, onAction, isActionRunning }: AlertBannerProps) {
       {alert.action && (
         <Button
           icon={alert.action.icon}
-          onClick={() => !running && onAction(alert.action!)}
-          aria-disabled={running || undefined}
+          onClick={() => !done && onAction(alert.action!)}
+          aria-disabled={done || undefined}
           className="w-full md:w-auto"
         >
-          {alert.action.label}
+          {done ? alert.action.doneLabel : alert.action.label}
         </Button>
       )}
     </div>
