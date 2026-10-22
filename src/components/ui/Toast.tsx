@@ -27,9 +27,10 @@ export function Toast({ message, onDismiss }: ToastProps) {
       className="pointer-events-none fixed inset-x-4 bottom-[calc(var(--spacing-bottom-nav)+56px+env(safe-area-inset-bottom))] z-40 flex justify-center lg:bottom-6 lg:left-(--spacing-sidebar)"
     >
       {message && (
-        <p className="toast-in flex items-center gap-2 rounded-md bg-content-primary px-4 py-2 type-paragraph-md text-white shadow-elevation-2">
+        <p className="toast-in flex items-start gap-2 rounded-md bg-content-primary px-4 py-2 type-paragraph-md text-white shadow-elevation-2">
           <Icon name="check-circle-positive" size={20} />
-          {message}
+          {/* 1px down so the first 18px line centres on the 20px icon when the message wraps */}
+          <span className="pt-px">{message}</span>
         </p>
       )}
     </div>
