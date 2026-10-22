@@ -79,8 +79,10 @@ export type Activity = CookingActivity | WashingActivity | IdleActivity
 export type AlertSeverity = 'critical' | 'warning' | 'info'
 
 export interface AlertAction {
-  type: 'startWashing' | 'scheduleMaintenance' | 'orderConsumables'
+  type: 'startWashing' | 'scheduleWashing' | 'scheduleMaintenance' | 'orderConsumables'
   label: string
+  /** Label once the action is under way or done (e.g. "Washing scheduled"). */
+  doneLabel: string
   /** Icon file name (20px, white). */
   icon: string
 }

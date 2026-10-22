@@ -18,6 +18,7 @@ const FULL = 'col-span-full'
 const HALF = 'col-span-4 md:col-span-8 lg:col-span-6'
 
 const TOAST_MESSAGE: Record<Exclude<AlertAction['type'], 'startWashing'>, string> = {
+  scheduleWashing: 'Washing scheduled for the end of cooking',
   scheduleMaintenance: 'Maintenance request sent',
   orderConsumables: 'Detergent order sent',
 }
@@ -27,6 +28,8 @@ export function OvenPage({ scenario }: { scenario: Scenario }) {
   const [alertsOpen, setAlertsOpen] = useState(false)
   const [announcement, setAnnouncement] = useState('')
   const [toast, setToast] = useState<string | null>(null)
+  // Toast-confirmed actions already sent: their CTA switches to its done label
+  const [sentActions, setSentActions] = useState<ReadonlySet<AlertAction['type']>>(new Set())
   const dismissToast = useCallback(() => setToast(null), [])
 
   const handleStartWashing = useCallback(() => {
@@ -38,6 +41,7 @@ export function OvenPage({ scenario }: { scenario: Scenario }) {
   const handleAlertAction = useCallback(
     (action: AlertAction) => {
       if (action.type === 'startWashing') return handleStartWashing()
+      setSentActions((prev) => new Set(prev).add(action.type))
       // No screen behind these yet: confirm with a toast (closing the sheet so it isn't covered)
       setAlertsOpen(false)
       setToast(TOAST_MESSAGE[action.type])
@@ -45,9 +49,10 @@ export function OvenPage({ scenario }: { scenario: Scenario }) {
     [handleStartWashing],
   )
 
-  const isActionRunning = useCallback(
-    (action: AlertAction) => action.type === 'startWashing' && live.status === 'washing',
-    [live.status],
+  const isActionDone = useCallback(
+    (action: AlertAction) =>
+      action.type === 'startWashing' ? live.status === 'washing' : sentActions.has(action.type),
+    [live.status, sentActions],
   )
 
   return (
@@ -68,7 +73,7 @@ export function OvenPage({ scenario }: { scenario: Scenario }) {
             alerts={scenario.alerts}
             onOpenAll={() => setAlertsOpen(true)}
             onAction={handleAlertAction}
-            isActionRunning={isActionRunning}
+            isActionDone={isActionDone}
           />
         )}
         <ActivityCard className={HALF} activity={live} onStartWashing={handleStartWashing} />
@@ -89,7 +94,7 @@ export function OvenPage({ scenario }: { scenario: Scenario }) {
         onClose={() => setAlertsOpen(false)}
         alerts={scenario.alerts}
         onAction={handleAlertAction}
-        isActionRunning={isActionRunning}
+        isActionDone={isActionDone}
       />
 
       <Toast message={toast} onDismiss={dismissToast} />

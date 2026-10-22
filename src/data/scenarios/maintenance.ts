@@ -28,7 +28,7 @@ export const maintenanceScenario: Scenario = {
       description: 'The oven’s periodic check needs to be scheduled.',
       code: 'MN02',
       timestamp: '10/10/2026 12:05',
-      action: { type: 'scheduleMaintenance', label: 'Schedule maintenance', icon: 'service-white' },
+      action: { type: 'scheduleMaintenance', label: 'Schedule maintenance', doneLabel: 'Maintenance requested', icon: 'service-white' },
     },
     {
       id: 'detergents',
@@ -37,7 +37,7 @@ export const maintenanceScenario: Scenario = {
       description: 'The detergent level is low.',
       code: 'CD04',
       timestamp: '09/10/2026 18:30',
-      action: { type: 'orderConsumables', label: 'Order detergents', icon: 'consumables-white' },
+      action: { type: 'orderConsumables', label: 'Order detergents', doneLabel: 'Detergents ordered', icon: 'consumables-white' },
       badgeIcon: { icon: 'sheet-consumables', icon16: 'sheet-consumables-16' },
     },
     ...cookingScenario.alerts.filter((a) => a.severity === 'info'),

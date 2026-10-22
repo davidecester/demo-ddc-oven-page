@@ -26,7 +26,7 @@ export const idleScenario: Scenario = {
       description: 'Washing required before the next cooking.',
       code: 'WF54',
       timestamp: '09/10/2026 18:30',
-      action: { type: 'startWashing', label: 'Start washing', icon: 'washing-white' },
+      action: { type: 'startWashing', label: 'Start washing', doneLabel: 'Washing in progress', icon: 'washing-white' },
     },
     ...cookingScenario.alerts.filter((a) => a.severity === 'info'),
   ],

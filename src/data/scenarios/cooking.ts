@@ -43,7 +43,8 @@ export const cookingScenario: Scenario = {
       description: 'Washing recommended before the next cooking.',
       code: 'WF53',
       timestamp: '09/10/2026 18:30',
-      action: { type: 'startWashing', label: 'Start washing', icon: 'washing-white' },
+      // A wash can't start while cooking: queue it for the end of the cycle instead
+      action: { type: 'scheduleWashing', label: 'Schedule washing', doneLabel: 'Washing scheduled', icon: 'washing-white' },
     },
     {
       id: 'firmware',

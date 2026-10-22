@@ -10,11 +10,11 @@ interface AlertsSheetProps {
   onClose: () => void
   alerts: OvenAlert[]
   onAction: (action: AlertAction) => void
-  isActionRunning: (action: AlertAction) => boolean
+  isActionDone: (action: AlertAction) => boolean
 }
 
 /** "Tutti gli avvisi": alerts grouped into action required / information & history. */
-export function AlertsSheet({ open, onClose, alerts, onAction, isActionRunning }: AlertsSheetProps) {
+export function AlertsSheet({ open, onClose, alerts, onAction, isActionDone }: AlertsSheetProps) {
   const sorted = sortBySeverity(alerts)
   const actionRequired = sorted.filter((a) => a.severity !== 'info')
   const informational = sorted.filter((a) => a.severity === 'info')
@@ -25,14 +25,14 @@ export function AlertsSheet({ open, onClose, alerts, onAction, isActionRunning }
         {actionRequired.length > 0 && (
           <AlertGroup id="group-action" title="Action required">
             {actionRequired.map((alert) => (
-              <AlertItem key={alert.id} alert={alert} onAction={onAction} isActionRunning={isActionRunning} />
+              <AlertItem key={alert.id} alert={alert} onAction={onAction} isActionDone={isActionDone} />
             ))}
           </AlertGroup>
         )}
         {informational.length > 0 && (
           <AlertGroup id="group-info" title="Information and history">
             {informational.map((alert) => (
-              <AlertItem key={alert.id} alert={alert} onAction={onAction} isActionRunning={isActionRunning} />
+              <AlertItem key={alert.id} alert={alert} onAction={onAction} isActionDone={isActionDone} />
             ))}
           </AlertGroup>
         )}
@@ -55,12 +55,12 @@ function AlertGroup({ id, title, children }: { id: string; title: string; childr
 interface AlertItemProps {
   alert: OvenAlert
   onAction: (action: AlertAction) => void
-  isActionRunning: (action: AlertAction) => boolean
+  isActionDone: (action: AlertAction) => boolean
 }
 
-function AlertItem({ alert, onAction, isActionRunning }: AlertItemProps) {
+function AlertItem({ alert, onAction, isActionDone }: AlertItemProps) {
   const sev = SEVERITY[alert.severity]
-  const running = alert.action ? isActionRunning(alert.action) : false
+  const done = alert.action ? isActionDone(alert.action) : false
   const description = alert.code ? `${alert.description} (${alert.code})` : alert.description
 
   return (
@@ -95,10 +95,10 @@ function AlertItem({ alert, onAction, isActionRunning }: AlertItemProps) {
             icon={alert.action.icon}
             fullWidth
             className="md:w-auto"
-            onClick={() => !running && onAction(alert.action!)}
-            aria-disabled={running || undefined}
+            onClick={() => !done && onAction(alert.action!)}
+            aria-disabled={done || undefined}
           >
-            {alert.action.label}
+            {done ? alert.action.doneLabel : alert.action.label}
           </Button>
         )}
       </div>
