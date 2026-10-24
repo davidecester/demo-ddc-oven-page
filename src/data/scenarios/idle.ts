@@ -1,4 +1,5 @@
 import type { Scenario } from '../../types/oven'
+import { CHAMBER_MESSAGES } from '../shared'
 import { cookingScenario } from './cooking'
 
 /**
@@ -17,7 +18,7 @@ export const idleScenario: Scenario = {
     lastActivity: { status: 'cooking', endedAt: '2026-10-12T12:40:00' },
     dirtLevel: '78% · Very dirty',
     ctas: [{ type: 'startWashing', label: 'Start washing', icon: 'washing-white' }],
-    hint: 'Washing required before the next cooking.',
+    hint: CHAMBER_MESSAGES.veryDirty.note,
     notice: null,
   },
 
@@ -25,8 +26,8 @@ export const idleScenario: Scenario = {
     {
       id: 'very-dirty-chamber',
       severity: 'critical',
-      title: 'Very dirty chamber',
-      description: 'Washing required before the next cooking.',
+      title: CHAMBER_MESSAGES.veryDirty.title,
+      description: CHAMBER_MESSAGES.veryDirty.note,
       code: 'WF54',
       timestamp: '09/10/2026 18:30',
       action: { type: 'startWashing', label: 'Start washing', doneLabel: 'Washing in progress', icon: 'washing-white' },

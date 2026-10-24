@@ -1,4 +1,5 @@
 import type { Scenario } from '../../types/oven'
+import { CHAMBER_MESSAGES } from '../shared'
 import { cookingScenario } from './cooking'
 
 /**
@@ -21,18 +22,16 @@ export const maintenanceScenario: Scenario = {
     // Maintenance due: no actions, the notice explains why
     ctas: [],
     hint: null,
-    notice: {
-      title: 'Cooking and washing unavailable',
-      description: 'The oven needs its periodic maintenance before it can be used again.',
-    },
+    // Same title and sentence as the alert below
+    notice: { title: CHAMBER_MESSAGES.maintenance.title, description: CHAMBER_MESSAGES.maintenance.note },
   },
 
   alerts: [
     {
       id: 'maintenance',
       severity: 'critical',
-      title: 'Maintenance required',
-      description: 'Cooking and washing are unavailable until the periodic maintenance is done.',
+      title: CHAMBER_MESSAGES.maintenance.title,
+      description: CHAMBER_MESSAGES.maintenance.note,
       code: 'MN02',
       timestamp: '10/10/2026 12:05',
       action: { type: 'scheduleMaintenance', label: 'Schedule maintenance', doneLabel: 'Maintenance requested', icon: 'service-white' },

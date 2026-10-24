@@ -1,6 +1,6 @@
 import type { Scenario } from '../../types/oven'
 import { assetUrl } from '../../utils/assets'
-import { sharedDownloads, sharedRecipes } from '../shared'
+import { CHAMBER_MESSAGES, sharedDownloads, sharedRecipes } from '../shared'
 
 /** Scenario 1 — oven online, cooking in progress (Figma: "Scenario Base"). */
 export const cookingScenario: Scenario = {
@@ -39,8 +39,8 @@ export const cookingScenario: Scenario = {
     {
       id: 'dirty-chamber',
       severity: 'warning',
-      title: 'Dirty chamber',
-      description: 'Washing recommended soon. You can still cook in the meantime.',
+      title: CHAMBER_MESSAGES.dirty.title,
+      description: CHAMBER_MESSAGES.dirty.note,
       code: 'WF53',
       timestamp: '09/10/2026 18:30',
       // A wash can't start while cooking: queue it for the end of the cycle instead
