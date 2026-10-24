@@ -18,9 +18,9 @@ export const newOvenScenario: Scenario = {
     label: 'Idle',
     lastActivity: null,
     dirtLevel: '0% · Clean',
-    // Never used, so nothing to wash: recipes only
-    ctas: [{ type: 'chooseRecipe', label: 'Choose a recipe', icon: 'library-white' }],
-    hint: 'Choose a program and set up the next cooking.',
+    // Never used, so nothing to wash; no recipes yet either: the CTA leads to the Recipes card's "Create a group"
+    ctas: [{ type: 'chooseRecipe', label: 'Create a recipe group', icon: 'add-white' }],
+    hint: 'No recipes on the oven yet. Create a recipe group and upload it to set up the next cooking.',
     notice: null,
   },
 
