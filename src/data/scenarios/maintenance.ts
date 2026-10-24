@@ -1,4 +1,5 @@
 import type { Scenario } from '../../types/oven'
+import { weekUntilNow } from '../shared'
 import { cookingScenario } from './cooking'
 
 /**
@@ -15,9 +16,17 @@ export const maintenanceScenario: Scenario = {
   activity: {
     status: 'idle',
     label: 'Idle',
+    // The wash that brought the chamber to 0%, 7 min before the 13:05 start
+    lastActivity: { status: 'washing', endedAt: '2026-10-12T12:58:00' },
     dirtLevel: '0% · Clean',
-    cta: { type: 'chooseRecipe', label: 'Choose a recipe', icon: 'library-white' },
-    hint: 'Choose a program and set up the next cooking.',
+    // Maintenance due: no actions, the notice explains why
+    ctas: [],
+    hint: null,
+    // Explains why both actions are missing; the alert below asks to schedule the check
+    notice: {
+      title: 'Cooking and washing unavailable',
+      description: 'The oven needs its periodic maintenance before it can be used again.',
+    },
   },
 
   alerts: [
@@ -42,6 +51,12 @@ export const maintenanceScenario: Scenario = {
     },
     ...cookingScenario.alerts.filter((a) => a.severity === 'info'),
   ],
+
+  // Cooking, then the wash that ended at 12:58 ("Last washing ended" in the activity card)
+  activityTrend: weekUntilNow([
+    { status: 'cooking', start: '10:20', end: '11:50' },
+    { status: 'washing', start: '12:00', end: '12:58' },
+  ]),
 
   // Same 24 h as Scenario 1, but the chamber was just washed: 0% at 13:00.
   senseKlean: {

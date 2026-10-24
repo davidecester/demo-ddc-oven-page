@@ -128,33 +128,51 @@ function ActivityContent({ activity, onStartWashing }: { activity: LiveActivity;
       return (
         <>
           <ActivityName label="Activity" value={activity.label} />
-          {activity.dirtLevel && <LabelValue label="Chamber dirt level" value={activity.dirtLevel} />}
-          {activity.cta && (
-            <div className="flex flex-col items-start gap-2">
-              {/* Full width when stacked (Figma mobile), hugging its label beside the ring (desktop) */}
-              {activity.cta.type === 'chooseRecipe' ? (
-                <ButtonLink
-                  href={`#${RECIPES_CARD_ID}`}
-                  icon={activity.cta.icon}
-                  fullWidth
-                  className="@min-[520px]:w-auto"
-                >
-                  {activity.cta.label}
-                </ButtonLink>
-              ) : (
-                <Button icon={activity.cta.icon} onClick={onStartWashing} fullWidth className="@min-[520px]:w-auto">
-                  {activity.cta.label}
-                </Button>
+          {(activity.lastActivity || activity.dirtLevel) && (
+            <div className="flex flex-col gap-4">
+              {activity.lastActivity && (
+                <LabelValue icon="timelapse" label={activity.lastActivity.label} value={activity.lastActivity.value} />
               )}
-              {activity.hint && (
-                // Figma "Info-Row": 4 px between icon and text. The text shifts 2 px down (without growing the row)
-                // so its first line is centred on the 20 px icon, whether it wraps or not
-                <p className="flex items-start gap-1">
-                  <Icon name="info-grey" size={20} />
-                  <span className="-mb-0.5 pt-0.5 type-paragraph-sm text-content-quaternary">{activity.hint}</span>
-                </p>
-              )}
+              {activity.dirtLevel && <LabelValue icon="dirt-level" label="Chamber dirt level" value={activity.dirtLevel} />}
             </div>
+          )}
+          {activity.notice ? (
+            // Maintenance due: a critical notice instead of actions (the alert carries "Schedule maintenance")
+            <div className="flex items-start gap-2 rounded-lg bg-alarm-16 p-4">
+              <Icon name="error-alarm" size={20} />
+              <div className="flex flex-col gap-1">
+                <p className="type-label-md text-content-primary">{activity.notice.title}</p>
+                <p className="type-paragraph-xs text-content-quaternary">{activity.notice.description}</p>
+              </div>
+            </div>
+          ) : (
+            activity.ctas.length > 0 && (
+              <div className="flex flex-col gap-2">
+                {/* Always stacked and full width, the first one primary */}
+                {activity.ctas.map((cta, i) => {
+                  const variant = i === 0 ? 'primary' : 'secondary'
+                  // Secondary buttons carry no icon, like the Figma toolbar button
+                  const icon = i === 0 ? cta.icon : undefined
+                  return cta.type === 'chooseRecipe' ? (
+                    <ButtonLink key={cta.type} href={`#${RECIPES_CARD_ID}`} variant={variant} icon={icon} fullWidth>
+                      {cta.label}
+                    </ButtonLink>
+                  ) : (
+                    <Button key={cta.type} variant={variant} icon={icon} onClick={onStartWashing} fullWidth>
+                      {cta.label}
+                    </Button>
+                  )
+                })}
+                {activity.hint && (
+                  // Figma "Info-Row": 4 px between icon and text. The text shifts 2 px down (without growing the row)
+                  // so its first line is centred on the 20 px icon, whether it wraps or not
+                  <p className="flex items-start gap-1">
+                    <Icon name="info-grey" size={20} />
+                    <span className="-mb-0.5 pt-0.5 type-paragraph-sm text-content-quaternary">{activity.hint}</span>
+                  </p>
+                )}
+              </div>
+            )
           )}
         </>
       )

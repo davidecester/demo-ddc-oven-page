@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
-import type { Activity, IdleCta, Scenario } from '../types/oven'
+import type { Activity, IdleActivity, Scenario } from '../types/oven'
+import { formatEndedAt } from '../utils/format'
 
 const TICK_MS = 1000
 /** Chamber heats by 1 °C every 4 s until it reaches the target, then holds within +1 °C. */
@@ -27,9 +28,12 @@ export type LiveActivity =
   | {
       status: 'idle'
       label: string
+      /** e.g. { label: 'Last cooking ended', value: 'Today at 12:40 · 25 min ago' } */
+      lastActivity: { label: string; value: string } | null
       dirtLevel: string | null
-      cta: IdleCta | null
+      ctas: IdleActivity['ctas']
       hint: string | null
+      notice: IdleActivity['notice']
     }
 
 interface SimulationState {
@@ -80,9 +84,14 @@ function deriveLive(state: SimulationState, scenarioStart: Date, sceneStartMs: n
       return {
         status: 'idle',
         label: activity.label,
+        lastActivity: activity.lastActivity && {
+          label: activity.lastActivity.status === 'cooking' ? 'Last cooking ended' : 'Last washing ended',
+          value: formatEndedAt(new Date(activity.lastActivity.endedAt), simNow),
+        },
         dirtLevel: activity.dirtLevel,
-        cta: activity.cta,
+        ctas: activity.ctas,
         hint: activity.hint,
+        notice: activity.notice,
       }
   }
 }

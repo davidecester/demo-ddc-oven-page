@@ -27,3 +27,11 @@ export function formatPercent(value: number): string {
 export function formatTemperature(celsius: number): string {
   return `${Math.round(celsius)} °C`
 }
+
+/** "Today at 12:40 · 25 min ago" (minutes rounded down, so it never runs ahead of the clock). */
+export function formatEndedAt(endedAt: Date, now: Date): string {
+  const day = endedAt.toDateString() === now.toDateString() ? 'Today' : 'Yesterday'
+  const minutes = Math.max(0, Math.floor((now.getTime() - endedAt.getTime()) / 60000))
+  const ago = minutes === 0 ? 'just now' : `${formatDuration(minutes * 60)} ago`
+  return `${day} at ${formatClock(endedAt)} · ${ago}`
+}

@@ -57,7 +57,7 @@ export interface WashingActivity extends ActivityBase {
   remainingSec: number
 }
 
-/** CTA of the idle activity: start a wash (dirty chamber) or go to the recipes (clean chamber). */
+/** CTA of the idle activity: start a wash or go to the recipes. */
 export interface IdleCta {
   type: 'startWashing' | 'chooseRecipe'
   label: string
@@ -65,13 +65,28 @@ export interface IdleCta {
   icon: string
 }
 
+/** The cycle that ended last, shown as "Last cooking ended" / "Last washing ended". */
+export interface LastActivity {
+  status: 'cooking' | 'washing'
+  /** ISO local time, on the scenario's simulated clock. */
+  endedAt: string
+}
+
 export interface IdleActivity extends ActivityBase {
   status: 'idle'
   label: string
+  /** `null` for a new oven that never cooked or washed. */
+  lastActivity: LastActivity | null
   dirtLevel: string | null
-  cta: IdleCta | null
-  /** Shown under the CTA. */
+  /**
+   * Stacked, the first one primary. By dirt level: very dirty → wash only; dirty → wash, then recipe;
+   * clean → recipe, then wash. Empty when the oven can't be used (`notice`).
+   */
+  ctas: IdleCta[]
+  /** Shown under the CTAs; the same sentence as the dirt alert's description. */
   hint: string | null
+  /** Replaces the CTAs when cooking and washing are blocked (e.g. maintenance due). */
+  notice: { title: string; description: string } | null
 }
 
 export type Activity = CookingActivity | WashingActivity | IdleActivity
@@ -99,11 +114,24 @@ export interface OvenAlert {
   badgeIcon?: { icon: string; icon16: string }
 }
 
+/** One cooking or wash cycle on the activity timeline; the time between cycles is standby. */
+export interface ActivitySession {
+  status: 'cooking' | 'washing'
+  /** "HH:MM", local time. */
+  start: string
+  end: string
+  /** Still running: `end` is the scenario start time. */
+  ongoing?: boolean
+}
+
 export interface ActivityTrendDay {
+  /** Short weekday, e.g. "Fri"; the last day reads "Today". */
   day: string
-  cooking: number
-  washing: number
-  standby: number
+  /** e.g. "9 Oct" */
+  date: string
+  sessions: ActivitySession[]
+  /** Today only: the timeline stops here ("HH:MM", the scenario start time). */
+  until?: string
 }
 
 export type DirtLevel = 'clean' | 'dirty' | 'veryDirty'
