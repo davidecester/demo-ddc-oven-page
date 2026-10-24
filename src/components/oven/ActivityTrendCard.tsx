@@ -202,12 +202,18 @@ function Timeline({ days, empty = false }: { days: ActivityTrendDay[]; empty?: b
   )
 }
 
-/** One day: grey standby, coloured cycles, white 6-hour guides; the rest of today stays blank. */
+/**
+ * One day: grey standby, coloured cycles, white 6-hour guides; the rest of today stays blank.
+ * While a block is selected the rest of the row fades, so the selection keeps its own colour.
+ */
 function Track({ segments, selected }: { segments: Segment[]; selected: number | null }) {
   return (
     <div className="absolute inset-0 overflow-hidden rounded-sm bg-grey-100">
       {/* Standby first, then the 6-hour guides, then the cycles on top so the guides never cut through them */}
-      {segments.map((s) => s.status === 'standby' && <SegmentBar key={s.start} segment={s} />)}
+      {segments.map(
+        (s, i) =>
+          s.status === 'standby' && <SegmentBar key={s.start} segment={s} dim={selected !== null && selected !== i} />,
+      )}
       {[6, 12, 18].map((h) => (
         <span key={h} className="absolute inset-y-0 w-px bg-white" style={{ left: `${(h / 24) * 100}%` }} />
       ))}
@@ -215,30 +221,27 @@ function Track({ segments, selected }: { segments: Segment[]; selected: number |
         (s, i) =>
           s.status !== 'standby' && (
             // Back-to-back cycles (a wash right after cooking) get a 2 px white seam so both stay visible
-            <SegmentBar key={s.start} segment={s} seam={i > 0 && segments[i - 1].status !== 'standby'} />
+            <SegmentBar
+                key={s.start}
+                segment={s}
+                seam={i > 0 && segments[i - 1].status !== 'standby'}
+                dim={selected !== null && selected !== i}
+              />
           ),
-      )}
-      {selected !== null && (
-        <span
-          className="absolute inset-y-0 rounded-xs ring-2 ring-black ring-inset"
-          style={{
-            left: `${(segments[selected].start / DAY_MINUTES) * 100}%`,
-            width: `${((segments[selected].end - segments[selected].start) / DAY_MINUTES) * 100}%`,
-          }}
-        />
       )}
     </div>
   )
 }
 
-function SegmentBar({ segment, seam = false }: { segment: Segment; seam?: boolean }) {
+function SegmentBar({ segment, seam = false, dim = false }: { segment: Segment; seam?: boolean; dim?: boolean }) {
   return (
     <span
       className={`absolute inset-y-0 ${seam ? 'border-l-2 border-white' : ''}`}
       style={{
         left: `${(segment.start / DAY_MINUTES) * 100}%`,
         width: `${((segment.end - segment.start) / DAY_MINUTES) * 100}%`,
-        background: SERIES[segment.status].color,
+        // Faded as a solid tint (30% on white), not opacity, so the guides behind don't show through
+        background: dim ? `color-mix(in srgb, ${SERIES[segment.status].color} 30%, white)` : SERIES[segment.status].color,
       }}
     />
   )
