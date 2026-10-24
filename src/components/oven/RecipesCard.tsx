@@ -8,7 +8,7 @@ import { RECIPES_CARD_ID } from './anchors'
 
 interface RecipesCardProps {
   tabs: RecipeTab[] | null
-  /** "Create a group" in the empty state. */
+  /** "Create a recipe group" in the empty state. */
   onCreateGroup: () => void
   className?: string
 }
@@ -135,7 +135,7 @@ export function RecipesCard({ tabs, onCreateGroup, className }: RecipesCardProps
               </p>
             </div>
             <Button icon="add-white" onClick={onCreateGroup} fullWidth className="md:w-auto">
-              Create a group
+              Create a recipe group
             </Button>
           </div>
         )}
