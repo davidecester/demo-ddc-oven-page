@@ -16,14 +16,20 @@ type SegmentStatus = ActivitySession['status'] | 'standby'
 const SERIES: Record<SegmentStatus, { label: string; color: string }> = {
   cooking: { label: 'Cooking', color: 'var(--color-orange-500)' },
   washing: { label: 'Washing', color: 'var(--color-blue-400)' },
-  standby: { label: 'Standby', color: 'var(--color-grey-200)' },
+  // "Idle" like the activity card and the oven overview tag
+  standby: { label: 'Idle', color: 'var(--color-grey-200)' },
 }
+
+/** A selected idle gap turns mid grey: plain grey200 is too close to the faded blocks around it. */
+const SELECTED_IDLE = 'var(--color-grey-300)'
+
+const selectedColor = (status: SegmentStatus) => (status === 'standby' ? SELECTED_IDLE : SERIES[status].color)
 
 const DAY_MINUTES = 24 * 60
 /** Day label column plus its 8 px gap; the hour axis starts after it. */
 const LABEL_GUTTER = 48
 
-/** A stretch of the day in minutes: a cycle, or the standby between cycles. */
+/** A stretch of the day in minutes: a cycle, or the idle time between cycles. */
 interface Segment {
   status: SegmentStatus
   start: number
@@ -38,7 +44,7 @@ const toMinutes = (hhmm: string) => {
 const clock = (minutes: number) =>
   `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`
 
-/** The day's cycles with the standby gaps filled in, up to midnight (or now, for today). */
+/** The day's cycles with the idle gaps filled in, up to midnight (or now, for today). */
 function segmentsOf(day: ActivityTrendDay): Segment[] {
   const end = day.until ? toMinutes(day.until) : DAY_MINUTES
   const segments: Segment[] = []
@@ -109,7 +115,7 @@ export function ActivityTrendCard({ trend, className }: ActivityTrendCardProps) 
           </figcaption>
         </figure>
       ) : (
-        // New oven: an empty week of standby rows behind the "no data" message
+        // New oven: an empty week of idle rows behind the "no data" message
         <EmptyData>
           {/* Same 16 px legend-to-rows gap as the figure above */}
           <div className="flex flex-col gap-4">
@@ -203,16 +209,18 @@ function Timeline({ days, empty = false }: { days: ActivityTrendDay[]; empty?: b
 }
 
 /**
- * One day: grey standby, coloured cycles, white 6-hour guides; the rest of today stays blank.
+ * One day: grey idle time, coloured cycles, white 6-hour guides; the rest of today stays blank.
  * While a block is selected the rest of the row fades, so the selection keeps its own colour.
  */
 function Track({ segments, selected }: { segments: Segment[]; selected: number | null }) {
   return (
     <div className="absolute inset-0 overflow-hidden rounded-sm bg-grey-100">
-      {/* Standby first, then the 6-hour guides, then the cycles on top so the guides never cut through them */}
+      {/* Idle first, then the 6-hour guides, then the cycles on top so the guides never cut through them */}
       {segments.map(
         (s, i) =>
-          s.status === 'standby' && <SegmentBar key={s.start} segment={s} dim={selected !== null && selected !== i} />,
+          s.status === 'standby' && (
+            <SegmentBar key={s.start} segment={s} dim={selected !== null && selected !== i} picked={selected === i} />
+          ),
       )}
       {[6, 12, 18].map((h) => (
         <span key={h} className="absolute inset-y-0 w-px bg-white" style={{ left: `${(h / 24) * 100}%` }} />
@@ -233,7 +241,14 @@ function Track({ segments, selected }: { segments: Segment[]; selected: number |
   )
 }
 
-function SegmentBar({ segment, seam = false, dim = false }: { segment: Segment; seam?: boolean; dim?: boolean }) {
+interface SegmentBarProps {
+  segment: Segment
+  seam?: boolean
+  dim?: boolean
+  picked?: boolean
+}
+
+function SegmentBar({ segment, seam = false, dim = false, picked = false }: SegmentBarProps) {
   return (
     <span
       className={`absolute inset-y-0 ${seam ? 'border-l-2 border-white' : ''}`}
@@ -241,7 +256,11 @@ function SegmentBar({ segment, seam = false, dim = false }: { segment: Segment; 
         left: `${(segment.start / DAY_MINUTES) * 100}%`,
         width: `${((segment.end - segment.start) / DAY_MINUTES) * 100}%`,
         // Faded as a solid tint (30% on white), not opacity, so the guides behind don't show through
-        background: dim ? `color-mix(in srgb, ${SERIES[segment.status].color} 30%, white)` : SERIES[segment.status].color,
+        background: picked
+          ? selectedColor(segment.status)
+          : dim
+            ? `color-mix(in srgb, ${SERIES[segment.status].color} 30%, white)`
+            : SERIES[segment.status].color,
       }}
     />
   )
@@ -274,7 +293,7 @@ function SegmentTooltip({ day, segment }: { day: ActivityTrendDay; segment: Segm
         rows={[
           {
             label: SERIES[segment.status].label,
-            swatch: SERIES[segment.status].color,
+            swatch: selectedColor(segment.status),
             value: `${clock(segment.start)} – ${segment.ongoing ? 'now' : clock(segment.end)}`,
           },
           { label: 'Duration', value: segment.ongoing ? `${duration} so far` : duration },
