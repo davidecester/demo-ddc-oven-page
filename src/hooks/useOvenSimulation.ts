@@ -30,7 +30,7 @@ export type LiveActivity =
       label: string
       /** e.g. { label: 'Last cooking ended', value: 'Today at 12:40 · 25 min ago' } */
       lastActivity: { label: string; value: string } | null
-      dirtLevel: string | null
+      dirtLevel: number | null
       ctas: IdleActivity['ctas']
       hint: string | null
       notice: IdleActivity['notice']

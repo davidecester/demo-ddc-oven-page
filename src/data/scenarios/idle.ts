@@ -16,7 +16,7 @@ export const idleScenario: Scenario = {
     label: 'Idle',
     // 25 min before the 13:05 start
     lastActivity: { status: 'cooking', endedAt: '2026-10-12T12:40:00' },
-    dirtLevel: '78% · Very dirty',
+    dirtLevel: 78,
     ctas: [{ type: 'startWashing', label: 'Start washing', icon: 'washing-white' }],
     hint: CHAMBER_MESSAGES.veryDirty.note,
     notice: null,
