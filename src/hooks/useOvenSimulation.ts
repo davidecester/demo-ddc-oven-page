@@ -28,8 +28,8 @@ export type LiveActivity =
   | {
       status: 'idle'
       label: string
-      /** e.g. { label: 'Last cooking ended', value: 'Today at 12:40 · 25 min ago' } */
-      lastActivity: { label: string; value: string } | null
+      /** e.g. { label: 'Last cooking ended', when: 'Today at 12:40', ago: '25 min ago' } */
+      lastActivity: { label: string; when: string; ago: string } | null
       dirtLevel: number | null
       ctas: IdleActivity['ctas']
       hint: string | null
@@ -86,7 +86,7 @@ function deriveLive(state: SimulationState, scenarioStart: Date, sceneStartMs: n
         label: activity.label,
         lastActivity: activity.lastActivity && {
           label: activity.lastActivity.status === 'cooking' ? 'Last cooking ended' : 'Last washing ended',
-          value: formatEndedAt(new Date(activity.lastActivity.endedAt), simNow),
+          ...formatEndedAt(new Date(activity.lastActivity.endedAt), simNow),
         },
         dirtLevel: activity.dirtLevel,
         ctas: activity.ctas,

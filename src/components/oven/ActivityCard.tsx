@@ -138,7 +138,16 @@ function ActivityContent({ activity, onStartWashing }: { activity: LiveActivity;
           {(activity.lastActivity || activity.dirtLevel !== null) && (
             <div className="flex flex-col gap-4">
               {activity.lastActivity && (
-                <LabelValue icon="timelapse" label={activity.lastActivity.label} value={activity.lastActivity.value} />
+                <LabelValue
+                  icon="timelapse"
+                  label={activity.lastActivity.label}
+                  // Day and time in the label weight, the elapsed time in regular
+                  value={
+                    <>
+                      {activity.lastActivity.when} <span className="font-normal">· {activity.lastActivity.ago}</span>
+                    </>
+                  }
+                />
               )}
               {activity.dirtLevel !== null && <DirtLevelValue value={activity.dirtLevel} />}
             </div>
