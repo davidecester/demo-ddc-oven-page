@@ -57,7 +57,7 @@ export interface WashingActivity extends ActivityBase {
   remainingSec: number
 }
 
-/** CTA of the idle activity: start a wash or go to the recipes. */
+/** CTA of the idle activity: start a wash or go to the recipes (to pick one, or to create a group when there are none). */
 export interface IdleCta {
   type: 'startWashing' | 'chooseRecipe'
   label: string
