@@ -1,17 +1,13 @@
 import type { DownloadGroup, RecipeTab } from '../types/oven'
 
 /**
- * One sentence per chamber state, used word for word as the idle card hint (or notice) and as the
- * related alert's title and description, so the card and the alert never say different things.
+ * One sentence per chamber dirt level, used word for word as the idle card hint and as the dirt
+ * alert's title and description, so the card and the alert never suggest different actions.
  */
 export const CHAMBER_MESSAGES = {
   veryDirty: { title: 'Very dirty chamber', note: 'Washing required before the next cooking.' },
   dirty: { title: 'Dirty chamber', note: 'Washing recommended soon. You can still cook in the meantime.' },
   clean: { title: 'Clean chamber', note: 'Chamber clean: ready for the next cooking.' },
-  maintenance: {
-    title: 'Maintenance required',
-    note: 'Cooking and washing are unavailable until the periodic maintenance is done.',
-  },
 } as const
 
 /** Recipes stored on the oven. Each tab has its own categories, with icons from the Figma "Chefunox food categories" set. */

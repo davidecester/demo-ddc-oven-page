@@ -83,7 +83,7 @@ export interface IdleActivity extends ActivityBase {
    * clean → recipe, then wash. Empty when the oven can't be used (`notice`).
    */
   ctas: IdleCta[]
-  /** Shown under the CTAs; the same sentence as the related alert's description. */
+  /** Shown under the CTAs; the same sentence as the dirt alert's description. */
   hint: string | null
   /** Replaces the CTAs when cooking and washing are blocked (e.g. maintenance due). */
   notice: { title: string; description: string } | null
