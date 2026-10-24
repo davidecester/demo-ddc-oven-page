@@ -40,7 +40,7 @@ export const cookingScenario: Scenario = {
       id: 'dirty-chamber',
       severity: 'warning',
       title: 'Dirty chamber',
-      description: 'Washing recommended before the next cooking.',
+      description: 'Washing recommended soon. You can still cook in the meantime.',
       code: 'WF53',
       timestamp: '09/10/2026 18:30',
       // A wash can't start while cooking: queue it for the end of the cycle instead

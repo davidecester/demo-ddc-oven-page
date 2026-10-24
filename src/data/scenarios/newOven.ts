@@ -16,9 +16,12 @@ export const newOvenScenario: Scenario = {
   activity: {
     status: 'idle',
     label: 'Idle',
+    lastActivity: null,
     dirtLevel: '0% · Clean',
-    cta: { type: 'chooseRecipe', label: 'Choose a recipe', icon: 'library-white' },
+    // Never used, so nothing to wash: recipes only
+    ctas: [{ type: 'chooseRecipe', label: 'Choose a recipe', icon: 'library-white' }],
     hint: 'Choose a program and set up the next cooking.',
+    notice: null,
   },
 
   alerts: [],

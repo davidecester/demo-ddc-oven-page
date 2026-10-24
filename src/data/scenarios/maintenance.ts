@@ -15,9 +15,16 @@ export const maintenanceScenario: Scenario = {
   activity: {
     status: 'idle',
     label: 'Idle',
+    // The wash that brought the chamber to 0%, 7 min before the 13:05 start
+    lastActivity: { status: 'washing', endedAt: '2026-10-12T12:58:00' },
     dirtLevel: '0% · Clean',
-    cta: { type: 'chooseRecipe', label: 'Choose a recipe', icon: 'library-white' },
-    hint: 'Choose a program and set up the next cooking.',
+    // Maintenance due: no actions, the notice explains why
+    ctas: [],
+    hint: null,
+    notice: {
+      title: 'Cooking and washing unavailable',
+      description: 'The oven needs its periodic maintenance before it can be used again.',
+    },
   },
 
   alerts: [
@@ -25,7 +32,7 @@ export const maintenanceScenario: Scenario = {
       id: 'maintenance',
       severity: 'critical',
       title: 'Maintenance required',
-      description: 'The oven’s periodic check needs to be scheduled.',
+      description: 'Cooking and washing are unavailable until the periodic maintenance is done.',
       code: 'MN02',
       timestamp: '10/10/2026 12:05',
       action: { type: 'scheduleMaintenance', label: 'Schedule maintenance', doneLabel: 'Maintenance requested', icon: 'service-white' },

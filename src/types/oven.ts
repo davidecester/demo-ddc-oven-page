@@ -57,7 +57,7 @@ export interface WashingActivity extends ActivityBase {
   remainingSec: number
 }
 
-/** CTA of the idle activity: start a wash (dirty chamber) or go to the recipes (clean chamber). */
+/** CTA of the idle activity: start a wash or go to the recipes. */
 export interface IdleCta {
   type: 'startWashing' | 'chooseRecipe'
   label: string
@@ -65,13 +65,28 @@ export interface IdleCta {
   icon: string
 }
 
+/** The cycle that ended last, shown as "Last cooking ended" / "Last washing ended". */
+export interface LastActivity {
+  status: 'cooking' | 'washing'
+  /** ISO local time, on the scenario's simulated clock. */
+  endedAt: string
+}
+
 export interface IdleActivity extends ActivityBase {
   status: 'idle'
   label: string
+  /** `null` for a new oven that never cooked or washed. */
+  lastActivity: LastActivity | null
   dirtLevel: string | null
-  cta: IdleCta | null
-  /** Shown under the CTA. */
+  /**
+   * Stacked, the first one primary. By dirt level: very dirty → wash only; dirty → wash, then recipe;
+   * clean → recipe, then wash. Empty when the oven can't be used (`notice`).
+   */
+  ctas: IdleCta[]
+  /** Shown under the CTAs; the same sentence as the related alert's description. */
   hint: string | null
+  /** Replaces the CTAs when cooking and washing are blocked (e.g. maintenance due). */
+  notice: { title: string; description: string } | null
 }
 
 export type Activity = CookingActivity | WashingActivity | IdleActivity

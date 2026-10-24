@@ -13,9 +13,12 @@ export const idleScenario: Scenario = {
   activity: {
     status: 'idle',
     label: 'Idle',
+    // 25 min before the 13:05 start
+    lastActivity: { status: 'cooking', endedAt: '2026-10-12T12:40:00' },
     dirtLevel: '78% · Very dirty',
-    cta: { type: 'startWashing', label: 'Start washing', icon: 'washing-white' },
+    ctas: [{ type: 'startWashing', label: 'Start washing', icon: 'washing-white' }],
     hint: 'Washing required before the next cooking.',
+    notice: null,
   },
 
   alerts: [
