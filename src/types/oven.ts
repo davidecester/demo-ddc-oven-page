@@ -115,24 +115,11 @@ export interface OvenAlert {
   badgeIcon?: { icon: string; icon16: string }
 }
 
-/** One cooking or wash cycle on the activity timeline; the time between cycles is standby. */
-export interface ActivitySession {
-  status: 'cooking' | 'washing'
-  /** "HH:MM", local time. */
-  start: string
-  end: string
-  /** Still running: `end` is the scenario start time. */
-  ongoing?: boolean
-}
-
 export interface ActivityTrendDay {
-  /** Short weekday, e.g. "Fri"; the last day reads "Today". */
   day: string
-  /** e.g. "9 Oct" */
-  date: string
-  sessions: ActivitySession[]
-  /** Today only: the timeline stops here ("HH:MM", the scenario start time). */
-  until?: string
+  cooking: number
+  washing: number
+  standby: number
 }
 
 export type DirtLevel = 'clean' | 'dirty' | 'veryDirty'
