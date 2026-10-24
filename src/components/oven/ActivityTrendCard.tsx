@@ -1,7 +1,6 @@
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import type { ActivityTrendDay } from '../../types/oven'
-import { formatHours } from '../../utils/format'
-import { axisTick, gridStroke, renderYTick } from '../charts/chartTheme'
+import { useEffect, useLayoutEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import type { ActivitySession, ActivityTrendDay } from '../../types/oven'
+import { formatDuration } from '../../utils/format'
 import { ChartTooltip } from '../charts/ChartTooltip'
 import { Card, CardTitle } from '../ui/Card'
 import { EmptyData } from '../ui/EmptyData'
@@ -12,13 +11,52 @@ interface ActivityTrendCardProps {
   className?: string
 }
 
-const SERIES = [
-  { key: 'cooking', label: 'Cooking', color: 'var(--color-orange-500)' },
-  { key: 'washing', label: 'Washing', color: 'var(--color-blue-400)' },
-  { key: 'standby', label: 'Standby', color: 'var(--color-grey-400)' },
-] as const
+type SegmentStatus = ActivitySession['status'] | 'standby'
 
-/** "Andamento attività": hours per day split into cooking / washing / standby. */
+const SERIES: Record<SegmentStatus, { label: string; color: string }> = {
+  cooking: { label: 'Cooking', color: 'var(--color-orange-500)' },
+  washing: { label: 'Washing', color: 'var(--color-blue-400)' },
+  standby: { label: 'Standby', color: 'var(--color-grey-200)' },
+}
+
+const DAY_MINUTES = 24 * 60
+/** Day label column plus its 8 px gap; the hour axis starts after it. */
+const LABEL_GUTTER = 48
+
+/** A stretch of the day in minutes: a cycle, or the standby between cycles. */
+interface Segment {
+  status: SegmentStatus
+  start: number
+  end: number
+  ongoing?: boolean
+}
+
+const toMinutes = (hhmm: string) => {
+  const [h, m] = hhmm.split(':').map(Number)
+  return h * 60 + m
+}
+const clock = (minutes: number) =>
+  `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`
+
+/** The day's cycles with the standby gaps filled in, up to midnight (or now, for today). */
+function segmentsOf(day: ActivityTrendDay): Segment[] {
+  const end = day.until ? toMinutes(day.until) : DAY_MINUTES
+  const segments: Segment[] = []
+  let cursor = 0
+  for (const s of [...day.sessions].sort((a, b) => toMinutes(a.start) - toMinutes(b.start))) {
+    const start = toMinutes(s.start)
+    if (start > cursor) segments.push({ status: 'standby', start: cursor, end: start })
+    segments.push({ status: s.status, start, end: toMinutes(s.end), ongoing: s.ongoing })
+    cursor = toMinutes(s.end)
+  }
+  if (cursor < end) segments.push({ status: 'standby', start: cursor, end })
+  return segments
+}
+
+const totalOf = (segments: Segment[], status: SegmentStatus) =>
+  segments.filter((s) => s.status === status).reduce((sum, s) => sum + s.end - s.start, 0)
+
+/** "Andamento attività": when each cooking and wash ran over the last 7 days, one 24 h row per day. */
 export function ActivityTrendCard({ trend, className }: ActivityTrendCardProps) {
   return (
     <Card labelledBy="trend-title" className={`gap-9 ${className ?? ''}`}>
@@ -36,39 +74,44 @@ export function ActivityTrendCard({ trend, className }: ActivityTrendCardProps) 
 
       {trend ? (
         <figure className="flex flex-col gap-4">
-          <TrendChart trend={trend} />
+          <Timeline days={trend} />
           <figcaption className="sr-only">
             <table>
-              <caption>Daily hours by activity, last 7 days</caption>
+              <caption>Cooking and washing cycles by day, last 7 days</caption>
               <thead>
                 <tr>
                   <th scope="col">Day</th>
-                  {SERIES.map((s) => (
-                    <th key={s.key} scope="col">
-                      {s.label}
-                    </th>
-                  ))}
+                  <th scope="col">Cycles</th>
+                  <th scope="col">Cooking</th>
+                  <th scope="col">Washing</th>
                 </tr>
               </thead>
               <tbody>
-                {trend.map((d) => (
-                  <tr key={d.day}>
-                    <th scope="row">{d.day}</th>
-                    {SERIES.map((s) => (
-                      <td key={s.key}>{formatHours(d[s.key])}</td>
-                    ))}
-                  </tr>
-                ))}
+                {trend.map((day) => {
+                  const segments = segmentsOf(day)
+                  return (
+                    <tr key={day.date}>
+                      <th scope="row">
+                        {day.day} {day.date}
+                      </th>
+                      <td>
+                        {day.sessions
+                          .map((s) => `${SERIES[s.status].label} ${s.start} to ${s.ongoing ? 'now' : s.end}`)
+                          .join(', ')}
+                      </td>
+                      <td>{formatDuration(totalOf(segments, 'cooking') * 60)}</td>
+                      <td>{formatDuration(totalOf(segments, 'washing') * 60)}</td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </figcaption>
         </figure>
       ) : (
-        // New oven: empty week with "- h" axis labels (Figma "Forno Appena Registrato")
+        // New oven: an empty week of standby rows behind the "no data" message
         <EmptyData>
-          <div className="flex flex-col gap-4">
-            <TrendChart trend={EMPTY_WEEK} />
-          </div>
+          <Timeline days={EMPTY_WEEK} empty />
         </EmptyData>
       )}
     </Card>
@@ -77,69 +120,180 @@ export function ActivityTrendCard({ trend, className }: ActivityTrendCardProps) 
 
 const EMPTY_WEEK: ActivityTrendDay[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => ({
   day,
-  cooking: 0,
-  washing: 0,
-  standby: 0,
+  date: day,
+  sessions: [],
 }))
 
-/** Legend and bar chart; with an all-zero week the hour labels read "- h". */
-function TrendChart({ trend }: { trend: ActivityTrendDay[] }) {
-  const empty = trend.every((d) => d.cooking + d.washing + d.standby === 0)
+interface Selection {
+  day: number
+  segment: number
+}
+
+/**
+ * Legend, one row per day and the hour axis. Hovering a block (desktop) or sliding a finger along a row (touch)
+ * shows when it started and ended and how long it lasted, like the SENSE.Klean scrubber; moving the mouse out, or
+ * tapping outside the rows, hides it.
+ */
+function Timeline({ days, empty = false }: { days: ActivityTrendDay[]; empty?: boolean }) {
+  const rowsRef = useRef<HTMLDivElement>(null)
+  const [selected, setSelected] = useState<Selection | null>(null)
+  const daySegments = days.map(segmentsOf)
+
+  // Touch has no "mouse leave": a tap outside the rows hides the details
+  useEffect(() => {
+    const reset = (event: PointerEvent) => {
+      if (!rowsRef.current?.contains(event.target as Node)) setSelected(null)
+    }
+    document.addEventListener('pointerdown', reset)
+    return () => document.removeEventListener('pointerdown', reset)
+  }, [])
+
+  // `touch-pan-y` keeps vertical page scrolling; horizontal slides reach us, and stay on the row they started on
+  const pick = (day: number) => (event: ReactPointerEvent<HTMLDivElement>) => {
+    const box = event.currentTarget.getBoundingClientRect()
+    const minute = ((event.clientX - box.left) / box.width) * DAY_MINUTES
+    const segment = daySegments[day].findIndex((s) => minute >= s.start && minute < s.end)
+    if (segment === -1) setSelected(null)
+    else if (selected?.day !== day || selected.segment !== segment) setSelected({ day, segment })
+  }
+
   return (
     <>
-      <ul className="flex flex-wrap items-center justify-end gap-x-6 gap-y-1" aria-label="Legenda">
-        {SERIES.map((s) => (
-          <li key={s.key} className="flex items-center gap-1">
+      <ul className="flex flex-wrap items-center justify-end gap-x-6 gap-y-1" aria-label="Legend">
+        {Object.values(SERIES).map((s) => (
+          <li key={s.label} className="flex items-center gap-1">
             <span aria-hidden="true" className="size-3 rounded-xs" style={{ background: s.color }} />
             <span className="type-paragraph-sm text-content-quaternary">{s.label}</span>
           </li>
         ))}
       </ul>
 
-      <div className="h-[187px] w-full" aria-hidden="true">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={trend}
-            barGap={2}
-            barCategoryGap={8}
-            margin={{ top: 15, right: 0, bottom: 0, left: 0 }}
-            accessibilityLayer={false}
-          >
-            <CartesianGrid vertical={false} stroke={gridStroke} />
-            <YAxis
-              domain={[0, 12]}
-              ticks={[0, 3, 6, 9, 12]}
-              axisLine={false}
-              tickLine={false}
-              tick={(props) =>
-                renderYTick({ ...props, format: (v) => (v % 6 === 0 ? (empty ? '- h' : `${v} h`) : '') })
-              }
-              width={40}
-            />
-            <XAxis dataKey="day" axisLine={false} tickLine={false} tick={axisTick} tickMargin={8} interval={0} />
-            {!empty && (
-              <Tooltip
-                cursor={{ fill: 'var(--color-grey-100)' }}
-                content={({ active, payload, label }) =>
-                  active && payload?.length ? (
-                    <ChartTooltip
-                      title={String(label)}
-                      rows={SERIES.map((s) => ({
-                        label: s.label,
-                        swatch: s.color,
-                        value: formatHours(Number(payload.find((p) => p.dataKey === s.key)?.value ?? 0)),
-                      }))}
-                    />
-                  ) : null
-                }
-              />
-            )}
-            {SERIES.map((s) => (
-              <Bar key={s.key} dataKey={s.key} fill={s.color} radius={[4, 4, 0, 0]} isAnimationActive={false} />
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
+      <div ref={rowsRef} className="flex flex-col gap-3" aria-hidden="true">
+        {days.map((day, d) => (
+          <div key={day.date} className="flex items-center gap-2">
+            <span
+              className={`w-10 shrink-0 type-paragraph-xs ${day.until ? 'text-content-primary' : 'text-content-quaternary'}`}
+            >
+              {day.day}
+            </span>
+            <div
+              className="relative h-4 flex-1 touch-pan-y select-none"
+              {...(empty
+                ? {}
+                : {
+                    onPointerDown: pick(d),
+                    onPointerMove: pick(d),
+                    onPointerLeave: (event: ReactPointerEvent) => {
+                      if (event.pointerType === 'mouse') setSelected(null)
+                    },
+                  })}
+            >
+              <Track segments={daySegments[d]} selected={selected?.day === d ? selected.segment : null} />
+              {selected?.day === d && <SegmentTooltip day={day} segment={daySegments[d][selected.segment]} />}
+            </div>
+          </div>
+        ))}
+        <HourAxis />
       </div>
     </>
+  )
+}
+
+/** One day: grey standby, coloured cycles, white 6-hour guides; the rest of today stays blank. */
+function Track({ segments, selected }: { segments: Segment[]; selected: number | null }) {
+  return (
+    <div className="absolute inset-0 overflow-hidden rounded-sm bg-grey-100">
+      {/* Standby first, then the 6-hour guides, then the cycles on top so the guides never cut through them */}
+      {segments.map((s) => s.status === 'standby' && <SegmentBar key={s.start} segment={s} />)}
+      {[6, 12, 18].map((h) => (
+        <span key={h} className="absolute inset-y-0 w-px bg-white" style={{ left: `${(h / 24) * 100}%` }} />
+      ))}
+      {segments.map(
+        (s, i) =>
+          s.status !== 'standby' && (
+            // Back-to-back cycles (a wash right after cooking) get a 2 px white seam so both stay visible
+            <SegmentBar key={s.start} segment={s} seam={i > 0 && segments[i - 1].status !== 'standby'} />
+          ),
+      )}
+      {selected !== null && (
+        <span
+          className="absolute inset-y-0 rounded-xs ring-2 ring-black ring-inset"
+          style={{
+            left: `${(segments[selected].start / DAY_MINUTES) * 100}%`,
+            width: `${((segments[selected].end - segments[selected].start) / DAY_MINUTES) * 100}%`,
+          }}
+        />
+      )}
+    </div>
+  )
+}
+
+function SegmentBar({ segment, seam = false }: { segment: Segment; seam?: boolean }) {
+  return (
+    <span
+      className={`absolute inset-y-0 ${seam ? 'border-l-2 border-white' : ''}`}
+      style={{
+        left: `${(segment.start / DAY_MINUTES) * 100}%`,
+        width: `${((segment.end - segment.start) / DAY_MINUTES) * 100}%`,
+        background: SERIES[segment.status].color,
+      }}
+    />
+  )
+}
+
+/** Above the row, centred on the block and kept inside the card. */
+function SegmentTooltip({ day, segment }: { day: ActivityTrendDay; segment: Segment }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [left, setLeft] = useState<number | null>(null)
+  const centre = (segment.start + segment.end) / 2 / DAY_MINUTES
+
+  useLayoutEffect(() => {
+    const el = ref.current
+    const track = el?.parentElement
+    if (!el || !track) return
+    const width = el.offsetWidth
+    const x = centre * track.offsetWidth - width / 2
+    setLeft(Math.min(track.offsetWidth - width, Math.max(-LABEL_GUTTER, x)))
+  }, [centre])
+
+  const duration = formatDuration((segment.end - segment.start) * 60)
+  return (
+    <div
+      ref={ref}
+      className="pointer-events-none absolute bottom-[calc(100%+8px)] z-10 whitespace-nowrap"
+      style={{ left: left ?? 0, visibility: left === null ? 'hidden' : undefined }}
+    >
+      <ChartTooltip
+        title={`${day.day} ${day.until ? '' : day.date}`.trim()}
+        rows={[
+          {
+            label: SERIES[segment.status].label,
+            swatch: SERIES[segment.status].color,
+            value: `${clock(segment.start)} – ${segment.ongoing ? 'now' : clock(segment.end)}`,
+          },
+          { label: 'Duration', value: segment.ongoing ? `${duration} so far` : duration },
+        ]}
+      />
+    </div>
+  )
+}
+
+function HourAxis() {
+  return (
+    <div className="relative h-4" style={{ marginLeft: LABEL_GUTTER }}>
+      {[0, 6, 12, 18, 24].map((h) => (
+        <span
+          key={h}
+          className="absolute type-paragraph-xs text-content-quaternary"
+          // Edge labels align to the row ends instead of overflowing them
+          style={{
+            left: `${(h / 24) * 100}%`,
+            transform: h === 0 ? undefined : h === 24 ? 'translateX(-100%)' : 'translateX(-50%)',
+          }}
+        >
+          {clock(h * 60)}
+        </span>
+      ))}
+    </div>
   )
 }

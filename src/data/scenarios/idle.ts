@@ -1,5 +1,5 @@
 import type { Scenario } from '../../types/oven'
-import { CHAMBER_MESSAGES } from '../shared'
+import { CHAMBER_MESSAGES, weekUntilNow } from '../shared'
 import { cookingScenario } from './cooking'
 
 /**
@@ -34,6 +34,9 @@ export const idleScenario: Scenario = {
     },
     ...cookingScenario.alerts.filter((a) => a.severity === 'info'),
   ],
+
+  // The last cooking ended at 12:40 ("Last cooking ended" in the activity card)
+  activityTrend: weekUntilNow([{ status: 'cooking', start: '10:25', end: '12:40' }]),
 
   // Same 24 h as Scenario 1, but the chamber kept getting dirtier: 78% at 13:00.
   senseKlean: {

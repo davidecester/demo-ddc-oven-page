@@ -1,6 +1,6 @@
 import type { Scenario } from '../../types/oven'
 import { assetUrl } from '../../utils/assets'
-import { CHAMBER_MESSAGES, sharedDownloads, sharedRecipes } from '../shared'
+import { CHAMBER_MESSAGES, sharedDownloads, sharedRecipes, weekUntilNow } from '../shared'
 
 /** Scenario 1 — oven online, cooking in progress (Figma: "Scenario Base"). */
 export const cookingScenario: Scenario = {
@@ -62,16 +62,8 @@ export const cookingScenario: Scenario = {
     },
   ],
 
-  // Hours derived from the Figma bar heights (136 px = 12 h).
-  activityTrend: [
-    { day: 'Mon', cooking: 6, washing: 1.6, standby: 8.5 },
-    { day: 'Tue', cooking: 6.5, washing: 2.1, standby: 8.5 },
-    { day: 'Wed', cooking: 5.5, washing: 1.6, standby: 9.5 },
-    { day: 'Thu', cooking: 6, washing: 2.1, standby: 8.5 },
-    { day: 'Fri', cooking: 7, washing: 1.6, standby: 9.5 },
-    { day: 'Sat', cooking: 6.5, washing: 2.1, standby: 8.5 },
-    { day: 'Sun', cooking: 5, washing: 1.6, standby: 9.5 },
-  ],
+  // The recipe in progress started at 10:23: 2 h 42 min of its 3 h 58 min done by 13:05
+  activityTrend: weekUntilNow([{ status: 'cooking', start: '10:23', end: '13:05', ongoing: true }]),
 
   // Values from the Figma bar heights; the drops to 0 at 00:00 and 07:00 are washes.
   senseKlean: {
