@@ -111,7 +111,10 @@ export function ActivityTrendCard({ trend, className }: ActivityTrendCardProps) 
       ) : (
         // New oven: an empty week of standby rows behind the "no data" message
         <EmptyData>
-          <Timeline days={EMPTY_WEEK} empty />
+          {/* Same 16 px legend-to-rows gap as the figure above */}
+          <div className="flex flex-col gap-4">
+            <Timeline days={EMPTY_WEEK} empty />
+          </div>
         </EmptyData>
       )}
     </Card>
