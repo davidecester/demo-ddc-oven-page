@@ -77,7 +77,8 @@ export interface IdleActivity extends ActivityBase {
   label: string
   /** `null` for a new oven that never cooked or washed. */
   lastActivity: LastActivity | null
-  dirtLevel: string | null
+  /** SENSE.Klean chamber reading in % (0–100); the label and drop icon follow from it. */
+  dirtLevel: number | null
   /**
    * Stacked, the first one primary. By dirt level: very dirty → wash only; dirty → wash, then recipe;
    * clean → recipe, then wash. Empty when the oven can't be used (`notice`).

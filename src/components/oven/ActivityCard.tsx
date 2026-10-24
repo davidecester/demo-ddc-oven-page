@@ -8,6 +8,7 @@ import { LabelValue } from '../ui/LabelValue'
 import { ProgressRing } from '../ui/ProgressRing'
 import { StatusTag } from '../ui/StatusTag'
 import { ACTIVITY_CARD_ID, RECIPES_CARD_ID } from './anchors'
+import { DIRT_LEVEL, dirtLevelOf } from './senseKlean'
 
 interface ActivityCardProps {
   activity: LiveActivity
@@ -87,6 +88,12 @@ function ActivityName({ label, value }: { label: string; value: string }) {
   )
 }
 
+/** "78% · Very dirty", with the drop filled to that state. */
+function DirtLevelValue({ value }: { value: number }) {
+  const level = DIRT_LEVEL[dirtLevelOf(value)]
+  return <LabelValue icon={level.icon} label="Chamber dirt level" value={`${formatPercent(value)} · ${level.label}`} />
+}
+
 function ActivityContent({ activity, onStartWashing }: { activity: LiveActivity; onStartWashing: () => void }) {
   switch (activity.status) {
     case 'cooking':
@@ -128,12 +135,21 @@ function ActivityContent({ activity, onStartWashing }: { activity: LiveActivity;
       return (
         <>
           <ActivityName label="Activity" value={activity.label} />
-          {(activity.lastActivity || activity.dirtLevel) && (
+          {(activity.lastActivity || activity.dirtLevel !== null) && (
             <div className="flex flex-col gap-4">
               {activity.lastActivity && (
-                <LabelValue icon="timelapse" label={activity.lastActivity.label} value={activity.lastActivity.value} />
+                <LabelValue
+                  icon="timelapse"
+                  label={activity.lastActivity.label}
+                  // Day and time in the label weight, the elapsed time in regular
+                  value={
+                    <>
+                      {activity.lastActivity.when} <span className="font-normal">· {activity.lastActivity.ago}</span>
+                    </>
+                  }
+                />
               )}
-              {activity.dirtLevel && <LabelValue icon="dirt-level" label="Chamber dirt level" value={activity.dirtLevel} />}
+              {activity.dirtLevel !== null && <DirtLevelValue value={activity.dirtLevel} />}
             </div>
           )}
           {activity.notice ? (

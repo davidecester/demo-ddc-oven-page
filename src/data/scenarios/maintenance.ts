@@ -18,7 +18,7 @@ export const maintenanceScenario: Scenario = {
     label: 'Idle',
     // The wash that brought the chamber to 0%, 7 min before the 13:05 start
     lastActivity: { status: 'washing', endedAt: '2026-10-12T12:58:00' },
-    dirtLevel: '0% · Clean',
+    dirtLevel: 0,
     // Maintenance due: no actions, the notice explains why
     ctas: [],
     hint: null,

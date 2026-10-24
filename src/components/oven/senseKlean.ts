@@ -9,12 +9,12 @@ export function dirtLevelOf(value: number): DirtLevel {
 
 /**
  * Status per level, shown after the value with the same Warning / Critical tags as the alerts:
- * Clean has no tag, Dirty is Warning, Very dirty is Critical.
+ * Clean has no tag, Dirty is Warning, Very dirty is Critical. The icon is a grease drop that fills up with the level.
  */
-export const DIRT_LEVEL: Record<DirtLevel, { label: string; tag: StatusTagType | null }> = {
-  clean: { label: 'Clean', tag: null },
-  dirty: { label: 'Dirty', tag: 'warning' },
-  veryDirty: { label: 'Very dirty', tag: 'critical' },
+export const DIRT_LEVEL: Record<DirtLevel, { label: string; tag: StatusTagType | null; icon: string }> = {
+  clean: { label: 'Clean', tag: null, icon: 'dirt-level-clean' },
+  dirty: { label: 'Dirty', tag: 'warning', icon: 'dirt-level-dirty' },
+  veryDirty: { label: 'Very dirty', tag: 'critical', icon: 'dirt-level-very-dirty' },
 }
 
 /**
