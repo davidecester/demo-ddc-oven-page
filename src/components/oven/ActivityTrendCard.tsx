@@ -103,17 +103,22 @@ interface Selection {
 /**
  * Legend, one row per day and the hour axis. Hovering a block (desktop) or sliding a finger along a row (touch)
  * shows when it started and ended and how long it lasted, like the SENSE.Klean scrubber; moving the mouse out, or
- * tapping outside the rows, hides it.
+ * tapping outside the rows, hides it. Clicking a day label pins that day's totals until it's clicked again.
  */
 function Timeline({ days, empty = false }: { days: ActivityTrendDay[]; empty?: boolean }) {
   const rowsRef = useRef<HTMLDivElement>(null)
   const [selected, setSelected] = useState<Selection | null>(null)
+  const [pinnedDay, setPinnedDay] = useState<number | null>(null)
   const daySegments = days.map(segmentsOf)
+  // A hovered block wins over a pinned day
+  const activeDay = selected?.day ?? pinnedDay
 
   // Touch has no "mouse leave": a tap outside the rows hides the details
   useEffect(() => {
     const reset = (event: PointerEvent) => {
-      if (!rowsRef.current?.contains(event.target as Node)) setSelected(null)
+      if (rowsRef.current?.contains(event.target as Node)) return
+      setSelected(null)
+      setPinnedDay(null)
     }
     document.addEventListener('pointerdown', reset)
     return () => document.removeEventListener('pointerdown', reset)
@@ -130,34 +135,54 @@ function Timeline({ days, empty = false }: { days: ActivityTrendDay[]; empty?: b
 
   return (
     <>
-      <Totals days={days} selectedDay={selected?.day ?? null} empty={empty} />
+      <Totals days={days} selectedDay={activeDay} empty={empty} />
 
-      <div ref={rowsRef} className="flex flex-col gap-3" aria-hidden="true">
-        {days.map((day, d) => (
-          <div key={day.date} className="flex items-center gap-2">
-            <span
-              className={`w-10 shrink-0 type-paragraph-xs ${day.until || selected?.day === d ? 'text-content-primary' : 'text-content-quaternary'} ${selected?.day === d ? 'font-bold' : ''}`}
-            >
-              {day.day}
-            </span>
-            <div
-              className="relative h-4 flex-1 touch-pan-y select-none"
-              {...(empty
-                ? {}
-                : {
-                    onPointerDown: pick(d),
-                    onPointerMove: pick(d),
-                    onPointerLeave: (event: ReactPointerEvent) => {
-                      if (event.pointerType === 'mouse') setSelected(null)
-                    },
-                  })}
-            >
-              <Track segments={daySegments[d]} selected={selected?.day === d ? selected.segment : null} />
-              {selected?.day === d && <SegmentTooltip day={day} segment={daySegments[d][selected.segment]} />}
+      <div ref={rowsRef} className="flex flex-col gap-3">
+        {days.map((day, d) => {
+          const labelClass = `w-10 shrink-0 text-left type-paragraph-xs ${day.until || activeDay === d ? 'text-content-primary' : 'text-content-quaternary'} ${activeDay === d ? 'font-bold' : ''}`
+          return (
+            <div key={day.date} className="flex items-center gap-2">
+              {empty ? (
+                <span aria-hidden="true" className={labelClass}>
+                  {day.day}
+                </span>
+              ) : (
+                // 28 px tall tap target that fills the 12 px gap between rows without overlapping
+                <button
+                  type="button"
+                  aria-pressed={pinnedDay === d}
+                  aria-label={`Show totals for ${day.until ? `today, ${day.date}` : `${day.day} ${day.date}`}`}
+                  onClick={() => {
+                    setSelected(null)
+                    setPinnedDay(pinnedDay === d ? null : d)
+                  }}
+                  className={`-my-1.5 cursor-pointer rounded-xs py-1.5 hover:text-content-primary ${labelClass}`}
+                >
+                  {day.day}
+                </button>
+              )}
+              <div
+                aria-hidden="true"
+                className="relative h-4 flex-1 touch-pan-y select-none"
+                {...(empty
+                  ? {}
+                  : {
+                      onPointerDown: pick(d),
+                      onPointerMove: pick(d),
+                      onPointerLeave: (event: ReactPointerEvent) => {
+                        if (event.pointerType === 'mouse') setSelected(null)
+                      },
+                    })}
+              >
+                <Track segments={daySegments[d]} selected={selected?.day === d ? selected.segment : null} />
+                {selected?.day === d && <SegmentTooltip day={day} segment={daySegments[d][selected.segment]} />}
+              </div>
             </div>
-          </div>
-        ))}
-        <HourAxis />
+          )
+        })}
+        <div aria-hidden="true">
+          <HourAxis />
+        </div>
       </div>
     </>
   )
@@ -172,7 +197,7 @@ function Totals({ days, selectedDay, empty }: { days: ActivityTrendDay[]; select
   const totals = totalsOf(day ? [day] : days)
   return (
     // Read top to bottom: which period, the figure, what it is
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2" aria-live="polite">
       <p className="type-paragraph-sm text-content-quaternary">
         {day ? (day.until ? `Today, ${day.date}` : `${day.day} ${day.date}`) : 'Total'}
       </p>
