@@ -13,7 +13,9 @@ import {
   selectedColor,
   SERIES,
   totalOf,
+  totalsOf,
   type Segment,
+  type SegmentStatus,
 } from './activityTrend'
 
 interface ActivityTrendCardProps {
@@ -127,20 +129,13 @@ function Timeline({ days, empty = false }: { days: ActivityTrendDay[]; empty?: b
 
   return (
     <>
-      <ul className="flex flex-wrap items-center justify-end gap-x-6 gap-y-1" aria-label="Legend">
-        {Object.values(SERIES).map((s) => (
-          <li key={s.label} className="flex items-center gap-1">
-            <span aria-hidden="true" className="size-3 rounded-xs" style={{ background: s.color }} />
-            <span className="type-paragraph-sm text-content-quaternary">{s.label}</span>
-          </li>
-        ))}
-      </ul>
+      <Totals days={days} selectedDay={selected?.day ?? null} empty={empty} />
 
       <div ref={rowsRef} className="flex flex-col gap-3" aria-hidden="true">
         {days.map((day, d) => (
           <div key={day.date} className="flex items-center gap-2">
             <span
-              className={`w-10 shrink-0 type-paragraph-xs ${day.until ? 'text-content-primary' : 'text-content-quaternary'}`}
+              className={`w-10 shrink-0 type-paragraph-xs ${day.until || selected?.day === d ? 'text-content-primary' : 'text-content-quaternary'} ${selected?.day === d ? 'font-bold' : ''}`}
             >
               {day.day}
             </span>
@@ -164,6 +159,35 @@ function Timeline({ days, empty = false }: { days: ActivityTrendDay[]; empty?: b
         <HourAxis />
       </div>
     </>
+  )
+}
+
+/**
+ * The legend doubles as the totals, like Total usage hours: the week by default, the day while one of its blocks is
+ * selected, with a label saying which (like the SENSE.Klean reading time).
+ */
+function Totals({ days, selectedDay, empty }: { days: ActivityTrendDay[]; selectedDay: number | null; empty: boolean }) {
+  const day = selectedDay === null ? null : days[selectedDay]
+  const totals = totalsOf(day ? [day] : days)
+  return (
+    <div className="flex flex-col gap-2">
+      <dl className="grid grid-cols-3 gap-2">
+        {(Object.keys(SERIES) as SegmentStatus[]).map((status) => (
+          <div key={status} className="flex min-w-0 flex-col gap-1">
+            <dt className="flex items-center gap-1 type-paragraph-sm text-content-quaternary">
+              <span aria-hidden="true" className="size-3 shrink-0 rounded-xs" style={{ background: SERIES[status].color }} />
+              {SERIES[status].label}
+            </dt>
+            <dd className="type-label-lg text-content-primary tabular-nums">
+              {empty ? '- h' : formatDuration(totals[status] * 60)}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      <p className="type-paragraph-sm text-content-quaternary">
+        {day ? (day.until ? `Today, ${day.date}` : `${day.day} ${day.date}`) : 'Total, last 7 days'}
+      </p>
+    </div>
   )
 }
 
@@ -251,7 +275,7 @@ function SegmentTooltip({ day, segment }: { day: ActivityTrendDay; segment: Segm
         title={`${day.day} ${day.until ? '' : day.date}`.trim()}
         rows={[
           {
-            label: SERIES[segment.status].label,
+            label: segment.name ?? SERIES[segment.status].label,
             swatch: selectedColor(segment.status),
             value: `${clock(segment.start)} – ${segment.ongoing ? 'now' : clock(segment.end)}`,
           },

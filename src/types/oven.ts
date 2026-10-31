@@ -123,6 +123,10 @@ export interface ActivitySession {
   end: string
   /** Still running: `end` is the scenario start time. */
   ongoing?: boolean
+  /** The recipe cooked, or the wash program, e.g. "Roast beef" or "Intense wash". */
+  name?: string
+  /** Where it was started from: the cooking mode (Program 4, MULTI.Time…) or the wash type. */
+  type?: string
 }
 
 export interface ActivityTrendDay {

@@ -54,8 +54,8 @@ export const maintenanceScenario: Scenario = {
 
   // Cooking, then the wash that ended at 12:58 ("Last washing ended" in the activity card)
   activityTrend: weekUntilNow([
-    { status: 'cooking', start: '10:20', end: '11:50' },
-    { status: 'washing', start: '12:00', end: '12:58' },
+    { status: 'cooking', start: '10:20', end: '11:50', name: 'Roast beef', type: 'Program 4' },
+    { status: 'washing', start: '12:00', end: '12:58', name: 'Intense wash', type: 'Heavy dirt' },
   ]),
 
   // Same 24 h as Scenario 1, but the chamber was just washed: 0% at 13:00.

@@ -22,6 +22,8 @@ export interface Segment {
   start: number
   end: number
   ongoing?: boolean
+  name?: string
+  type?: string
 }
 
 export const toMinutes = (hhmm: string) => {
@@ -43,7 +45,7 @@ export function segmentsOf(day: ActivityTrendDay): Segment[] {
   for (const s of [...day.sessions].sort((a, b) => toMinutes(a.start) - toMinutes(b.start))) {
     const start = toMinutes(s.start)
     if (start > cursor) segments.push({ status: 'standby', start: cursor, end: start })
-    segments.push({ status: s.status, start, end: toMinutes(s.end), ongoing: s.ongoing })
+    segments.push({ status: s.status, start, end: toMinutes(s.end), ongoing: s.ongoing, name: s.name, type: s.type })
     cursor = toMinutes(s.end)
   }
   if (cursor < end) segments.push({ status: 'standby', start: cursor, end })
@@ -58,3 +60,10 @@ export const EMPTY_WEEK: ActivityTrendDay[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'
   date: day,
   sessions: [],
 }))
+
+/** Minutes per activity over the given days. */
+export function totalsOf(days: ActivityTrendDay[]): Record<SegmentStatus, number> {
+  const all = days.map(segmentsOf)
+  const sum = (status: SegmentStatus) => all.reduce((t, segs) => t + totalOf(segs, status), 0)
+  return { cooking: sum('cooking'), washing: sum('washing'), standby: sum('standby') }
+}

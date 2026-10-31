@@ -63,7 +63,7 @@ export const cookingScenario: Scenario = {
   ],
 
   // The recipe in progress started at 10:23: 2 h 42 min of its 3 h 58 min done by 13:05
-  activityTrend: weekUntilNow([{ status: 'cooking', start: '10:23', end: '13:05', ongoing: true }]),
+  activityTrend: weekUntilNow([{ status: 'cooking', start: '10:23', end: '13:05', ongoing: true, name: 'Roast chicken', type: 'Program 12' }]),
 
   // Values from the Figma bar heights; the drops to 0 at 00:00 and 07:00 are washes.
   senseKlean: {

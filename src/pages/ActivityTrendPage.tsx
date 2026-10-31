@@ -485,8 +485,12 @@ function SessionRow({
       <Swatch status={segment.status} size="size-4" />
       <span className="flex min-w-0 flex-1 flex-col gap-1">
         <span className="type-label-md text-content-primary">
-          {SERIES[segment.status].label}
+          {segment.name ?? SERIES[segment.status].label}
           {segment.ongoing && <span className="type-paragraph-xs text-content-quaternary"> · in progress</span>}
+        </span>
+        <span className="type-paragraph-xs text-content-quaternary">
+          {SERIES[segment.status].label}
+          {segment.type && ` · ${segment.type}`}
         </span>
         <span className="type-paragraph-xs text-content-quaternary tabular-nums">
           {clock(segment.start)} – {segment.ongoing ? 'now' : clock(segment.end)}

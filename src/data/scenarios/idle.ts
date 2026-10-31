@@ -36,7 +36,7 @@ export const idleScenario: Scenario = {
   ],
 
   // The last cooking ended at 12:40 ("Last cooking ended" in the activity card)
-  activityTrend: weekUntilNow([{ status: 'cooking', start: '10:25', end: '12:40' }]),
+  activityTrend: weekUntilNow([{ status: 'cooking', start: '10:25', end: '12:40', name: 'Roast chicken', type: 'Program 12' }]),
 
   // Same 24 h as Scenario 1, but the chamber kept getting dirtier: 78% at 13:00.
   senseKlean: {
