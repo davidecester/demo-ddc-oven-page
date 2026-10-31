@@ -117,8 +117,10 @@ function WeekSummary({ days }: { days: ActivityTrendDay[] | null }) {
         {tiles.map((t) => (
           <li
             key={t.status}
-            className="flex items-center justify-between gap-4 py-5 first:pt-0 last:pb-0 md:py-6 xl:px-8 xl:py-0 xl:first:pl-0 xl:last:pr-0"
+            className="py-5 first:pt-0 last:pb-0 md:py-6 xl:px-8 xl:py-0 xl:first:pl-0 xl:last:pr-0"
           >
+            {/* Wide screens: the cell grows with the page, its content keeps a set width centred in it */}
+            <div className="flex items-center justify-between gap-4 xl:mx-auto xl:max-w-[360px]">
             <span className="shrink-0">
               <BigDuration
                 minutes={t.value}
@@ -133,6 +135,7 @@ function WeekSummary({ days }: { days: ActivityTrendDay[] | null }) {
               </span>
               <span className="type-paragraph-xs text-content-quaternary">{t.note}</span>
             </span>
+            </div>
           </li>
         ))}
       </ul>
