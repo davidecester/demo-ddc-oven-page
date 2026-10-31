@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 const PARAM = 'view'
 
@@ -14,6 +14,15 @@ function readParam(): ViewId | null {
  */
 export function useViewParam() {
   const [view, setView] = useState(readParam)
+  const scrollPending = useRef(false)
+
+  // Start the newly opened page at the top: jump once it has rendered (before paint), and skip the global smooth
+  // scroll, which would otherwise animate across the old page while it is swapped out and can stop part-way
+  useLayoutEffect(() => {
+    if (!scrollPending.current) return
+    scrollPending.current = false
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [view])
 
   useEffect(() => {
     const onPop = () => setView(readParam())
@@ -26,8 +35,8 @@ export function useViewParam() {
     if (id) url.searchParams.set(PARAM, id)
     else url.searchParams.delete(PARAM)
     window.history.pushState(null, '', url)
+    scrollPending.current = true
     setView(id)
-    window.scrollTo({ top: 0 })
   }, [])
 
   return { view, openView }
