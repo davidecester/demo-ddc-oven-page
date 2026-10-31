@@ -107,33 +107,34 @@ function WeekSummary({ days }: { days: ActivityTrendDay[] | null }) {
     : STATUSES.map((status) => ({ status, value: null, note: 'No data available yet' }))
 
   return (
-    <section aria-labelledby="week-total-title" className="flex flex-col gap-4 md:gap-6">
+    <section aria-labelledby="week-total-title" className="flex flex-col gap-6 md:gap-8 lg:gap-12">
       <SectionTitle id="week-total-title">This week</SectionTitle>
       {/*
         The page summary: the totals lead, large on the left, with the key on the right.
-        One row per activity up to laptop width; on wide screens three columns split by vertical dividers.
+        One row per activity; from 1680 px, where the 48 px figures and their key fit side by side, three columns split by vertical dividers.
       */}
-      <ul className="flex flex-col divide-y divide-grey-200 xl:grid xl:grid-cols-3 xl:divide-x xl:divide-y-0">
+      <ul className="flex flex-col divide-y divide-grey-200 min-[1680px]:grid min-[1680px]:grid-cols-3 min-[1680px]:divide-x min-[1680px]:divide-y-0">
         {tiles.map((t) => (
           <li
             key={t.status}
-            className="py-5 first:pt-0 last:pb-0 md:py-6 xl:px-8 xl:py-0 xl:first:pl-0 xl:last:pr-0"
+            className="py-6 first:pt-0 last:pb-0 md:py-8 min-[1680px]:px-8 min-[1680px]:py-0 min-[1680px]:first:pl-0 min-[1680px]:last:pr-0"
           >
-            {/* Wide screens: the cell grows with the page, its content keeps a set width centred in it */}
-            <div className="flex items-center justify-between gap-4 xl:mx-auto xl:max-w-[360px]">
+            {/* Columns: the cell grows with the page, its content keeps a set width centred in it */}
+            <div className="flex items-center justify-between gap-4 min-[1680px]:mx-auto min-[1680px]:max-w-[460px]">
             <span className="shrink-0">
               <BigDuration
                 minutes={t.value}
-                numberClass="type-heading-sm md:type-heading-xl"
-                unitClass="type-paragraph-md md:type-heading-xs md:font-normal"
+                // The page summary: 48 px figures on desktop, above the 36 px design-system maximum
+                numberClass="type-heading-sm md:type-heading-xl lg:!text-[48px] lg:!leading-[1.1]"
+                unitClass="type-paragraph-md md:type-heading-xs md:font-normal lg:!text-[24px]"
               />
             </span>
             <span className="flex min-w-0 flex-col items-end gap-1 text-right">
-              <span className="flex items-center gap-2 type-label-md text-content-primary">
+              <span className="flex items-center gap-2 type-label-md text-content-primary lg:type-label-lg">
                 <Swatch status={t.status} />
                 {SERIES[t.status].label}
               </span>
-              <span className="type-paragraph-xs text-content-quaternary">{t.note}</span>
+              <span className="type-paragraph-xs text-content-quaternary lg:type-paragraph-sm">{t.note}</span>
             </span>
             </div>
           </li>
