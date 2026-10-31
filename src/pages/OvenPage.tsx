@@ -23,7 +23,7 @@ const TOAST_MESSAGE: Record<Exclude<AlertAction['type'], 'startWashing'>, string
   orderConsumables: 'Detergent order sent',
 }
 
-export function OvenPage({ scenario }: { scenario: Scenario }) {
+export function OvenPage({ scenario, onOpenActivityTrend }: { scenario: Scenario; onOpenActivityTrend: () => void }) {
   const { live, startWashing } = useOvenSimulation(scenario)
   const [alertsOpen, setAlertsOpen] = useState(false)
   const [announcement, setAnnouncement] = useState('')
@@ -77,7 +77,7 @@ export function OvenPage({ scenario }: { scenario: Scenario }) {
           />
         )}
         <ActivityCard className={HALF} activity={live} onStartWashing={handleStartWashing} />
-        <ActivityTrendCard className={HALF} trend={scenario.activityTrend} />
+        <ActivityTrendCard className={HALF} trend={scenario.activityTrend} onOpen={onOpenActivityTrend} />
         <SenseKleanCard className={FULL} data={scenario.senseKlean} />
         <RoCareCard className={HALF} data={scenario.roCare} />
         <UsageHoursCard className={HALF} data={scenario.usage} />
