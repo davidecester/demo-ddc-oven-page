@@ -13,6 +13,7 @@ import {
   type Segment,
   type SegmentStatus,
 } from '../components/oven/activityTrend'
+import { BigDuration } from '../components/ui/BigDuration'
 import { Card, CardTitle } from '../components/ui/Card'
 import { EmptyData } from '../components/ui/EmptyData'
 import type { ActivityTrendDay } from '../types/oven'
@@ -20,8 +21,6 @@ import { cx } from '../utils/cx'
 import { formatDuration } from '../utils/format'
 
 const minutes = (m: number) => formatDuration(m * 60)
-/** Large figures drop the space before the unit: "40h 57min" (small text keeps "40 h 57 min"). */
-const bigMinutes = (m: number) => minutes(m).replace(/ (h|min)\b/g, '$1')
 const STATUSES: SegmentStatus[] = ['cooking', 'washing', 'standby']
 
 /** "Andamento attività" in depth: week totals, an hour-by-hour heatmap and each day's cycles. */
@@ -67,25 +66,25 @@ function WeekSummary({ days }: { days: ActivityTrendDay[] | null }) {
   const tracked = all.reduce((s, segs) => s + segs.reduce((t, x) => t + x.end - x.start, 0), 0)
   const dayCount = days?.length ?? 7
 
-  const tiles: { status: SegmentStatus; value: string; note: string }[] = days
+  const tiles: { status: SegmentStatus; value: number | null; note: string }[] = days
     ? [
         {
           status: 'cooking',
-          value: bigMinutes(sum('cooking')),
+          value: sum('cooking'),
           note: `${count('cooking')} cycles · ${minutes(Math.round(sum('cooking') / dayCount))} a day`,
         },
         {
           status: 'washing',
-          value: bigMinutes(sum('washing')),
+          value: sum('washing'),
           note: `${count('washing')} washes · ${minutes(Math.round(sum('washing') / dayCount))} a day`,
         },
         {
           status: 'standby',
-          value: bigMinutes(sum('standby')),
+          value: sum('standby'),
           note: `${Math.round((sum('standby') / tracked) * 100)}% of the time`,
         },
       ]
-    : STATUSES.map((status) => ({ status, value: '- h', note: 'No data available yet' }))
+    : STATUSES.map((status) => ({ status, value: null, note: 'No data available yet' }))
 
   return (
     <section aria-labelledby="week-total-title" className="col-span-full flex flex-col gap-2">
@@ -102,12 +101,20 @@ function WeekSummary({ days }: { days: ActivityTrendDay[] | null }) {
             <span className="flex min-w-0 flex-col gap-1 md:contents">
               <span className="flex items-center gap-2 type-label-sm text-content-quaternary">
                 <Swatch status={t.status} />
-                {SERIES[t.status].label}
-                <span className="hidden md:inline"> this week</span>
+                <span>
+                  {SERIES[t.status].label}
+                  <span className="hidden md:inline"> this week</span>
+                </span>
               </span>
               <span className="type-paragraph-xs text-content-quaternary md:order-last">{t.note}</span>
             </span>
-            <span className="shrink-0 type-heading-xs text-content-primary tabular-nums md:type-heading-sm">{t.value}</span>
+            <span className="shrink-0">
+              <BigDuration
+                minutes={t.value}
+                numberClass="type-heading-xs md:type-heading-sm"
+                unitClass="type-paragraph-sm md:type-paragraph-md"
+              />
+            </span>
           </li>
         ))}
       </ul>

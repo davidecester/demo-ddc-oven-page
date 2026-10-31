@@ -4,6 +4,7 @@ import { formatDuration } from '../../utils/format'
 import { ChartTooltip } from '../charts/ChartTooltip'
 import { Card, CardTitle } from '../ui/Card'
 import { EmptyData } from '../ui/EmptyData'
+import { BigDuration } from '../ui/BigDuration'
 import { IconButton } from '../ui/Button'
 import {
   clock,
@@ -184,46 +185,17 @@ function Totals({ days, selectedDay, empty }: { days: ActivityTrendDay[]; select
               {SERIES[status].label}
             </dt>
             <dd className="whitespace-nowrap text-content-primary tabular-nums">
-              {empty ? <BigDuration minutes={null} /> : <BigDuration minutes={totals[status]} />}
+              <BigDuration
+                minutes={empty ? null : totals[status]}
+                numberClass="type-heading-xs @md:type-heading-sm"
+                unitClass="type-paragraph-xs @md:type-paragraph-sm"
+                shortMinutes
+              />
             </dd>
           </div>
         ))}
       </dl>
     </div>
-  )
-}
-
-/** Compact "104h 18m": large numbers, small units tight to them, so three totals always fit on one line each. */
-function BigDuration({ minutes }: { minutes: number | null }) {
-  const unit = 'ml-0.5 type-paragraph-xs text-content-quaternary @md:type-paragraph-sm'
-  const num = 'type-heading-xs @md:type-heading-sm'
-  if (minutes === null)
-    return (
-      <span>
-        <span className={num}>-</span>
-        <span className={unit}>h</span>
-      </span>
-    )
-  const h = Math.floor(minutes / 60)
-  const m = minutes % 60
-  return (
-    <span>
-      <span className="sr-only">{formatDuration(minutes * 60)}</span>
-      <span aria-hidden="true">
-      {h > 0 && (
-        <>
-          <span className={num}>{h}</span>
-          <span className={unit}>h</span>{' '}
-        </>
-      )}
-      {(m > 0 || h === 0) && (
-        <>
-          <span className={num}>{m}</span>
-          <span className={unit}>m</span>
-        </>
-      )}
-      </span>
-    </span>
   )
 }
 
