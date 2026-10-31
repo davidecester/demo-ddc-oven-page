@@ -113,11 +113,11 @@ function WeekSummary({ days }: { days: ActivityTrendDay[] | null }) {
         The page summary: the totals lead, large on the left, with the key on the right.
         One row per activity; from 1680 px, where the 48 px figures and their key fit side by side, three columns split by vertical dividers.
       */}
-      <ul className="flex flex-col divide-y divide-grey-200 min-[1680px]:grid min-[1680px]:grid-cols-3 min-[1680px]:divide-x min-[1680px]:divide-y-0">
+      <ul className="flex flex-col divide-y divide-grey-200 lg:py-4 min-[1680px]:grid min-[1680px]:py-10 min-[1680px]:grid-cols-3 min-[1680px]:divide-x min-[1680px]:divide-y-0">
         {tiles.map((t) => (
           <li
             key={t.status}
-            className="py-6 first:pt-0 last:pb-0 md:py-8 min-[1680px]:px-8 min-[1680px]:py-0 min-[1680px]:first:pl-0 min-[1680px]:last:pr-0"
+            className="py-6 first:pt-0 last:pb-0 md:py-8 lg:py-10 min-[1680px]:px-8 min-[1680px]:py-0 min-[1680px]:first:pl-0 min-[1680px]:last:pr-0"
           >
             {/* Columns: the cell grows with the page, its content keeps a set width centred in it */}
             <div className="flex items-center justify-between gap-4 min-[1680px]:mx-auto min-[1680px]:max-w-[460px]">
