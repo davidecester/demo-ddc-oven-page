@@ -5,11 +5,14 @@ import { TopBar } from './components/layout/TopBar'
 import { ScenarioSwitcher } from './components/prototype/ScenarioSwitcher'
 import { findScenario, scenarios } from './data/scenarios'
 import { useScenarioParam } from './hooks/useScenarioParam'
+import { useViewParam } from './hooks/useViewParam'
+import { ActivityTrendPage } from './pages/ActivityTrendPage'
 import { OvenPage } from './pages/OvenPage'
 
 export default function App() {
   const { scenarioId, selectScenario } = useScenarioParam()
   const scenario = findScenario(scenarioId)
+  const { view, openView } = useViewParam()
   // Bumping the run counter remounts the page and restarts the live simulation
   const [run, setRun] = useState(0)
 
@@ -23,8 +26,19 @@ export default function App() {
       </a>
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
-        <TopBar ovenName={scenario.oven.name} />
-        <OvenPage key={`${scenario.id}-${run}`} scenario={scenario} />
+        <TopBar
+          ovenName={scenario.oven.name}
+          subpage={view === 'activity-trend' ? { title: 'Activity trend', onBack: () => openView(null) } : undefined}
+        />
+        {view === 'activity-trend' ? (
+          <ActivityTrendPage key={scenario.id} trend={scenario.activityTrend} />
+        ) : (
+          <OvenPage
+            key={`${scenario.id}-${run}`}
+            scenario={scenario}
+            onOpenActivityTrend={() => openView('activity-trend')}
+          />
+        )}
       </div>
       <BottomNav />
       <ScenarioSwitcher

@@ -33,7 +33,7 @@ export function UsageHoursCard({ data, className }: UsageHoursCardProps) {
           <CardTitle id="usage-title">Total usage hours</CardTitle>
           <p className="type-paragraph-sm text-content-quaternary">Last 7 days</p>
         </div>
-        {data && <p className="type-heading-xl text-content-primary">{data.total}</p>}
+        {data && <TotalHours total={data.total} />}
       </div>
 
       {data && data.categories.length > 0 ? (
@@ -46,6 +46,28 @@ export function UsageHoursCard({ data, className }: UsageHoursCardProps) {
         <p className="type-paragraph-sm text-content-quaternary">No data available</p>
       )}
     </Card>
+  )
+}
+
+/**
+ * "42 h 30 min" with the numbers in black and the units smaller in grey, like the Activity trend totals; the
+ * units stay at 20 px so they read comfortably next to the 36 px figures.
+ */
+function TotalHours({ total }: { total: string }) {
+  const parts = [...total.matchAll(/(\d+)\s*(h|min)/g)]
+  return (
+    <p className="text-content-primary tabular-nums">
+      <span className="sr-only">{total}</span>
+      <span aria-hidden="true">
+        {parts.map(([, value, unit], i) => (
+          <span key={unit}>
+            {i > 0 && ' '}
+            <span className="type-heading-xl">{value}</span>
+            <span className="ml-0.5 type-heading-xs text-content-quaternary">{unit}</span>
+          </span>
+        ))}
+      </span>
+    </p>
   )
 }
 

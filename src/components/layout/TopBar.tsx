@@ -4,6 +4,8 @@ import { Avatar } from './Avatar'
 
 interface TopBarProps {
   ovenName: string
+  /** A page inside the oven (e.g. Activity trend): the back button and the oven crumb return to the oven. */
+  subpage?: { title: string; onBack: () => void }
 }
 
 /**
@@ -11,7 +13,7 @@ interface TopBarProps {
  * Mobile/tablet: avatar + actions, then back · title · Analytics.
  * Desktop: search + actions, then breadcrumb · Analytics.
  */
-export function TopBar({ ovenName }: TopBarProps) {
+export function TopBar({ ovenName, subpage }: TopBarProps) {
   return (
     <header className="sticky top-0 z-20 bg-bg-primary">
       {/* HeaderDDC */}
@@ -53,8 +55,13 @@ export function TopBar({ ovenName }: TopBarProps) {
       {/* ToolbarDDC */}
       <div className="flex h-[52px] items-center justify-between gap-2 px-3 py-2 lg:h-[60px] lg:px-6">
         <div className="flex min-w-0 flex-1 items-center gap-2">
-          <IconButton icon="nav-back" label="Back to Ovens" className="lg:hidden" />
-          <p className="min-w-0 truncate type-label-sm text-content-tertiary lg:hidden">{ovenName}</p>
+          <IconButton
+            icon="nav-back"
+            label={subpage ? `Back to ${ovenName}` : 'Back to Ovens'}
+            onClick={subpage?.onBack}
+            className="lg:hidden"
+          />
+          <p className="min-w-0 truncate type-label-sm text-content-tertiary lg:hidden">{subpage?.title ?? ovenName}</p>
 
           <nav aria-label="Breadcrumb" className="hidden lg:block">
             <ol className="flex items-center gap-1">
@@ -71,10 +78,35 @@ export function TopBar({ ovenName }: TopBarProps) {
                 <Icon name="breadcrumb-next" size={20} />
               </li>
               <li>
-                <span aria-current="page" className="block py-2 font-fixed text-[12px] leading-[1.15] font-medium text-content-tertiary">
-                  {ovenName}
-                </span>
+                {subpage ? (
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      subpage.onBack()
+                    }}
+                    className="block rounded-sm py-2 font-fixed text-[12px] leading-[1.15] font-medium text-content-tertiary underline hover:no-underline"
+                  >
+                    {ovenName}
+                  </a>
+                ) : (
+                  <span aria-current="page" className="block py-2 font-fixed text-[12px] leading-[1.15] font-medium text-content-tertiary">
+                    {ovenName}
+                  </span>
+                )}
               </li>
+              {subpage && (
+                <>
+                  <li aria-hidden="true">
+                    <Icon name="breadcrumb-next" size={20} />
+                  </li>
+                  <li>
+                    <span aria-current="page" className="block py-2 font-fixed text-[12px] leading-[1.15] font-medium text-content-tertiary">
+                      {subpage.title}
+                    </span>
+                  </li>
+                </>
+              )}
             </ol>
           </nav>
         </div>
