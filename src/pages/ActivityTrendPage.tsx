@@ -14,7 +14,6 @@ import {
   type SegmentStatus,
 } from '../components/oven/activityTrend'
 import { BigDuration } from '../components/ui/BigDuration'
-import { Card, CardTitle } from '../components/ui/Card'
 import { EmptyData } from '../components/ui/EmptyData'
 import type { ActivityTrendDay } from '../types/oven'
 import { cx } from '../utils/cx'
@@ -43,17 +42,38 @@ export function ActivityTrendPage({ trend }: { trend: ActivityTrendDay[] | null 
       id="main"
       className="page-grid px-4 pt-4 pb-[calc(var(--spacing-bottom-nav)+72px+env(safe-area-inset-bottom))] md:px-6 md:pt-6 lg:pb-6"
     >
-      <div className="col-span-full flex flex-col gap-1">
-        <h1 className="type-heading-sm text-content-primary">Activity trend</h1>
-        <p className="type-paragraph-sm text-content-quaternary">Last 7 days{range && ` · ${range}`}</p>
-      </div>
+      {/* One white surface for the whole page; its sections are split by dividers, not separate cards */}
+      <article aria-labelledby="trend-page-title" className="col-span-full flex flex-col rounded-lg bg-bg-primary p-4 shadow-elevation-1 md:p-6 lg:p-8">
+        <header className="flex flex-col gap-1">
+          <h1 id="trend-page-title" className="type-heading-sm text-content-primary">
+            Activity trend
+          </h1>
+          <p className="type-paragraph-sm text-content-quaternary">Last 7 days{range && ` · ${range}`}</p>
+        </header>
 
-      <WeekSummary days={trend} />
-      <HeatmapCard days={days} empty={!trend} onPickDay={showDay} selectedDay={trend ? dayIndex : null} />
-      <div ref={detailRef} className="col-span-full scroll-mt-32">
-        <DayDetailCard days={days} empty={!trend} index={dayIndex} onSelect={setDayIndex} />
-      </div>
+        <div className="mt-10 md:mt-12">
+          <WeekSummary days={trend} />
+        </div>
+        <Divider />
+        <HeatmapSection days={days} empty={!trend} onPickDay={showDay} selectedDay={trend ? dayIndex : null} />
+        <Divider />
+        <div ref={detailRef} className="scroll-mt-32">
+          <DayDetailSection days={days} empty={!trend} index={dayIndex} onSelect={setDayIndex} />
+        </div>
+      </article>
     </main>
+  )
+}
+
+function Divider() {
+  return <hr className="my-10 border-grey-200 md:my-12 lg:my-14" />
+}
+
+function SectionTitle({ id, children }: { id: string; children: ReactNode }) {
+  return (
+    <h2 id={id} className="type-heading-xs text-content-primary">
+      {children}
+    </h2>
   )
 }
 
@@ -87,34 +107,39 @@ function WeekSummary({ days }: { days: ActivityTrendDay[] | null }) {
     : STATUSES.map((status) => ({ status, value: null, note: 'No data available yet' }))
 
   return (
-    <section aria-labelledby="week-total-title" className="col-span-full flex flex-col gap-2">
-      <h2 id="week-total-title" className="type-label-md text-content-primary md:sr-only">
+    <section aria-labelledby="week-total-title">
+      {/* The totals follow the page title directly as its summary; the heading is for screen readers only */}
+      <h2 id="week-total-title" className="sr-only">
         This week
       </h2>
-      {/* Mobile: one card with a row per activity. Tablet up: three tiles */}
-      <ul className="flex flex-col divide-y divide-grey-100 rounded-lg bg-bg-primary px-4 shadow-elevation-1 md:grid md:grid-cols-3 md:gap-4 md:divide-y-0 md:bg-transparent md:px-0 md:shadow-none">
+      {/*
+        The page summary: the totals lead, large on the left, with the key on the right.
+        One row per activity; from 1680 px, where the 48 px figures and their key fit side by side, three columns split by vertical dividers.
+      */}
+      <ul className="flex flex-col divide-y divide-grey-200 min-[1680px]:grid min-[1680px]:grid-cols-3 min-[1680px]:divide-x min-[1680px]:divide-y-0">
         {tiles.map((t) => (
           <li
             key={t.status}
-            className="flex items-center justify-between gap-4 py-4 md:flex-col md:items-start md:justify-start md:gap-2 md:rounded-lg md:bg-bg-primary md:p-6 md:shadow-elevation-1"
+            className="py-6 first:pt-0 last:pb-0 md:py-8 min-[1680px]:px-8 min-[1680px]:py-0 min-[1680px]:first:pl-0 min-[1680px]:last:pr-0"
           >
-            <span className="flex min-w-0 flex-col gap-1 md:contents">
-              <span className="flex items-center gap-2 type-label-sm text-content-quaternary">
-                <Swatch status={t.status} />
-                <span>
-                  {SERIES[t.status].label}
-                  <span className="hidden md:inline"> this week</span>
-                </span>
-              </span>
-              <span className="type-paragraph-xs text-content-quaternary md:order-last">{t.note}</span>
-            </span>
+            {/* Columns: the cell grows with the page, its content keeps a set width centred in it */}
+            <div className="flex items-center justify-between gap-4 min-[1680px]:mx-auto min-[1680px]:max-w-[460px]">
             <span className="shrink-0">
               <BigDuration
                 minutes={t.value}
-                numberClass="type-heading-xs md:type-heading-sm"
-                unitClass="type-paragraph-sm md:type-paragraph-md"
+                // The page summary: 48 px figures on desktop, above the 36 px design-system maximum
+                numberClass="type-heading-sm md:type-heading-xl lg:!text-[48px] lg:!leading-[1.1]"
+                unitClass="type-paragraph-md md:type-heading-xs md:font-normal lg:!text-[24px]"
               />
             </span>
+            <span className="flex min-w-0 flex-col items-end gap-1 text-right">
+              <span className="flex items-center gap-2 type-label-md text-content-primary lg:type-label-lg">
+                <Swatch status={t.status} />
+                {SERIES[t.status].label}
+              </span>
+              <span className="type-paragraph-xs text-content-quaternary lg:type-paragraph-sm">{t.note}</span>
+            </span>
+            </div>
           </li>
         ))}
       </ul>
@@ -171,16 +196,16 @@ function cellColor(cell: HourCell): string {
   return `color-mix(in srgb, ${SERIES[status].color} ${Math.round(30 + (busy / 60) * 70)}%, white)`
 }
 
-interface HeatmapCardProps {
+interface HeatmapSectionProps {
   days: ActivityTrendDay[]
   empty: boolean
   selectedDay: number | null
   onPickDay: (index: number) => void
 }
 
-function HeatmapCard({ days, empty, selectedDay, onPickDay }: HeatmapCardProps) {
+function HeatmapSection({ days, empty, selectedDay, onPickDay }: HeatmapSectionProps) {
   const grid = (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6 lg:gap-8">
       <Legend
         extra={
           <li className="flex items-center gap-1">
@@ -198,15 +223,15 @@ function HeatmapCard({ days, empty, selectedDay, onPickDay }: HeatmapCardProps) 
   )
 
   return (
-    <Card labelledBy="heatmap-title" className="col-span-full gap-6">
+    <section aria-labelledby="heatmap-title" className="flex flex-col gap-8 lg:gap-10">
       <div className="flex flex-col gap-1">
-        <CardTitle id="heatmap-title">Hour by hour</CardTitle>
+        <SectionTitle id="heatmap-title">Hour by hour</SectionTitle>
         <p className="type-paragraph-sm text-content-quaternary">
           Each square is one hour, coloured by what the oven did most. Tap a day to see its cycles.
         </p>
       </div>
       {empty ? <EmptyData>{grid}</EmptyData> : grid}
-    </Card>
+    </section>
   )
 }
 
@@ -343,14 +368,14 @@ function HourTooltip({ day, hour, cell }: { day: ActivityTrendDay; hour: number;
 
 /* ---------- Day detail ---------- */
 
-interface DayDetailCardProps {
+interface DayDetailSectionProps {
   days: ActivityTrendDay[]
   empty: boolean
   index: number
   onSelect: (index: number) => void
 }
 
-function DayDetailCard({ days, empty, index, onSelect }: DayDetailCardProps) {
+function DayDetailSection({ days, empty, index, onSelect }: DayDetailSectionProps) {
   const baseId = useId()
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   // The highlighted cycle, remembered with its day so switching days clears it
@@ -382,7 +407,9 @@ function DayDetailCard({ days, empty, index, onSelect }: DayDetailCardProps) {
   }
 
   const body = (
-    <div role="tabpanel" id={`${baseId}-panel`} aria-labelledby={`${baseId}-tab-${index}`} className="flex flex-col gap-6">
+    <div role="tabpanel" id={`${baseId}-panel`} aria-labelledby={`${baseId}-tab-${index}`} className="flex flex-col gap-6 lg:gap-8">
+      {/* The day's totals (the key) sit close to their bar; the tabs above keep more distance */}
+      <div className="flex flex-col gap-4">
       <dl className="grid grid-cols-3 gap-2">
         {STATUSES.map((s) => (
           <div key={s} className="flex flex-col gap-1">
@@ -400,6 +427,7 @@ function DayDetailCard({ days, empty, index, onSelect }: DayDetailCardProps) {
           <Track segments={segments} selected={selected} />
         </div>
         <HourAxis gutter={0} />
+      </div>
       </div>
 
       {!empty && (
@@ -424,9 +452,9 @@ function DayDetailCard({ days, empty, index, onSelect }: DayDetailCardProps) {
   )
 
   return (
-    <Card labelledBy="day-detail-title" className="gap-6">
-      <div className="flex flex-col gap-4">
-        <CardTitle id="day-detail-title">Day by day</CardTitle>
+    <section aria-labelledby="day-detail-title" className="flex flex-col gap-8 lg:gap-10">
+      <div className="flex flex-col gap-8 lg:gap-10">
+        <SectionTitle id="day-detail-title">Day by day</SectionTitle>
         <div ref={tabsScrollRef} className="no-scrollbar -mx-4 overflow-x-auto px-4 md:mx-0 md:px-0">
           <div
             role="tablist"
@@ -466,7 +494,7 @@ function DayDetailCard({ days, empty, index, onSelect }: DayDetailCardProps) {
         </div>
       </div>
       {empty ? <EmptyData>{body}</EmptyData> : body}
-    </Card>
+    </section>
   )
 }
 
@@ -495,7 +523,6 @@ function SessionRow({
       <span className="flex min-w-0 flex-1 flex-col gap-1">
         <span className="type-label-md text-content-primary">
           {segment.name ?? SERIES[segment.status].label}
-          {segment.ongoing && <span className="type-paragraph-xs text-content-quaternary"> · in progress</span>}
         </span>
         <span className="type-paragraph-xs text-content-quaternary">
           {SERIES[segment.status].label}
@@ -505,7 +532,10 @@ function SessionRow({
           {clock(segment.start)} – {segment.ongoing ? 'now' : clock(segment.end)}
         </span>
       </span>
-      <span className="type-label-sm text-content-primary tabular-nums">{segment.ongoing ? `${duration} so far` : duration}</span>
+      <span className="flex shrink-0 flex-col items-end gap-1">
+        <span className="type-label-sm text-content-primary tabular-nums">{duration}</span>
+        {segment.ongoing && <span className="type-paragraph-xs text-content-quaternary">In progress</span>}
+      </span>
     </li>
   )
 }
