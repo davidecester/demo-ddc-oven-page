@@ -173,7 +173,7 @@ function Totals({ days, selectedDay, empty }: { days: ActivityTrendDay[]; select
     // Read top to bottom: which period, the figure, what it is
     <div className="flex flex-col gap-2">
       <p className="type-paragraph-sm text-content-quaternary">
-        {day ? (day.until ? `Today, ${day.date}` : `${day.day} ${day.date}`) : 'Total, last 7 days'}
+        {day ? (day.until ? `Today, ${day.date}` : `${day.day} ${day.date}`) : 'Total'}
       </p>
       {/* Narrow cards: columns sized to their figures so all three fit; wider ones: three equal columns */}
       <dl className="flex justify-between gap-2 @md:grid @md:grid-cols-3">
@@ -193,14 +193,15 @@ function Totals({ days, selectedDay, empty }: { days: ActivityTrendDay[]; select
   )
 }
 
-/** "104 h 18 min" with the numbers large and the units small, so three totals fit side by side at 390. */
+/** Compact "104h 18m": large numbers, small units tight to them, so three totals always fit on one line each. */
 function BigDuration({ minutes }: { minutes: number | null }) {
-  const unit = 'type-paragraph-xs text-content-quaternary @md:type-paragraph-sm'
+  const unit = 'ml-0.5 type-paragraph-xs text-content-quaternary @md:type-paragraph-sm'
   const num = 'type-heading-xs @md:type-heading-sm'
   if (minutes === null)
     return (
       <span>
-        <span className={num}>-</span> <span className={unit}>h</span>
+        <span className={num}>-</span>
+        <span className={unit}>h</span>
       </span>
     )
   const h = Math.floor(minutes / 60)
@@ -212,13 +213,13 @@ function BigDuration({ minutes }: { minutes: number | null }) {
       {h > 0 && (
         <>
           <span className={num}>{h}</span>
-          <span className={unit}> h </span>
+          <span className={unit}>h</span>{' '}
         </>
       )}
       {(m > 0 || h === 0) && (
         <>
           <span className={num}>{m}</span>
-          <span className={unit}> min</span>
+          <span className={unit}>m</span>
         </>
       )}
       </span>
