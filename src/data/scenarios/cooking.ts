@@ -15,7 +15,7 @@ export const cookingScenario: Scenario = {
     group: 'UNOX',
     connection: 'online',
     warranty: { label: 'LONG.Life warranty:', value: 'Active until 03/2028' },
-    usageHours: '3,482h',
+    usageHours: '3,482 h',
     serialNumber: '2309-AX-004871',
     productCode: 'XEVC-1011-E1RM',
     firmware: '4.12.3',
@@ -109,13 +109,13 @@ export const cookingScenario: Scenario = {
   },
 
   usage: {
-    total: '42h 30min',
+    total: '42 h 30 min',
     categories: [
-      { key: 'cookingSet', label: 'Cooking Set', duration: '18h', percent: 42 },
-      { key: 'programs', label: 'Programs', duration: '11h 30min', percent: 27 },
-      { key: 'chefunox', label: 'CHEFUNOX', duration: '6h', percent: 14 },
-      { key: 'multiTime', label: 'MULTI.Time', duration: '5h', percent: 12 },
-      { key: 'other', label: 'Other', duration: '2h', percent: 5 },
+      { key: 'cookingSet', label: 'Cooking Set', duration: '18 h', percent: 42 },
+      { key: 'programs', label: 'Programs', duration: '11 h 30 min', percent: 27 },
+      { key: 'chefunox', label: 'CHEFUNOX', duration: '6 h', percent: 14 },
+      { key: 'multiTime', label: 'MULTI.Time', duration: '5 h', percent: 12 },
+      { key: 'other', label: 'Other', duration: '2 h', percent: 5 },
     ],
   },
 

@@ -50,7 +50,7 @@ export function UsageHoursCard({ data, className }: UsageHoursCardProps) {
 }
 
 /**
- * "42h 30min" with the numbers in black and the units smaller in grey, like the Activity trend totals; the
+ * "42 h 30 min" with the numbers in black and the units smaller in grey, like the Activity trend totals; the
  * units stay at 20 px so they read comfortably next to the 36 px figures.
  */
 function TotalHours({ total }: { total: string }) {

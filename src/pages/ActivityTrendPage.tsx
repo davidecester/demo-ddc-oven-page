@@ -20,6 +20,8 @@ import { cx } from '../utils/cx'
 import { formatDuration } from '../utils/format'
 
 const minutes = (m: number) => formatDuration(m * 60)
+/** Large figures drop the space before the unit: "40h 57min" (small text keeps "40 h 57 min"). */
+const bigMinutes = (m: number) => minutes(m).replace(/ (h|min)\b/g, '$1')
 const STATUSES: SegmentStatus[] = ['cooking', 'washing', 'standby']
 
 /** "Andamento attività" in depth: week totals, an hour-by-hour heatmap and each day's cycles. */
@@ -69,17 +71,17 @@ function WeekSummary({ days }: { days: ActivityTrendDay[] | null }) {
     ? [
         {
           status: 'cooking',
-          value: minutes(sum('cooking')),
+          value: bigMinutes(sum('cooking')),
           note: `${count('cooking')} cycles · ${minutes(Math.round(sum('cooking') / dayCount))} a day`,
         },
         {
           status: 'washing',
-          value: minutes(sum('washing')),
+          value: bigMinutes(sum('washing')),
           note: `${count('washing')} washes · ${minutes(Math.round(sum('washing') / dayCount))} a day`,
         },
         {
           status: 'standby',
-          value: minutes(sum('standby')),
+          value: bigMinutes(sum('standby')),
           note: `${Math.round((sum('standby') / tracked) * 100)}% of the time`,
         },
       ]
