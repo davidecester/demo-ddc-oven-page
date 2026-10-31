@@ -408,6 +408,8 @@ function DayDetailSection({ days, empty, index, onSelect }: DayDetailSectionProp
 
   const body = (
     <div role="tabpanel" id={`${baseId}-panel`} aria-labelledby={`${baseId}-tab-${index}`} className="flex flex-col gap-6 lg:gap-8">
+      {/* The day's totals (the key) sit close to their bar; the tabs above keep more distance */}
+      <div className="flex flex-col gap-4">
       <dl className="grid grid-cols-3 gap-2">
         {STATUSES.map((s) => (
           <div key={s} className="flex flex-col gap-1">
@@ -425,6 +427,7 @@ function DayDetailSection({ days, empty, index, onSelect }: DayDetailSectionProp
           <Track segments={segments} selected={selected} />
         </div>
         <HourAxis gutter={0} />
+      </div>
       </div>
 
       {!empty && (
@@ -449,7 +452,7 @@ function DayDetailSection({ days, empty, index, onSelect }: DayDetailSectionProp
   )
 
   return (
-    <section aria-labelledby="day-detail-title" className="flex flex-col gap-6 lg:gap-8">
+    <section aria-labelledby="day-detail-title" className="flex flex-col gap-8 lg:gap-10">
       <div className="flex flex-col gap-8 lg:gap-10">
         <SectionTitle id="day-detail-title">Day by day</SectionTitle>
         <div ref={tabsScrollRef} className="no-scrollbar -mx-4 overflow-x-auto px-4 md:mx-0 md:px-0">
