@@ -109,26 +109,29 @@ function WeekSummary({ days }: { days: ActivityTrendDay[] | null }) {
   return (
     <section aria-labelledby="week-total-title" className="flex flex-col gap-4 md:gap-6">
       <SectionTitle id="week-total-title">This week</SectionTitle>
-      {/* Mobile: a row per activity. Tablet up: three columns split by vertical dividers */}
-      <ul className="flex flex-col divide-y divide-grey-200 md:grid md:grid-cols-3 md:divide-x md:divide-y-0">
+      {/*
+        The page summary: the totals lead, large on the left, with the key on the right.
+        One row per activity up to laptop width; on wide screens three columns split by vertical dividers.
+      */}
+      <ul className="flex flex-col divide-y divide-grey-200 xl:grid xl:grid-cols-3 xl:divide-x xl:divide-y-0">
         {tiles.map((t) => (
           <li
             key={t.status}
-            className="flex items-center justify-between gap-4 py-4 first:pt-0 last:pb-0 md:flex-col md:items-start md:justify-start md:gap-2 md:px-6 md:py-0 md:first:pl-0 md:last:pr-0"
+            className="flex items-center justify-between gap-4 py-5 first:pt-0 last:pb-0 md:py-6 xl:px-8 xl:py-0 xl:first:pl-0 xl:last:pr-0"
           >
-            <span className="flex min-w-0 flex-col gap-1 md:contents">
-              <span className="flex items-center gap-2 type-label-sm text-content-quaternary">
-                <Swatch status={t.status} />
-                {SERIES[t.status].label}
-              </span>
-              <span className="type-paragraph-xs text-content-quaternary md:order-last">{t.note}</span>
-            </span>
             <span className="shrink-0">
               <BigDuration
                 minutes={t.value}
-                numberClass="type-heading-xs md:type-heading-sm"
-                unitClass="type-paragraph-sm md:type-paragraph-md"
+                numberClass="type-heading-sm md:type-heading-xl"
+                unitClass="type-paragraph-md md:type-heading-xs md:font-normal"
               />
+            </span>
+            <span className="flex min-w-0 flex-col items-end gap-1 text-right">
+              <span className="flex items-center gap-2 type-label-md text-content-primary">
+                <Swatch status={t.status} />
+                {SERIES[t.status].label}
+              </span>
+              <span className="type-paragraph-xs text-content-quaternary">{t.note}</span>
             </span>
           </li>
         ))}
