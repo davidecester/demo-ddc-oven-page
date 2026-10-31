@@ -46,7 +46,7 @@ export function ActivityTrendCard({ trend, onOpen, className }: ActivityTrendCar
       </div>
 
       {trend ? (
-        <figure className="flex flex-col gap-4">
+        <figure className="flex flex-col gap-8">
           <Timeline days={trend} />
           <figcaption className="sr-only">
             <table>
@@ -84,8 +84,8 @@ export function ActivityTrendCard({ trend, onOpen, className }: ActivityTrendCar
       ) : (
         // New oven: an empty week of idle rows behind the "no data" message
         <EmptyData>
-          {/* Same 16 px legend-to-rows gap as the figure above */}
-          <div className="flex flex-col gap-4">
+          {/* Same totals-to-rows gap as the figure above */}
+          <div className="flex flex-col gap-8">
             <Timeline days={EMPTY_WEEK} empty />
           </div>
         </EmptyData>
@@ -170,24 +170,59 @@ function Totals({ days, selectedDay, empty }: { days: ActivityTrendDay[]; select
   const day = selectedDay === null ? null : days[selectedDay]
   const totals = totalsOf(day ? [day] : days)
   return (
+    // Read top to bottom: which period, the figure, what it is
     <div className="flex flex-col gap-2">
-      <dl className="grid grid-cols-3 gap-2">
+      <p className="type-paragraph-sm text-content-quaternary">
+        {day ? (day.until ? `Today, ${day.date}` : `${day.day} ${day.date}`) : 'Total, last 7 days'}
+      </p>
+      {/* Narrow cards: columns sized to their figures so all three fit; wider ones: three equal columns */}
+      <dl className="flex justify-between gap-2 @md:grid @md:grid-cols-3">
         {(Object.keys(SERIES) as SegmentStatus[]).map((status) => (
-          <div key={status} className="flex min-w-0 flex-col gap-1">
+          <div key={status} className="flex min-w-0 flex-col-reverse gap-1">
             <dt className="flex items-center gap-1 type-paragraph-sm text-content-quaternary">
               <span aria-hidden="true" className="size-3 shrink-0 rounded-xs" style={{ background: SERIES[status].color }} />
               {SERIES[status].label}
             </dt>
-            <dd className="type-label-lg text-content-primary tabular-nums">
-              {empty ? '- h' : formatDuration(totals[status] * 60)}
+            <dd className="whitespace-nowrap text-content-primary tabular-nums">
+              {empty ? <BigDuration minutes={null} /> : <BigDuration minutes={totals[status]} />}
             </dd>
           </div>
         ))}
       </dl>
-      <p className="type-paragraph-sm text-content-quaternary">
-        {day ? (day.until ? `Today, ${day.date}` : `${day.day} ${day.date}`) : 'Total, last 7 days'}
-      </p>
     </div>
+  )
+}
+
+/** "104 h 18 min" with the numbers large and the units small, so three totals fit side by side at 390. */
+function BigDuration({ minutes }: { minutes: number | null }) {
+  const unit = 'type-paragraph-xs text-content-quaternary @md:type-paragraph-sm'
+  const num = 'type-heading-xs @md:type-heading-sm'
+  if (minutes === null)
+    return (
+      <span>
+        <span className={num}>-</span> <span className={unit}>h</span>
+      </span>
+    )
+  const h = Math.floor(minutes / 60)
+  const m = minutes % 60
+  return (
+    <span>
+      <span className="sr-only">{formatDuration(minutes * 60)}</span>
+      <span aria-hidden="true">
+      {h > 0 && (
+        <>
+          <span className={num}>{h}</span>
+          <span className={unit}> h </span>
+        </>
+      )}
+      {(m > 0 || h === 0) && (
+        <>
+          <span className={num}>{m}</span>
+          <span className={unit}> min</span>
+        </>
+      )}
+      </span>
+    </span>
   )
 }
 
@@ -275,7 +310,7 @@ function SegmentTooltip({ day, segment }: { day: ActivityTrendDay; segment: Segm
         title={`${day.day} ${day.until ? '' : day.date}`.trim()}
         rows={[
           {
-            label: segment.name ?? SERIES[segment.status].label,
+            label: SERIES[segment.status].label,
             swatch: selectedColor(segment.status),
             value: `${clock(segment.start)} – ${segment.ongoing ? 'now' : clock(segment.end)}`,
           },
