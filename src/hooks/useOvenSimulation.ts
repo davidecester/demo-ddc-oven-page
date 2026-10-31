@@ -28,7 +28,7 @@ export type LiveActivity =
   | {
       status: 'idle'
       label: string
-      /** e.g. { label: 'Last cooking ended', when: 'Today at 12:40', ago: '25 min ago' } */
+      /** e.g. { label: 'Last cooking ended', when: 'Today at 12:40', ago: '25min ago' } */
       lastActivity: { label: string; when: string; ago: string } | null
       dirtLevel: number | null
       ctas: IdleActivity['ctas']

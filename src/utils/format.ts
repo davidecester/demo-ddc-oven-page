@@ -1,14 +1,14 @@
-/** "1 h 16 min" / "3 min" (minutes rounded up, as an oven display would). */
+/** "1h 16min" / "3min": no space between number and unit (minutes rounded up, as an oven display would). */
 export function formatDuration(totalSeconds: number): string {
   const minutes = Math.max(0, Math.ceil(totalSeconds / 60))
   const h = Math.floor(minutes / 60)
   const m = minutes % 60
-  if (h === 0) return `${m} min`
-  if (m === 0) return `${h} h`
-  return `${h} h ${m} min`
+  if (h === 0) return `${m}min`
+  if (m === 0) return `${h}h`
+  return `${h}h ${m}min`
 }
 
-/** Decimal hours → "6 h 21 min" (chart tooltips). */
+/** Decimal hours → "6h 21min" (chart tooltips). */
 export function formatHours(hours: number): string {
   return formatDuration(Math.round(hours * 60) * 60)
 }
@@ -28,8 +28,8 @@ export function formatTemperature(celsius: number): string {
   return `${Math.round(celsius)} °C`
 }
 
-/** "Today at 12:40 · 25 min ago" (minutes rounded down, so it never runs ahead of the clock). */
-/** { when: 'Today at 12:40', ago: '25 min ago' }: the card sets the two parts in different weights. */
+/** "Today at 12:40 · 25min ago" (minutes rounded down, so it never runs ahead of the clock). */
+/** { when: 'Today at 12:40', ago: '25min ago' }: the card sets the two parts in different weights. */
 export function formatEndedAt(endedAt: Date, now: Date): { when: string; ago: string } {
   const day = endedAt.toDateString() === now.toDateString() ? 'Today' : 'Yesterday'
   const minutes = Math.max(0, Math.floor((now.getTime() - endedAt.getTime()) / 60000))

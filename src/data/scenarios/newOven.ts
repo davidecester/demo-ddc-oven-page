@@ -11,7 +11,7 @@ export const newOvenScenario: Scenario = {
   id: 'new-oven',
   label: 'Newly Registered Oven',
 
-  oven: { ...cookingScenario.oven, name: 'New Oven', usageHours: '0 h' },
+  oven: { ...cookingScenario.oven, name: 'New Oven', usageHours: '0h' },
 
   activity: {
     status: 'idle',
@@ -38,6 +38,6 @@ export const newOvenScenario: Scenario = {
     updatedAt: '21/10/2026 12:05',
   },
 
-  usage: { total: '0 min', categories: [] },
+  usage: { total: '0min', categories: [] },
   recipes: sharedRecipes.map((tab) => ({ ...tab, categories: [] })),
 }

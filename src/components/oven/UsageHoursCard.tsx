@@ -50,7 +50,7 @@ export function UsageHoursCard({ data, className }: UsageHoursCardProps) {
 }
 
 /**
- * "42 h 30 min" with the numbers in black and the units smaller in grey, like the Activity trend totals; the
+ * "42h 30min" with the numbers in black and the units smaller in grey, like the Activity trend totals; the
  * units stay at 20 px so they read comfortably next to the 36 px figures.
  */
 function TotalHours({ total }: { total: string }) {
@@ -63,7 +63,7 @@ function TotalHours({ total }: { total: string }) {
           <span key={unit}>
             {i > 0 && ' '}
             <span className="type-heading-xl">{value}</span>
-            <span className="ml-1 type-heading-xs text-content-quaternary">{unit}</span>
+            <span className="ml-0.5 type-heading-xs text-content-quaternary">{unit}</span>
           </span>
         ))}
       </span>
