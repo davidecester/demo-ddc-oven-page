@@ -51,7 +51,7 @@ export function ActivityTrendPage({ trend }: { trend: ActivityTrendDay[] | null 
           <p className="type-paragraph-sm text-content-quaternary">Last 7 days{range && ` · ${range}`}</p>
         </header>
 
-        <div className="mt-8 md:mt-10">
+        <div className="mt-10 md:mt-12">
           <WeekSummary days={trend} />
         </div>
         <Divider />
@@ -66,7 +66,7 @@ export function ActivityTrendPage({ trend }: { trend: ActivityTrendDay[] | null 
 }
 
 function Divider() {
-  return <hr className="my-8 border-grey-200 md:my-10" />
+  return <hr className="my-10 border-grey-200 md:my-12 lg:my-14" />
 }
 
 function SectionTitle({ id, children }: { id: string; children: ReactNode }) {
