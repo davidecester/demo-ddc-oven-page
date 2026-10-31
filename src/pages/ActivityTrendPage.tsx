@@ -107,8 +107,11 @@ function WeekSummary({ days }: { days: ActivityTrendDay[] | null }) {
     : STATUSES.map((status) => ({ status, value: null, note: 'No data available yet' }))
 
   return (
-    <section aria-labelledby="week-total-title" className="flex flex-col gap-4 md:gap-6">
-      <SectionTitle id="week-total-title">This week</SectionTitle>
+    <section aria-labelledby="week-total-title">
+      {/* The totals follow the page title directly as its summary; the heading is for screen readers only */}
+      <h2 id="week-total-title" className="sr-only">
+        This week
+      </h2>
       {/*
         The page summary: the totals lead, large on the left, with the key on the right.
         One row per activity; from 1680 px, where the 48 px figures and their key fit side by side, three columns split by vertical dividers.
