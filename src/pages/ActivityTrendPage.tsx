@@ -308,24 +308,27 @@ function HeatmapGrid({
       <div className="mt-1">
         <HourAxis gutter={GUTTER} />
       </div>
+      {/* sr-only sits on a wrapper: a table ignores the 1px width and would widen the page, letting mobile pinch-zoom out */}
       {interactive && (
-        <table className="sr-only">
-          <caption>Minutes of cooking and washing per hour, last 7 days</caption>
-          <tbody>
-            {days.map((day, d) => (
-              <tr key={day.date}>
-                <th scope="row">{day.day}</th>
-                <td>
-                  {cells[d]
-                    .map((c, h) => ({ c, h }))
-                    .filter(({ c }) => c.cooking || c.washing)
-                    .map(({ c, h }) => `${clock(h * 60)}: ${c.cooking ? `cooking ${c.cooking} min` : ''}${c.cooking && c.washing ? ', ' : ''}${c.washing ? `washing ${c.washing} min` : ''}`)
-                    .join('; ')}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="sr-only">
+          <table>
+            <caption>Minutes of cooking and washing per hour, last 7 days</caption>
+            <tbody>
+              {days.map((day, d) => (
+                <tr key={day.date}>
+                  <th scope="row">{day.day}</th>
+                  <td>
+                    {cells[d]
+                      .map((c, h) => ({ c, h }))
+                      .filter(({ c }) => c.cooking || c.washing)
+                      .map(({ c, h }) => `${clock(h * 60)}: ${c.cooking ? `cooking ${c.cooking} min` : ''}${c.cooking && c.washing ? ', ' : ''}${c.washing ? `washing ${c.washing} min` : ''}`)
+                      .join('; ')}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   )
